@@ -1,4 +1,4 @@
-# node-storj binder
+# node-python binding
 
 ## Initial Set-up
 
