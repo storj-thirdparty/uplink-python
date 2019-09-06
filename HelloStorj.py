@@ -3,27 +3,23 @@ import json
 
 if __name__ == "__main__":
 
-    #load default data from Storj config file
-    with open("storj_config.json") as json_file:
-        storj_config = json.load(json_file)
+    # Storj configuration information
+    apikey = "13Yqf9SJhb9ApNZQdY2H4h47pacMyQeAtGafLUygWhTuugCU17P5BffEZveFnP8ivv2dsrWFaKPZJnRupHHgkw9abTw3hzxpHt2td5Y"
+    satellite = "us-central-1.tardigrade.io:7777"
+    bucket = "partnertest01"
+    uploadPath = "path01/sample.txt"
+    encryptionpassphrase = "test"
 
-    #local variables with value from config file
-    apikey = storj_config['apikey']
-    satellite = storj_config['satellite']
-    bucket = storj_config['bucket']
-    uploadPath = storj_config['uploadPath']
-    encryptionpassphrase = storj_config['encryptionpassphrase']
-
-    #Source and destination path and file name for testing
+    # Source and destination path and file name for testing
     srcFullFileName = "SampleData.txt"
     destFullPathName = "DownloadedFile.txt"
 
     debugMode = True
 
-    #create an object of libUplinkPy class
+    # create an object of libUplinkPy class
     StorjObj = libUplinkPy(debugMode)
 
-    #function calls
+    # function calls
     if StorjObj.new_uplink() is True:
         if StorjObj.parse_api_key(apikey) is True:
             if StorjObj.open_project(satellite) is True:

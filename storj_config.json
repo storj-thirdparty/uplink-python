@@ -1,7 +1,0 @@
-{ 
-    "apikey":     "Enter API Key",
-    "satellite":  "Satellite URL:Port",
-    "bucket":     "Bucket Name",
-    "uploadPath": "Upload Path",
-    "encryptionpassphrase": "Encryption Pass Phrase"
-}

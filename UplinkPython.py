@@ -345,6 +345,7 @@ class libUplinkPy:
                                                                   byref(self.m_error))
         # if error occurred
         if self.m_error.value is not None:
+            print(self.m_error.value.decode("utf-8"))
             return False
         else:
             if self.mb_DEBUG_MODE:
