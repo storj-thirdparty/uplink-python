@@ -16,6 +16,9 @@ import os
 # RedundancyAlgorithm ENUM
 (STORJ_INVALID_REDUNDANCY_ALGORITHM, STORJ_REED_SOLOMON) = map(c_int, range(2))
 
+# ListDirection ENUM
+(STORJ_BEFORE, STORJ_BACKWARD, STORJ_FORWARD, STORJ_AFTER) = map(c_int, [-2, -1, 1, 2])
+
 
 # Uplink configuration nested structure
 class TLS(Structure):
@@ -67,7 +70,7 @@ class DownloaderRef(Structure):
 
 # Upload Options reference structure
 class UploadOptions(Structure):
-    pass
+    _fields_ = [("content_type", c_char_p), ("expires", c_int64)]
 
 
 class EncryptionParameters(Structure):
@@ -87,6 +90,29 @@ class BucketConfig(Structure):
 class BucketInfo(Structure):
     _fields_ = [("name", c_char_p), ("created", c_int64), ("path_cipher", c_int), ("segment_size", c_int64),
                 ("encryption_parameters", EncryptionParameters), ("redundancy_scheme", RedundancyScheme)]
+
+
+class BucketListOptions(Structure):
+    _fields_ = [("cursor", c_char_p), ("direction", c_int8), ("limit", c_int64)]
+
+
+class BucketList(Structure):
+    _fields_ = [("more", c_bool), ("items", POINTER(BucketInfo)), ("length", c_int32)]
+
+
+class ObjectInfo(Structure):
+    _fields_ = [("version", c_int32), ("bucket", BucketInfo), ("path", c_char_p),
+                ("is_prefix", c_bool), ("content_type", c_char_p), ("size", c_int64), ("created", c_int64),
+                ("modified", c_int64), ("expires", c_int64)]
+
+
+class ObjectList(Structure):
+    _fields_ = [("bucket", c_char_p), ("prefix", c_char_p), ("more", c_bool), ("items", POINTER(ObjectInfo)),
+                ("length", c_int32)]
+
+class ListOptions(Structure):
+    _fields_ = [("prefix", c_char_p), ("cursor", c_char_p), ("delimiter", c_char), ("recursive", c_bool),
+                ("direction", c_int), ("limit", c_int64)]
 
 
 #########################################################
@@ -295,11 +321,11 @@ class libUplinkPy:
     """
     function to get uploader handle used to upload data to Storj (V3) bucket's path
     pre-requisites: open_bucket() function has been already called
-    inputs: Bucket Handle (long), Storj Path/File Name (string) within the opened bucket
+    inputs: Bucket Handle (long), Storj Path/File Name (string) within the opened bucket, Upload Options (obj)
     output: Uploader Handle (long), Error (string) if any else None
     """
 
-    def upload(self, pl_bucketHandle, ps_storjPath):
+    def upload(self, pl_bucketHandle, ps_storjPath, po_uploadOptions):
         #
         # ensure bucket handle is valid
         if pl_bucketHandle <= 0:
@@ -307,14 +333,18 @@ class libUplinkPy:
             return None, ls_Error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.upload.argtypes = [BucketRef, c_char_p, c_void_p, POINTER(c_char_p)]
+        if po_uploadOptions is None:
+            self.m_libUplink.upload.argtypes = [BucketRef, c_char_p, POINTER(UploadOptions), POINTER(c_char_p)]
+            lO_UploadOptions = POINTER(UploadOptions)()
+        else:
+            self.m_libUplink.upload.argtypes = [BucketRef, c_char_p, UploadOptions, POINTER(c_char_p)]
+            lO_UploadOptions = po_uploadOptions
         self.m_libUplink.upload.restype = UploaderRef
         #
         # prepare the input for the function
         lc_storjPathPtr = c_char_p(ps_storjPath.encode('utf-8'))
         lO_BucketRef = BucketRef()
         lO_BucketRef._handle = pl_bucketHandle
-        lO_UploadOptions = c_void_p()
         # create error ref pointer
         lc_errorPtr = c_char_p()
         # get uploader ref by calling the exported golang function
@@ -329,11 +359,11 @@ class libUplinkPy:
     """
     function to write data to Storj (V3) bucket's path
     pre-requisites: upload() function has been already called
-    inputs: Bucket Handle (long), Data to write obtained using file read (bytes), Size of data to write (int)
-    output: Size of data written (long), Error (string) if any else None
+    inputs: Bucket Handle (long), Data to upload (LP_c_ubyte), Size of data to upload (int)
+    output: Size of data uploaded (long), Error (string) if any else None
     """
 
-    def upload_write(self, pl_uploaderHandle, pbt_dataToWrite, pi_sizeToWrite):
+    def upload_write(self, pl_uploaderHandle, pbt_dataToWritePtr, pi_sizeToWrite):
         #
         # ensure uploader handle is valid
         if pl_uploaderHandle <= 0:
@@ -345,17 +375,13 @@ class libUplinkPy:
         self.m_libUplink.upload_write.restype = c_size_t
         #
         # prepare the inputs for the function
-        lc_dataToWrite = pbt_dataToWrite
-        lc_data_size = c_int32(len(lc_dataToWrite))
-        lc_dataToWrite = (c_uint8 * lc_data_size.value)(*lc_dataToWrite)
-        lc_dataToWritePtr = cast(lc_dataToWrite, POINTER(c_uint8))
         lc_sizeToWrite = c_size_t(pi_sizeToWrite)
         lO_UploaderRef = UploaderRef()
         lO_UploaderRef._handle = pl_uploaderHandle
         # create error ref pointer
         lc_errorPtr = c_char_p()
         # upload data by calling the exported golang function
-        lc_sizeWritten = self.m_libUplink.upload_write(lO_UploaderRef, lc_dataToWritePtr, lc_sizeToWrite,
+        lc_sizeWritten = self.m_libUplink.upload_write(lO_UploaderRef, pbt_dataToWritePtr, lc_sizeToWrite,
                                                        byref(lc_errorPtr))
         #
         # if error occurred
@@ -432,8 +458,8 @@ class libUplinkPy:
     """
     function to read Storj (V3) object's data and return the data
     pre-requisites: download() function has been already called
-    inputs: Bucket Handle (long), Length of data to read (int)
-    output: Size of data downloaded (int), Error (string) if any else None
+    inputs: Bucket Handle (long), Length of data to download (int)
+    output: Data downloaded (LP_c_ubyte), Size of data downloaded (int), Error (string) if any else None
     """
 
     def download_read(self, pl_downloaderHandle, pi_sizeToRead):
@@ -461,14 +487,11 @@ class libUplinkPy:
         lc_sizeRead = self.m_libUplink.download_read(lO_DownloaderRef, lc_dataToWritePtr, lc_sizeToRead,
                                                      byref(lc_errorPtr))
         #
-        # prepare output to return received from function
-        lc_dataToWrite = cast(lc_dataToWritePtr, c_char_p)
-        #
         # if error occurred
         if lc_errorPtr.value is not None:
             return None, None, lc_errorPtr.value.decode("utf-8")
         else:
-            return lc_dataToWrite.value, int(lc_sizeRead), None
+            return lc_dataToWritePtr, int(lc_sizeRead), None
 
     """
     function to close downloader after completing the data read process
@@ -505,7 +528,7 @@ class libUplinkPy:
     """
     function to create new bucket in Storj project
     pre-requisites: open_project() function has been already called
-    inputs: Project Handle (long), Bucket Name (string)
+    inputs: Project Handle (long), Bucket Name (string), Bucket Config (obj)
     output: Bucket Info Handle (long), Error (string) if any else None
     """
 
@@ -517,14 +540,18 @@ class libUplinkPy:
             return None, ls_Error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.create_bucket.argtypes = [ProjectRef, c_char_p, BucketConfig, POINTER(c_char_p)]
+        if po_bucketConfig is None:
+            self.m_libUplink.create_bucket.argtypes = [ProjectRef, c_char_p, POINTER(BucketConfig), POINTER(c_char_p)]
+            lO_BucketConfig = POINTER(BucketConfig)()
+        else:
+            self.m_libUplink.create_bucket.argtypes = [ProjectRef, c_char_p, BucketConfig, POINTER(c_char_p)]
+            lO_BucketConfig = po_bucketConfig
         self.m_libUplink.create_bucket.restype = BucketInfo
         #
         # prepare the input for the function
         lc_BucketName = c_char_p(ps_bucketName.encode('utf-8'))
         lO_ProjectRef = ProjectRef()
         lO_ProjectRef._handle = pl_projectHandle
-        lO_BucketConfig = po_bucketConfig
         # create error ref pointer
         lc_errorPtr = c_char_p()
         #  by calling the exported golang function
@@ -637,112 +664,190 @@ class libUplinkPy:
             return None
 
     """
-    function to upload data from srcFullFileName (at local computer) to Storj (V3) bucket's path
-    pre-requisites: open_bucket() function has been already called
-    inputs: Bucket Handle (long), Storj Path/File Name (string) within the opened bucket, local Source Full File Name (string)
-    output: True if successful else False, Error (string) if any else None
+    function to list all the buckets in a Storj project
+    pre-requisites: open_project() function has been already called
+    inputs: Project Handle (long), Bucket List Options (obj)
+    output: Bucket List (obj), Error (string) if any else None
     """
 
-    def upload_file(self, bucket, uploadPath, srcFullFileName):
+    def list_buckets(self, pl_projectHandle, po_bucketListOptions):
         #
-        # open file to be uploaded
-        file_handle = open(srcFullFileName, 'r+b')
-        data_len = os.path.getsize(srcFullFileName)
+        # ensure project handle is valid
+        if pl_projectHandle <= 0:
+            ls_Error = "Invalid Storj Project handle, please check parameter[1] passed and try again."
+            return None, ls_Error
         #
-        # call to get uploader handle
-        uploader, ls_Error = self.upload(bucket, uploadPath)
-        if ls_Error is not None:
-            return False, ls_Error
+        # declare types of arguments and response of the corresponding golang function
+        if po_bucketListOptions is None:
+            self.m_libUplink.list_buckets.argtypes = [ProjectRef, POINTER(BucketListOptions), POINTER(c_char_p)]
+            lO_BucketListOptions = POINTER(BucketListOptions)()
+        else:
+            self.m_libUplink.list_buckets.argtypes = [ProjectRef, BucketListOptions, POINTER(c_char_p)]
+            lO_BucketListOptions = po_bucketListOptions
+        self.m_libUplink.list_buckets.restype = BucketList
         #
-        # initialize local variables and start uploading packets of data
-        uploaded_total = 0
-        while uploaded_total < data_len:
-            # set packet size to be used while uploading
-            size_to_write = 256 if (data_len - uploaded_total > 256) else data_len - uploaded_total
-            #
-            # exit while loop if nothing left to upload
-            if size_to_write == 0:
-                break
-            #
-            # file reading process from the last read position
-            file_handle.seek(uploaded_total)
-            data = file_handle.read(size_to_write)
-            #
-            # call to write data to Storj bucket
-            write_size, ls_Error = self.upload_write(uploader, data, size_to_write)
-            if ls_Error is not None:
-                return False, ls_Error
-            #
-            # exit while loop if nothing left to upload / unable to upload
-            if write_size == 0:
-                break
-            # update last read location
-            uploaded_total += write_size
-
-        # commit upload data to bucket
-        ls_Error = self.upload_commit(uploader)
+        # prepare the input for the function
+        lO_ProjectRef = ProjectRef()
+        lO_ProjectRef._handle = pl_projectHandle
+        # create error ref pointer
+        lc_errorPtr = c_char_p()
+        #  by calling the exported golang function
+        lO_bucketList = self.m_libUplink.list_buckets(lO_ProjectRef, lO_BucketListOptions, byref(lc_errorPtr))
         #
         # if error occurred
-        if ls_Error is not None:
-            return False, ls_Error
+        if lc_errorPtr.value is not None:
+            return None, lc_errorPtr.value.decode("utf-8")
         else:
-            return True, None
+            return lO_bucketList, None
 
     """
-    function to download Storj (V3) object's data and store it in given file with destFullFileName (on local computer)
-    pre-requisites: open_bucket() function has been already called
-    inputs: Bucket Handle (long), Storj Path/File Name (string) within the opened bucket, local Destination Full Path Name(string)
-    output: True if successful else False, Error (string) if any else None
+    function to list all the objects in a bucket
+    pre-requisites: open_project() function has been already called
+    inputs: Bucket Handle (long), List Options (obj)
+    output: Bucket List (obj), Error (string) if any else None
     """
 
-    def download_file(self, bucket, storjPath, destFullPathName):
+    def list_objects(self, pl_bucketHandle, po_listOptions):
         #
-        # open / create file with the given name to save the downloaded data
-        file_handle = open(destFullPathName, 'w+b')
+        # ensure project handle is valid
+        if pl_bucketHandle <= 0:
+            ls_Error = "Invalid Bucket handle, please check parameter[1] passed and try again."
+            return None, ls_Error
         #
-        # call to get downloader handle
-        downloader, ls_Error = self.download(bucket, storjPath)
-        if ls_Error is not None:
-            return False, ls_Error
+        # declare types of arguments and response of the corresponding golang function
+        if po_listOptions is None:
+            self.m_libUplink.list_objects.argtypes = [BucketRef, POINTER(ListOptions), POINTER(c_char_p)]
+            lO_ListOptions = POINTER(ListOptions)()
+        else:
+            self.m_libUplink.list_objects.argtypes = [BucketRef, ListOptions, POINTER(c_char_p)]
+            lO_ListOptions = po_listOptions
+        self.m_libUplink.list_objects.restype = ObjectList
         #
-        # set packet size to be used while downloading
-        size_to_write = 256
-        # initialize local variables and start downloading packets of data
-        downloaded_total = 0
-        retry_count = 0
-        while True:
-            # call to read data from Storj bucket
-            data, read_size, ls_Error = self.download_read(downloader, size_to_write)
-            if ls_Error is not None:
-                return False, ls_Error
-            #
-            # file writing process from the last written position if new data is downloaded
-            written_size = 0
-            if read_size != 0:
-                file_handle.seek(downloaded_total)
-                written_size = file_handle.write(data)
-            #
-            # exit while loop if file is read completely
-            if read_size == 0:
-                break
-            #
-            # retry if write to file failed
-            if written_size == 0:
-                if retry_count < 5:
-                    retry_count += 1
-                    continue
-                else:
-                    return False, "File download failed. Please try again."
-            #
-            retry_count = 0
-            # update last read location
-            downloaded_total += read_size
+        # prepare the input for the function
+        lO_ProjectRef = BucketRef()
+        lO_ProjectRef._handle = pl_bucketHandle
 
-        # close downloader and free downloader access
-        ls_Error = self.download_close(downloader)
+        # create error ref pointer
+        lc_errorPtr = c_char_p()
+        #  by calling the exported golang function
+        lO_objectList = self.m_libUplink.list_objects(lO_ProjectRef, lO_ListOptions, byref(lc_errorPtr))
         #
         # if error occurred
-        if ls_Error is not None:
-            return False, ls_Error
+        if lc_errorPtr.value is not None:
+            return None, lc_errorPtr.value.decode("utf-8")
         else:
-            return True, None
+            return lO_objectList, None
+
+    """
+    function to delete a bucket (if bucket contains any Objects at time of deletion, they may be lost permanently)
+    pre-requisites: open_project() function has been already called, successfully
+    inputs: Storj Project Handle (long), Bucket Name (string)
+    output: Error (string) if any else None
+    """
+
+    def delete_bucket(self, pl_projectHandle, ps_bucketName):
+        #
+        # ensure project handle is valid
+        if pl_projectHandle <= 0:
+            ls_Error = "Invalid Storj Project handle, please check parameter[1] passed and try again."
+            return ls_Error
+        #
+        # declare types of arguments and response of the corresponding golang function
+        self.m_libUplink.delete_bucket.argtypes = [ProjectRef, c_char_p, POINTER(c_char_p)]
+        self.m_libUplink.delete_bucket.restype = None
+        #
+        # prepare the input for the function
+        lc_BucketName = c_char_p(ps_bucketName.encode('utf-8'))
+        lO_ProjectRef = ProjectRef()
+        lO_ProjectRef._handle = pl_projectHandle
+        # create error ref pointer
+        lc_errorPtr = c_char_p()
+        #  by calling the exported golang function
+        self.m_libUplink.delete_bucket(lO_ProjectRef, lc_BucketName, byref(lc_errorPtr))
+        #
+        # if error occurred
+        if lc_errorPtr.value is not None:
+            return lc_errorPtr.value.decode("utf-8")
+        else:
+            return None
+
+    """
+    function to delete an object in a bucket
+    pre-requisites: open_bucket() function has been already called, successfully
+    inputs: Bucket Handle (long), Object Path (string)
+    output: Error (string) if any else None
+    """
+
+    def delete_object(self, pl_bucketHandle, ps_objectPath):
+        #
+        # ensure project handle is valid
+        if pl_bucketHandle <= 0:
+            ls_Error = "Invalid Bucket handle, please check parameter[1] passed and try again."
+            return ls_Error
+        #
+        # declare types of arguments and response of the corresponding golang function
+        self.m_libUplink.delete_object.argtypes = [BucketRef, c_char_p, POINTER(c_char_p)]
+        self.m_libUplink.delete_object.restype = None
+        #
+        # prepare the input for the function
+        lc_ObjectPath = c_char_p(ps_objectPath.encode('utf-8'))
+        lO_BucketRef = BucketRef()
+        lO_BucketRef._handle = pl_bucketHandle
+        # create error ref pointer
+        lc_errorPtr = c_char_p()
+        #  by calling the exported golang function
+        self.m_libUplink.delete_object(lO_BucketRef, lc_ObjectPath, byref(lc_errorPtr))
+        #
+        # if error occurred
+        if lc_errorPtr.value is not None:
+            return lc_errorPtr.value.decode("utf-8")
+        else:
+            return None
+
+    """
+    function to free Bucket List pointer
+    pre-requisites: list_bucket() function has been already called
+    inputs: Bucket List (obj)
+    output: Error (string) if any else None
+    """
+
+    def free_bucket_list(self, po_bucketList):
+        #
+        # ensure bucket list pointer is valid
+        if po_bucketList is None:
+            ls_Error = "Empty object passed/object memory already free, please check parameter[1] passed and try again."
+            return ls_Error
+        #
+        # declare types of arguments and response of the corresponding golang function
+        self.m_libUplink.free_bucket_list.argtypes = [BucketList]
+        self.m_libUplink.free_bucket_list.restype = None
+        #
+        # close uplink by calling the exported golang function
+        self.m_libUplink.free_bucket_list(po_bucketList)
+        #
+        # is successful:
+        return None
+
+    """
+    function to free Object List pointer
+    pre-requisites: list_objects() function has been already called
+    inputs: Object List (obj)
+    output: Error (string) if any else None
+    """
+
+    def free_list_objects(self, po_objectList):
+        #
+        # ensure object list pointer is valid
+        if po_objectList is None:
+            ls_Error = "Empty object passed/object memory already free, please check parameter[1] passed and try again."
+            return ls_Error
+        #
+        # declare types of arguments and response of the corresponding golang function
+        self.m_libUplink.free_list_objects.argtypes = [ObjectList]
+        self.m_libUplink.free_list_objects.restype = None
+        #
+        # free list objects by calling the exported golang function
+        self.m_libUplink.free_list_objects(po_objectList)
+        #
+        # is successful:
+        return None

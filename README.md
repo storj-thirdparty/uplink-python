@@ -18,7 +18,7 @@ $ go get storj.io/storj/lib/uplink
 
 Please ensure [pip](https://pypi.org/project/pip/) is installed on your system. If you have Python version 3.4 or later, pip is included by default.
 ```
-python get-pip.py
+$ python get-pip.py
 ```
 
 Install [storjPython](https://pypi.org/project/storjPython/) python package, by running:
@@ -37,21 +37,33 @@ $ go build -o libuplinkc.so -buildmode=c-shared
 
 * Copy *libuplinkc.so* file into the folder, where Python package was installed
 
-
+* To include uplinkPython in you project, import the library, by using following command:
+```
+from storjPython.uplinkPython import *
+```
+* Create an object of ```libUplinkPy``` class to access all the functions of library. Please refer the sample *HelloStorj.py* file, for example.
+```
+variable_name = libUplinkPy()
+```
 
 ## Sample Hello Storj!
 
 File *helloStorj.py* can be found in folder where Python package was installed.
 
 The sample *helloStorj.py* code calls the *uplinkPython.py* file and imports the *libUplinkPy* binding class to do the following:
+* list all buckets in a Storj project
 * create a new bucket (if it does not exist) within desired Storj project
 * write a file from local computer to the a Storj bucket
 * read back the object from the Storj bucket to local system for verification
+* list all objects in a bucket
+* delete object from a bucket
+* delete bucket from a Storj project
 
 
 ## Storj-Python Binding Functions
 
 **NOTE**: Every function consists of error response. Please use it, to check if the function call was successful or not. In case, if it is not *None*, then you may also show the error's text. Please refer the sample *HelloStorj.py* file, for example.
+
 
 ### new_uplink()
     * function to create new Storj uplink
@@ -82,12 +94,6 @@ The sample *helloStorj.py* code calls the *uplinkPython.py* file and imports the
     * pre-requisites: open_project() function has been already called
     * inputs: Project Handle (long)
     * outputs: Error (string) if any else None
-
-### get_encryption_access(long, string)
-    * function to get encryption access to upload and/or download data to/from Storj
-    * pre-requisites: open_project() function has been already called
-    * inputs: Project Handle (long), Encryption Pass Phrase (string)
-    * outputs: Serialized Encryption Access (char Ptr), Error (string) if any else None
 	
 ### create_bucket(long, string, obj)
     * function to create new bucket in Storj project
@@ -96,11 +102,18 @@ The sample *helloStorj.py* code calls the *uplinkPython.py* file and imports the
     * outputs: Bucket Info Handle (long), Error (string) if any else None
    * **Note:** To set Bucket Config Refer: [BucketConfig](https://godoc.org/storj.io/storj/lib/uplink#BucketConfig)
 
+### get_encryption_access(long, string)
+    * function to get encryption access to upload and/or download data to/from Storj
+    * pre-requisites: open_project() function has been already called
+    * inputs: Project Handle (long), Encryption Pass Phrase (string)
+    * outputs: Serialized Encryption Access (char Ptr), Error (string) if any else None
+	
 ### open_bucket(long, charPtr, string)
     * function to open an already existing bucket in Storj project
     * pre-requisites: get_encryption_access() function has been already called
     * inputs: Project Handle (long), Serialized Encryption Access (char Ptr), Bucket Name (string)
     * outputs: Bucket Handle (long), Error (string) if any else None
+   * **Note:** The data passed to function should be a ctypes char pointer received from get_encryption_access(). (Please refer the sample helloStorj.py file, for example.)
 	
 ### close_bucket(long)
     * function to close currently opened Bucket
@@ -108,14 +121,78 @@ The sample *helloStorj.py* code calls the *uplinkPython.py* file and imports the
     * inputs: Bucket Handle (long)
     * outputs: Error (string) if any else None
 	
-### upload_file(long, string, string)
-	* function to upload data from local system to Storj (V3) bucket's path
-    * pre-requisites: open_bucket() function has been already called
-    * inputs: Bucket Handle (long), Storj Path/File Name (string) within the opened bucket, local Source Full File Name (string)
-    * outputs: True if successful else False, Error (string) if any else None
+### delete_bucket(long, string)
+    * function to delete a bucket (if bucket contains any Objects at time of deletion, they may be lost permanently)
+    * pre-requisites: open_project() function has been already called, successfully
+    * inputs: Storj Project Handle (long), Bucket Name (string)
+    * output: Error (string) if any else None
 	
-### download_file(long, string, string)
-    * function to download Storj (V3) object's data and store it in given file on local computer
+### list_buckets(long, obj)
+    * function to list all the buckets in a Storj project
+    * pre-requisites: open_project() function has been already called
+    * inputs: Project Handle (long), Bucket List Options (obj)
+    * output: Bucket List (obj), Error (string) if any else None
+   * **Note:** To set Bucket List Options Refer: [BucketListOptions](https://godoc.org/storj.io/storj/pkg/storj#BucketListOptions)
+
+### free_bucket_list(obj)
+    * function to free Bucket List pointer
+    * pre-requisites: list_bucket() function has been already called
+    * inputs: Bucket List (obj)
+    * output: Error (string) if any else None
+	
+### delete_object(long, string)
+    * function to delete an object in a bucket
+    * pre-requisites: open_bucket() function has been already called, successfully
+    * inputs: Bucket Handle (long), Object Path (string)
+    * output: Error (string) if any else None
+	
+### list_objects(long, obj)
+    * function to list all the objects in a bucket
+    * pre-requisites: open_project() function has been already called
+    * inputs: Bucket Handle (long), List Options (obj)
+    * output: Bucket List (obj), Error (string) if any else None
+   * **Note:** To set List Options Refer: [ListOptions](https://godoc.org/storj.io/storj/pkg/storj#BucketListOptions)
+
+### free_list_objects(obj)
+    * function to free Object List pointer
+    * pre-requisites: list_objects() function has been already called
+    * inputs: Object List (obj)
+    * output: Error (string) if any else None
+	
+### upload(long, string, obj)
+	* function to get uploader handle used to upload data to Storj (V3) bucket's path
     * pre-requisites: open_bucket() function has been already called
-    * inputs: Bucket Handle (long), Storj Path/File Name (string) within the opened bucket, local Destination Full Path Name(string)
-    * outputs: True if successful else False, Error (string) if any else None
+    * inputs: Bucket Handle (long), Storj Path/File Name (string) within the opened bucket, Upload Options (obj)
+    * output: Uploader Handle (long), Error (string) if any else None
+   * **Note:** To set Upload Options Refer: [UploadOptions](https://godoc.org/storj.io/storj/lib/uplink#Bucket)
+	
+### upload_write(long, LP_c_ubyte, int)
+	* function to write data to Storj (V3) bucket's path
+    * pre-requisites: upload() function has been already called
+    * inputs: Bucket Handle (long), Data to upload (LP_c_ubyte), Size of data to upload (int)
+    * output: Size of data uploaded (long), Error (string) if any else None
+   * **Note:** The Data to upload (LP_c_ubyte) passed to function should be a ctypes char or uint8 pointer only. (Please refer the sample helloStorj.py file, for example.)
+	
+### upload_commit(long)
+	* function to commit and finalize file for uploaded data to Storj (V3) bucket's path
+    * pre-requisites: upload() function has been already called
+    * inputs: Bucket Handle (long)
+    * output: Error (string) if any else None
+	
+### download(long, string)
+    * function to get downloader handle to download Storj (V3) object's data and store it on local computer
+    * pre-requisites: open_bucket() function has been already called
+    * inputs: Bucket Handle (long), Storj Path/File Name (string) within the opened bucket
+    * output: Downloader Handle (long), Error (string) if any else None
+	
+### download_read(long, int)
+    * function to read Storj (V3) object's data and return the data
+    * pre-requisites: download() function has been already called
+    * inputs: Bucket Handle (long), Length of data to download (int)
+    * output: Data downloaded (LP_c_ubyte), Size of data downloaded (int), Error (string) if any else None
+	
+### download_close(long)
+    * function to close downloader after completing the data read process
+    * pre-requisites: download() function has been already called
+    * inputs: Downloader Handle (long)
+    * output: Error (string) if any else None
