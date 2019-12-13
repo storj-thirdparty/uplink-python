@@ -80,13 +80,13 @@ def download_file(storjObj, bucketHandle, storjPath, destFullPathName):
         return False, ls_Error
     #
     # set packet size to be used while downloading
-    size_to_write = 256
+    size_to_read = 256
     # initialize local variables and start downloading packets of data
     downloaded_total = 0
     retry_count = 0
     while True:
         # call to read data from Storj bucket
-        lc_dataReadPtr, read_size, ls_Error = storjObj.download_read(downloader, size_to_write)
+        lc_dataReadPtr, read_size, ls_Error = storjObj.download_read(downloader, size_to_read)
         if ls_Error is not None:
             return False, ls_Error
         #
@@ -96,10 +96,8 @@ def download_file(storjObj, bucketHandle, storjPath, destFullPathName):
             #
             # --------------------------------------------
             # data conversion to type python readable form
-            # conversion of LP_c_ubyte to c type ubyte Array
-            lc_dataReadPtr = cast(lc_dataReadPtr, c_char_p)
-            # conversion of c type ubyte Array to python readable bytes variable
-            lc_dataRead = lc_dataReadPtr.value
+            # conversion of LP_c_ubyte to python readable data variable
+            lc_dataRead = string_at(lc_dataReadPtr, read_size)
             # --------------------------------------------
             #
             file_handle.seek(downloaded_total)
@@ -115,6 +113,7 @@ def download_file(storjObj, bucketHandle, storjPath, destFullPathName):
                 retry_count += 1
                 continue
             else:
+                storjObj.download_close(downloader)
                 return False, "File download failed. Please try again."
         #
         retry_count = 0
@@ -135,7 +134,7 @@ if __name__ == "__main__":
 
     # Storj configuration information
     myAPIKey = "change-me-to-the-api-key-created-in-satellite-gui"
-    satellite = "mars.tardigrade.io:7777"
+    satellite = "us-central-1.tardigrade.io:7777"
     myBucket = "my-first-bucket"
     myStorjUploadPath = "(optional): path / (required): filename"  # (path + filename) OR filename
     myEncryptionPassphrase = "you'll never guess this"
@@ -243,6 +242,43 @@ if __name__ == "__main__":
     print("Serialized encryption key: CREATED!")
     #
 
+    # as an example of how to create shareable Scope key for easy storj access without API key and Encryption PassPhrase
+    # create new Scope
+    print("\nCreating new Scope...")
+    newScopeHandle, err = StorjObj.new_scope(satellite, parseApiKeyHandle, serializedEncryptionAccess)
+    if err is not None:
+        print(err)
+        exit()
+    print("New Scope: CREATED!")
+
+    # generate serialized Scope key
+    print("\nGenerating serialized Scope key...")
+    serializedScope, err = StorjObj.serialize_scope(newScopeHandle)
+    if err is not None:
+        print(err)
+        exit()
+    print("Serialized Scope key: ", serializedScope)
+    #
+
+    # as an example of how to retrieve information from shareable Scope key for storj access
+    # retrieving Scope from serialized Scope key
+    print("\nParsing serialized Scope key...")
+    parsedScope, err = StorjObj.parse_scope(serializedScope)
+    if err is not None:
+        print(err)
+        exit()
+    print("Parsing Scope key: COMPLETE")
+    #
+
+    # retrieving satellite from Scope
+    print("\nRetrieving satellite address from Scope...")
+    satelliteFromScope, err = StorjObj.get_scope_satellite_address(parsedScope)
+    if err is not None:
+        print(err)
+        exit()
+    print("Satellite address from Scope: ", satelliteFromScope)
+    #
+
     # open bucket in given project with given name and access
     print("\nOpening '" + myBucket + "' bucket...")
     bucketHandle, err = StorjObj.open_bucket(projectHandle, serializedEncryptionAccess, myBucket)
@@ -277,8 +313,8 @@ if __name__ == "__main__":
     lO_listOption.prefix = c_char_p("".encode('utf-8'))
     lO_listOption.cursor = c_char_p("".encode('utf-8'))
     lO_listOption.delimiter = c_char(' '.encode('utf-8'))
-    lO_listOption.recursive = False
-    lO_listOption.direction = STORJ_FORWARD
+    lO_listOption.recursive = True
+    lO_listOption.direction = STORJ_AFTER
     lO_listOption.limit = 0
     # list objects in given bucket with above options or None
     print("\nListing object's names...")

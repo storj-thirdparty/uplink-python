@@ -1,4 +1,5 @@
-# storj-python binding
+# storj-python binding 
+### *Developed using libuplinkc v0.27.1*
 
 ## Initial Set-up
 
@@ -58,6 +59,8 @@ The sample *helloStorj.py* code calls the *uplinkPython.py* file and imports the
 * list all objects in a bucket
 * delete object from a bucket
 * delete bucket from a Storj project
+* create shareable Scope key using API key and Encryption PassPhrase
+* retrieving information from shareable Scope key for storj access
 
 
 ## Storj-Python Binding Functions
@@ -106,14 +109,13 @@ The sample *helloStorj.py* code calls the *uplinkPython.py* file and imports the
     * function to get encryption access to upload and/or download data to/from Storj
     * pre-requisites: open_project() function has been already called
     * inputs: Project Handle (long), Encryption Pass Phrase (string)
-    * outputs: Serialized Encryption Access (char Ptr), Error (string) if any else None
+    * outputs: Serialized Encryption Access (string), Error (string) if any else None
 	
-### open_bucket(long, charPtr, string)
+### open_bucket(long, string, string)
     * function to open an already existing bucket in Storj project
     * pre-requisites: get_encryption_access() function has been already called
-    * inputs: Project Handle (long), Serialized Encryption Access (char Ptr), Bucket Name (string)
+    * inputs: Project Handle (long), Serialized Encryption Access (string), Bucket Name (string)
     * outputs: Bucket Handle (long), Error (string) if any else None
-   * **Note:** The data passed to function should be a ctypes char pointer received from get_encryption_access(). (Please refer the sample helloStorj.py file, for example.)
 	
 ### close_bucket(long)
     * function to close currently opened Bucket
@@ -169,14 +171,14 @@ The sample *helloStorj.py* code calls the *uplinkPython.py* file and imports the
 ### upload_write(long, LP_c_ubyte, int)
 	* function to write data to Storj (V3) bucket's path
     * pre-requisites: upload() function has been already called
-    * inputs: Bucket Handle (long), Data to upload (LP_c_ubyte), Size of data to upload (int)
+    * inputs: Uploader Handle (long), Data to upload (LP_c_ubyte), Size of data to upload (int)
     * output: Size of data uploaded (long), Error (string) if any else None
    * **Note:** The Data to upload (LP_c_ubyte) passed to function should be a ctypes char or uint8 pointer only. (Please refer the sample helloStorj.py file, for example.)
 	
 ### upload_commit(long)
 	* function to commit and finalize file for uploaded data to Storj (V3) bucket's path
     * pre-requisites: upload() function has been already called
-    * inputs: Bucket Handle (long)
+    * inputs: Uploader Handle (long)
     * output: Error (string) if any else None
 	
 ### download(long, string)
@@ -188,7 +190,7 @@ The sample *helloStorj.py* code calls the *uplinkPython.py* file and imports the
 ### download_read(long, int)
     * function to read Storj (V3) object's data and return the data
     * pre-requisites: download() function has been already called
-    * inputs: Bucket Handle (long), Length of data to download (int)
+    * inputs: Downloader Handle (long), Length of data to download (int)
     * output: Data downloaded (LP_c_ubyte), Size of data downloaded (int), Error (string) if any else None
 	
 ### download_close(long)
@@ -196,3 +198,39 @@ The sample *helloStorj.py* code calls the *uplinkPython.py* file and imports the
     * pre-requisites: download() function has been already called
     * inputs: Downloader Handle (long)
     * output: Error (string) if any else None
+
+### new_scope(string, long, string)
+    * function to create new Scope keyprocess
+    * pre-requisites: parse_api_key() and get_encryption_access() functions have been already called
+    * inputs: Satellite Address (string), Api Key Parsed Handle (long),  Serialized Encryption Access (string)
+    * output: Scope Handle (long), Error (string) if any else None
+
+### get_scope_satellite_address(long)
+    * function to get satellite address from Parsed Scope key
+    * pre-requisites: None
+    * inputs: Scope Handle (long)
+    * output: Satellite Address (string), Error (string) if any else None
+
+### get_scope_api_key(long)
+    * function to get API key from Parsed Scope key
+    * pre-requisites: None
+    * inputs: Scope Handle (long)
+    * output: Parsed Api Key Handle (long), Error (string) if any else None
+
+### get_scope_enc_access(long)
+    * function to get Encryption Access from Parsed Scope key
+    * pre-requisites: None
+    * inputs: Scope Handle (long)
+    * output: Serialized Encryption Access (string), Error (string) if any else None
+
+### parse_scope(string)
+    * function to get Parsed Scope key
+    * pre-requisites: None
+    * inputs: Serialized Scope Key (string)
+    * output: Parsed Scope Key Handle (long), Error (string) if any else None
+
+### serialize_scope(long)
+    * function to get Serialized Scope Key
+    * pre-requisites: None
+    * inputs: Scope Handle (long)
+    * output: Serialized Scope Key (string), Error (string) if any else None
