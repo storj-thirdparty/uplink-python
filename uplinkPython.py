@@ -121,6 +121,15 @@ class ListOptions(Structure):
                 ("direction", c_int), ("limit", c_int64)]
 
 
+class EncryptionRestriction(Structure):
+    _fields_ = [("bucket", c_char_p), ("path_prefix", c_char_p)]
+
+
+class Caveat(Structure):
+    _fields_ = [("disallow_reads", c_bool), ("disallow_writes", c_bool), ("disallow_lists", c_bool),
+                ("disallow_deletes", c_bool)]
+
+
 #########################################################
 # Python Storj class with all Storj functions' bindings #
 #########################################################
@@ -144,8 +153,6 @@ class libUplinkPy:
         # set-up uplink configuration
         lO_uplinkConfig = UplinkConfig()
         lO_uplinkConfig.Volatile.TLS.SkipPeerCAWhitelist = True
-        ls_partnerID = "a1ba07a4-e095-4a43-914c-1d56c9ff5afd"
-        lO_uplinkConfig.Volatile.PartnerID = c_char_p(ls_partnerID.encode('utf-8'))
         ls_temppath = os.getenv("TEMP")
         lO_tempPath = c_char_p(ls_temppath.encode('utf-8'))
         #
@@ -189,6 +196,33 @@ class libUplinkPy:
             return None, lc_errorPtr.value.decode("utf-8")
         else:
             return lO_apiKeyParsedRef._handle, None
+
+    """
+        function to serialize API key
+        pre-requisites: none
+        inputs: API key Handle (long)
+        output: Serialized Api Key (string), Error (string) if any else None
+        """
+
+    def serialize_api_key(self, pl_API_Key):
+        #
+        # declare types of arguments and response of the corresponding golang function
+        self.m_libUplink.serialize_api_key.argtypes = [APIKeyRef, POINTER(c_char_p)]
+        self.m_libUplink.serialize_api_key.restype = c_char_p
+        #
+        # prepare the input for the function
+        lO_ApiKeyPtr = APIKeyRef()
+        lO_ApiKeyPtr._handle = pl_API_Key
+        # create error ref pointer
+        lc_errorPtr = c_char_p()
+        # parse the API key by calling the exported golang function
+        lc_apiKeySerialized = self.m_libUplink.serialize_api_key(lO_ApiKeyPtr, byref(lc_errorPtr))
+        #
+        # if error occurred
+        if lc_errorPtr.value is not None:
+            return None, lc_errorPtr.value.decode("utf-8")
+        else:
+            return lc_apiKeySerialized.decode("utf-8"), None
 
     """
     function to open a Storj project
@@ -267,6 +301,20 @@ class libUplinkPy:
         #
         # get encryption key by calling the exported golang function
         lO_EncryptionAccessRef = self.m_libUplink.new_encryption_access_with_default_key(li_saltedKeyPtr)
+        #
+        # ensure encryption key handle is valid
+        if lO_EncryptionAccessRef._handle <= 0:
+            ls_Error = "FAILED to created encryption access from the salted key!"
+            return None, ls_Error
+
+        # declare types of arguments and response of the corresponding golang function
+        self.m_libUplink.set_default_key.argtypes = [EncryptionAccessRef, POINTER(c_uint8), POINTER(c_char_p)]
+        self.m_libUplink.set_default_key.restype = None
+        #
+        # create error ref pointer
+        lc_errorPtr = c_char_p()
+        # get encryption key by calling the exported golang function
+        self.m_libUplink.set_default_key(lO_EncryptionAccessRef, li_saltedKeyPtr, lc_errorPtr)
         #
         # ensure encryption key handle is valid
         if lO_EncryptionAccessRef._handle <= 0:
@@ -1049,13 +1097,13 @@ class libUplinkPy:
     """
     function to get serialized Scope key
     pre-requisites: none
-    inputs: Scope Handle (long)
+    inputs: Parsed Scope Handle (long)
     output: Serialized Scope Key (string), Error (string) if any else None
     """
 
     def serialize_scope(self, pl_scopeHandle):
         #
-        # ensure project handle and encryption handles are valid
+        # ensure scope handle is valid
         if pl_scopeHandle <= 0:
             ls_Error = "Invalid Scope handle, please check parameter[1] passed and try again."
             return None, ls_Error
@@ -1069,7 +1117,7 @@ class libUplinkPy:
         lO_ScopeRef._handle = pl_scopeHandle
         # create error ref pointer
         lc_errorPtr = c_char_p()
-        # cget serialized by calling the exported golang function
+        # get serialized by calling the exported golang function
         lc_serializedScopePtr = self.m_libUplink.serialize_scope(lO_ScopeRef, byref(lc_errorPtr))
         #
         # if error occurred
@@ -1077,3 +1125,56 @@ class libUplinkPy:
             return None, lc_errorPtr.value.decode("utf-8")
         else:
             return lc_serializedScopePtr.decode("utf-8"), None
+
+    """
+    function to restrict Scope key with the provided caveat and encryption restrictions
+    pre-requisites: none
+    inputs: Parsed Scope Key Handle (long), Caveat (obj), Encryption Restriction (list of dictionaries)
+    output: Restricted Scope Key Handle (long), Error (string) if any else None
+    """
+
+    def restrict_scope(self, pl_scopeHandle, po_caveat, po_encryptionRestriction):
+        #
+        # ensure scope handle is valid
+        if pl_scopeHandle <= 0:
+            ls_Error = "Invalid Scope handle, please check parameter[1] passed and try again."
+            return None, ls_Error
+        #
+        # declare types of arguments and response of the corresponding golang function
+        self.m_libUplink.restrict_scope.argtypes = [ScopeRef, Caveat, POINTER(EncryptionRestriction), c_size_t,
+                                                    POINTER(c_char_p)]
+        self.m_libUplink.restrict_scope.restype = ScopeRef
+        #
+        # prepare the input for the function
+        lO_ScopeRef = ScopeRef()
+        lO_ScopeRef._handle = pl_scopeHandle
+        # check and create valid Caveat parameter
+        if po_caveat is None:
+            lO_Caveat = Caveat()
+        else:
+            lO_Caveat = po_caveat
+        # check and create valid EncryptionRestriction parameter
+        # po_encryptionRestriction = [{"bucket": "bucketname01", "path_prefix": "uploadPath01/data"}]
+        if po_encryptionRestriction is None:
+            lO_EncryptionRestriction = POINTER(EncryptionRestriction)()
+            lc_erArraySize = c_size_t(0)
+        else:
+            num_of_structs = len(po_encryptionRestriction)
+            li_arraySize = (EncryptionRestriction * num_of_structs)()
+            lO_erArray = cast(li_arraySize, POINTER(EncryptionRestriction))
+            for i, val in enumerate(po_encryptionRestriction):
+                lO_erArray[i] = EncryptionRestriction(c_char_p(val['bucket'].encode('utf-8')),
+                                                      c_char_p(val['path_prefix'].encode('utf-8')))
+            lO_EncryptionRestriction = lO_erArray
+            lc_erArraySize = c_size_t(num_of_structs)
+        # create error ref pointer
+        lc_errorPtr = c_char_p()
+        # get parsed scope by calling the exported golang function
+        lO_ScopeRefRet = self.m_libUplink.restrict_scope(lO_ScopeRef, lO_Caveat, lO_EncryptionRestriction, lc_erArraySize,
+                                                      byref(lc_errorPtr))
+        #
+        # if error occurred
+        if lc_errorPtr.value is not None:
+            return None, lc_errorPtr.value.decode("utf-8")
+        else:
+            return lO_ScopeRefRet._handle, None

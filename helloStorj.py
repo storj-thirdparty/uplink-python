@@ -79,11 +79,17 @@ def download_file(storjObj, bucketHandle, storjPath, destFullPathName):
     if ls_Error is not None:
         return False, ls_Error
     #
+    # get size of file to be downloaded from storj
+    file_size, ls_Error = get_file_size(storjObj,bucketHandle,storjPath)
+    if ls_Error is not None:
+        return False, ls_Error
+    else:
+        print("File size to be downloaded: ",file_size)
+    #
     # set packet size to be used while downloading
     size_to_read = 256
     # initialize local variables and start downloading packets of data
     downloaded_total = 0
-    retry_count = 0
     while True:
         # call to read data from Storj bucket
         lc_dataReadPtr, read_size, ls_Error = storjObj.download_read(downloader, size_to_read)
@@ -91,7 +97,6 @@ def download_file(storjObj, bucketHandle, storjPath, destFullPathName):
             return False, ls_Error
         #
         # file writing process from the last written position if new data is downloaded
-        written_size = 0
         if read_size != 0:
             #
             # --------------------------------------------
@@ -101,25 +106,15 @@ def download_file(storjObj, bucketHandle, storjPath, destFullPathName):
             # --------------------------------------------
             #
             file_handle.seek(downloaded_total)
-            written_size = file_handle.write(lc_dataRead)
+            file_handle.write(lc_dataRead)
         #
-        # exit while loop if file is read completely
-        if read_size == 0:
-            break
-        #
-        # retry if write to file failed
-        if written_size == 0:
-            if retry_count < 5:
-                retry_count += 1
-                continue
-            else:
-                storjObj.download_close(downloader)
-                return False, "File download failed. Please try again."
-        #
-        retry_count = 0
         # update last read location
         downloaded_total += read_size
-
+        #
+        # break if download complete
+        if downloaded_total == file_size:
+            break
+    #
     # close downloader and free downloader access
     ls_Error = storjObj.download_close(downloader)
     #
@@ -128,6 +123,42 @@ def download_file(storjObj, bucketHandle, storjPath, destFullPathName):
         return False, ls_Error
     else:
         return True, None
+
+
+"""
+example function to get Storj(V3) object's size to be downloaded
+"""
+
+def get_file_size(storjObj, bucketHandle, storjPath):
+    #
+    # create list option object
+    lO_listOption = ListOptions()
+    lO_listOption.prefix = c_char_p("".encode('utf-8'))
+    lO_listOption.cursor = c_char_p("".encode('utf-8'))
+    lO_listOption.delimiter = c_char(' '.encode('utf-8'))
+    lO_listOption.recursive = True
+    lO_listOption.direction = STORJ_AFTER
+    lO_listOption.limit = 0
+    #
+    # get list of objects in specified bucket
+    objectsList, err = storjObj.list_objects(bucketHandle, lO_listOption)
+    if err is not None:
+        return 0, err
+    else:
+        # find object using path
+        for i in range(objectsList.length):
+            if objectsList.items[i].path is None:
+                break
+            if objectsList.items[i].path.decode('utf-8') == storjPath:
+                return int(objectsList.items[i].size), None
+
+    # free and delete list configuration object
+    lO_listOption = None
+    del lO_listOption
+    #
+    # if object not found
+    return 0, "Object not found in bucket"
+
 
 
 if __name__ == "__main__":
@@ -205,10 +236,10 @@ if __name__ == "__main__":
     err = StorjObj.delete_bucket(projectHandle, myBucket)
     if err is not None:
         print(err)
-        exit()
-    print("Desired bucket: DELETED")
-    #
+    else:
+        print("Desired bucket: DELETED")
 
+    #
     # set bucket config according to this link:
     # https://godoc.org/storj.io/storj/lib/uplink#BucketConfig
     lO_configBucket = BucketConfig()
@@ -242,43 +273,6 @@ if __name__ == "__main__":
     print("Serialized encryption key: CREATED!")
     #
 
-    # as an example of how to create shareable Scope key for easy storj access without API key and Encryption PassPhrase
-    # create new Scope
-    print("\nCreating new Scope...")
-    newScopeHandle, err = StorjObj.new_scope(satellite, parseApiKeyHandle, serializedEncryptionAccess)
-    if err is not None:
-        print(err)
-        exit()
-    print("New Scope: CREATED!")
-
-    # generate serialized Scope key
-    print("\nGenerating serialized Scope key...")
-    serializedScope, err = StorjObj.serialize_scope(newScopeHandle)
-    if err is not None:
-        print(err)
-        exit()
-    print("Serialized Scope key: ", serializedScope)
-    #
-
-    # as an example of how to retrieve information from shareable Scope key for storj access
-    # retrieving Scope from serialized Scope key
-    print("\nParsing serialized Scope key...")
-    parsedScope, err = StorjObj.parse_scope(serializedScope)
-    if err is not None:
-        print(err)
-        exit()
-    print("Parsing Scope key: COMPLETE")
-    #
-
-    # retrieving satellite from Scope
-    print("\nRetrieving satellite address from Scope...")
-    satelliteFromScope, err = StorjObj.get_scope_satellite_address(parsedScope)
-    if err is not None:
-        print(err)
-        exit()
-    print("Satellite address from Scope: ", satelliteFromScope)
-    #
-
     # open bucket in given project with given name and access
     print("\nOpening '" + myBucket + "' bucket...")
     bucketHandle, err = StorjObj.open_bucket(projectHandle, serializedEncryptionAccess, myBucket)
@@ -296,16 +290,6 @@ if __name__ == "__main__":
         print(err)
         exit()
     print("Upload: COMPLETE!")
-    #
-
-    # as an example of 'get' , lets download an object and write it to a local file
-    # download file/object
-    print("\nDownloading data...")
-    downloadStatus, err = download_file(StorjObj, bucketHandle, myStorjUploadPath, destFullFileName)
-    if err is not None or downloadStatus is False:
-        print(err)
-        exit()
-    print("Download: COMPLETE!")
     #
 
     # set list options before calling list objects (optional)
@@ -343,13 +327,35 @@ if __name__ == "__main__":
     del objectsList
     #
 
-    # delete given object
-    print("\nDeleting '" + myStorjUploadPath + "' object...")
-    err = StorjObj.delete_object(bucketHandle, myStorjUploadPath)
+
+    # as an example of 'get' , lets download an object and write it to a local file
+    # download file/object
+    print("\nDownloading data...")
+    downloadStatus, err = download_file(StorjObj, bucketHandle, myStorjUploadPath, destFullFileName)
+    if err is not None or downloadStatus is False:
+        print(err)
+        exit()
+    print("Download: COMPLETE!")
+    #
+
+    # as an example of how to create shareable Scope key for easy storj access without API key and Encryption PassPhrase
+    # create new Scope
+    print("\nCreating new Scope...")
+    newScopeHandle, err = StorjObj.new_scope(satellite, parseApiKeyHandle, serializedEncryptionAccess)
     if err is not None:
         print(err)
         exit()
-    print("Desired object: DELETED!")
+    print("New Scope: CREATED!")
+
+
+    # generate serialized Scope key
+    print("\nGenerating serialized Scope key...")
+    serializedScope, err = StorjObj.serialize_scope(newScopeHandle)
+    if err is not None:
+        print(err)
+        exit()
+    print("Serialized Scope key: ", serializedScope)
+    #
     #
 
     # close given bucket using handle
@@ -373,6 +379,106 @@ if __name__ == "__main__":
     # close given uplink using handle
     print("\nClosing uplink...")
     err = StorjObj.close_uplink(uplinkHandle)
+    if err is not None:
+        print(err)
+        exit()
+    print("Uplink CLOSED!")
+    #
+
+    # as an example of how to retrieve information from shareable Scope key for storj access
+    # retrieving Scope from serialized Scope key
+    print("\nParsing serialized Scope key...")
+    parsedScope, err = StorjObj.parse_scope(serializedScope)
+    if err is not None:
+        print(err)
+        exit()
+    print("Parsing Scope key: COMPLETE")
+    #
+
+    # retrieving satellite from Scope
+    print("\nRetrieving satellite address from Scope...")
+    satelliteFromScope, err = StorjObj.get_scope_satellite_address(parsedScope)
+    if err is not None:
+        print(err)
+        exit()
+    print("Satellite address from Scope: ", satelliteFromScope)
+    #
+
+    # retrieving API key from Scope
+    print("\nRetrieving API key from Scope...")
+    apiKeyFromScope, err = StorjObj.get_scope_api_key(parsedScope)
+    if err is not None:
+        print(err)
+        exit()
+    print("API key from Scope: PARSED!")
+    #
+
+    # retrieving encryption access from Scope
+    print("\nRetrieving Encryption Access from Scope...")
+    encryptionAccessFromScope, err = StorjObj.get_scope_enc_access(parsedScope)
+    if err is not None:
+        print(err)
+        exit()
+    print("Encryption Access from Scope: PARSED!")
+    #
+
+    # create new uplink
+    print("\nSetting-up new uplink...")
+    uplinkScopeHandle, err = StorjObj.new_uplink()
+    if err is not None:
+        print(err)
+        exit()
+    print("New uplink: SET-UP!")
+    #
+
+    # open Storj project using Scope key values
+    print(
+        "\nOpening the Storj project, corresponding to the parsed API Key, on " + satellite + " satellite...")
+    projectScopeHandle, err = StorjObj.open_project(uplinkScopeHandle, apiKeyFromScope, satelliteFromScope)
+    if err is not None:
+        print(err)
+        exit()
+    print("Desired Storj project: OPENED!")
+
+    # open bucket in given project with given name and access
+    print("\nOpening '" + myBucket + "' bucket...")
+    bucketScopeHandle, err = StorjObj.open_bucket(projectScopeHandle, encryptionAccessFromScope, myBucket)
+    if err is not None:
+        print(err)
+        exit()
+    print("Desired bucket: OPENED!")
+    #
+
+    # delete given object
+    print("\nDeleting '" + myStorjUploadPath + "' object...")
+    err = StorjObj.delete_object(bucketScopeHandle, myStorjUploadPath)
+    if err is not None:
+        print(err)
+    else:
+        print("Desired object: DELETED!")
+    #
+
+    # close given bucket using handle
+    print("\nClosing bucket...")
+    err = StorjObj.close_bucket(bucketScopeHandle)
+    if err is not None:
+        print(err)
+        exit()
+    print("Bucket CLOSED!")
+    #
+
+    # close given project using handle
+    print("\nClosing Storj project...")
+    err = StorjObj.close_project(projectScopeHandle)
+    if err is not None:
+        print(err)
+        exit()
+    print("Project CLOSED!")
+    #
+
+    # close given uplink using handle
+    print("\nClosing uplink...")
+    err = StorjObj.close_uplink(uplinkScopeHandle)
     if err is not None:
         print(err)
         exit()

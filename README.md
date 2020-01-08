@@ -1,5 +1,5 @@
 # storj-python binding 
-### *Developed using libuplinkc v0.27.1*
+### *Developed using libuplinkc v0.28.4*
 
 ## Initial Set-up
 
@@ -57,10 +57,10 @@ The sample *helloStorj.py* code calls the *uplinkPython.py* file and imports the
 * write a file from local computer to the a Storj bucket
 * read back the object from the Storj bucket to local system for verification
 * list all objects in a bucket
-* delete object from a bucket
 * delete bucket from a Storj project
 * create shareable Scope key using API key and Encryption PassPhrase
 * retrieving information from shareable Scope key for storj access
+* delete object from a bucket using created scope key
 
 
 ## Storj-Python Binding Functions
@@ -85,6 +85,12 @@ The sample *helloStorj.py* code calls the *uplinkPython.py* file and imports the
     * pre-requisites: None
     * inputs: API key (string)
     * outputs: Parse Api Key Handle (long), Error (string) if any else None
+
+### serialize_api_key(long)
+    * function to serialize API key
+    * pre-requisites: None
+    * inputs: API key Handle (long)
+    * outputs: Serialized Api Key (string), Error (string) if any else None
 
 ### open_project(long, long, string)
     * function to open a Storj project
@@ -234,3 +240,9 @@ The sample *helloStorj.py* code calls the *uplinkPython.py* file and imports the
     * pre-requisites: None
     * inputs: Scope Handle (long)
     * output: Serialized Scope Key (string), Error (string) if any else None
+
+### restrict_scope(long, obj, list)
+    * function to restrict Scope key with the provided caveat and encryption restrictions
+    * pre-requisites: none
+    * inputs: Parsed Scope Key Handle (long), Caveat (obj), Encryption Restriction (list)
+    * output: Restricted Scope Key Handle (long), Error (string) if any else None
