@@ -222,15 +222,6 @@ if __name__ == "__main__":
         print("Buckets listing: COMPLETE!")
     #
 
-    # free memory utilized by bucket list pointer object
-    err = StorjObj.free_bucket_list(bucketsList)
-    if err is not None:
-        print(err)
-        exit()
-    # delete bucket list object
-    del bucketsList
-    #
-
     # delete given bucket
     print("\nDeleting '" + myBucket + "' bucket...")
     err = StorjObj.delete_bucket(projectHandle, myBucket)
@@ -318,16 +309,6 @@ if __name__ == "__main__":
     del lO_listOption
     #
 
-    # free memory utilized by object list pointer object
-    err = StorjObj.free_list_objects(objectsList)
-    if err is not None:
-        print(err)
-        exit()
-    # delete bucket list object
-    del objectsList
-    #
-
-
     # as an example of 'get' , lets download an object and write it to a local file
     # download file/object
     print("\nDownloading data...")
@@ -346,7 +327,7 @@ if __name__ == "__main__":
         print(err)
         exit()
     print("New Scope: CREATED!")
-
+	#
 
     # generate serialized Scope key
     print("\nGenerating serialized Scope key...")

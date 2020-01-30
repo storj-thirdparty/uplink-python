@@ -4,6 +4,7 @@
 
 from ctypes import *
 import os
+import tempfile
 
 ##############################################
 # Structure classes for go structure objects #
@@ -26,8 +27,8 @@ class TLS(Structure):
 
 
 class Volatile(Structure):
-    _fields_ = [("TLS", TLS), ("PartnerID", c_char_p), ("peer_id_version", c_char_p), ("max_inline_size", c_int32),
-                ("max_memory", c_int32), ("dial_timeout", c_int32)]
+    _fields_ = [("TLS", TLS), ("peer_id_version", c_char_p), ("max_inline_size", c_int32),
+                ("max_memory", c_int32), ("dial_timeout", c_int32), ("user_agent", c_char_p)]
 
 
 class UplinkConfig(Structure):
@@ -153,7 +154,8 @@ class libUplinkPy:
         # set-up uplink configuration
         lO_uplinkConfig = UplinkConfig()
         lO_uplinkConfig.Volatile.TLS.SkipPeerCAWhitelist = True
-        ls_temppath = os.getenv("TEMP")
+        ls_temppath = tempfile.gettempdir()
+        print(ls_temppath)
         lO_tempPath = c_char_p(ls_temppath.encode('utf-8'))
         #
         # declare types of arguments and response of the corresponding golang function
@@ -775,8 +777,8 @@ class libUplinkPy:
             self.m_libUplink.list_objects.argtypes = [BucketRef, POINTER(ListOptions), POINTER(c_char_p)]
             lO_ListOptions = POINTER(ListOptions)()
         else:
-            self.m_libUplink.list_objects.argtypes = [BucketRef, ListOptions, POINTER(c_char_p)]
-            lO_ListOptions = po_listOptions
+            self.m_libUplink.list_objects.argtypes = [BucketRef, POINTER(ListOptions), POINTER(c_char_p)]
+            lO_ListOptions = byref(po_listOptions)
         self.m_libUplink.list_objects.restype = ObjectList
         #
         # prepare the input for the function

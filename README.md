@@ -1,5 +1,5 @@
 # storj-python binding 
-### *Developed using libuplinkc v0.28.4*
+### *Developed using libuplinkc v0.31.6*
 
 ## Initial Set-up
 
@@ -17,7 +17,7 @@ $ go get storj.io/storj/lib/uplink
 
 **NOTE**: for Python 
 
-Please ensure [pip](https://pypi.org/project/pip/) is installed on your system. If you have Python version 3.4 or later, pip is included by default.
+Please ensure you have Python 3.x and [pip](https://pypi.org/project/pip/) installed on your system. If you have Python version 3.4 or later, pip is included by default. pythonStorj does not support Python 2.x.
 ```
 $ python get-pip.py
 ```
