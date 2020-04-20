@@ -2,21 +2,21 @@ from storjPython.uplinkPython import *
 from datetime import datetime
 
 """
-example function to put/upload data from srcFullFileName (at local computer) to 
+example function to put/upload data from src_full_filename (at local computer) to 
 Storj (V3) bucket's path
 """
 
 
-def upload_file(storjObj, bucketHandle, uploadPath, uploadOptions, srcFullFileName):
+def upload_file(storj_obj, project, bucket_name, storj_path, upload_options, src_full_filename):
     #
     # open file to be uploaded
-    file_handle = open(srcFullFileName, 'r+b')
-    data_len = os.path.getsize(srcFullFileName)
+    file_handle = open(src_full_filename, 'r+b')
+    data_len = os.path.getsize(src_full_filename)
     #
     # call to get uploader handle
-    uploader, ls_Error = storjObj.upload(bucketHandle, uploadPath, uploadOptions)
-    if ls_Error is not None:
-        return False, ls_Error
+    upload_result, ls_error = storj_obj.upload_object(project, bucket_name, storj_path, upload_options)
+    if ls_error is not None:
+        return False, ls_error
     #
     # initialize local variables and start uploading packets of data
     uploaded_total = 0
@@ -30,61 +30,61 @@ def upload_file(storjObj, bucketHandle, uploadPath, uploadOptions, srcFullFileNa
         #
         # file reading process from the last read position
         file_handle.seek(uploaded_total)
-        lc_dataToWrite = file_handle.read(size_to_write)
+        lc_data_to_write = file_handle.read(size_to_write)
         #
         # --------------------------------------------
         # data conversion to type required by function
         # get size of data in c type int32 variable
-        lc_data_size = c_int32(len(lc_dataToWrite))
+        lc_data_size = c_int32(len(lc_data_to_write))
         # conversion of read bytes data to c type ubyte Array
-        lc_dataToWrite = (c_uint8 * lc_data_size.value)(*lc_dataToWrite)
+        lc_data_to_write = (c_uint8 * lc_data_size.value)(*lc_data_to_write)
         # conversion of c type ubyte Array to LP_c_ubyte required by upload write function
-        lc_dataToWritePtr = cast(lc_dataToWrite, POINTER(c_uint8))
+        lc_data_to_write_ptr = cast(lc_data_to_write, POINTER(c_uint8))
         # --------------------------------------------
         #
         # call to write data to Storj bucket
-        write_size, ls_Error = storjObj.upload_write(uploader, lc_dataToWritePtr, size_to_write)
-        if ls_Error is not None:
-            return False, ls_Error
+        write_result, ls_error = storj_obj.upload_write(upload_result.upload, lc_data_to_write_ptr, size_to_write)
+        if ls_error is not None:
+            return False, ls_error
         #
         # exit while loop if nothing left to upload / unable to upload
-        if write_size == 0:
+        if int(write_result.bytes_written) == 0:
             break
         # update last read location
-        uploaded_total += write_size
+        uploaded_total += int(write_result.bytes_written)
 
     # commit upload data to bucket
-    ls_Error = storjObj.upload_commit(uploader)
+    ls_error = storj_obj.upload_commit(upload_result.upload)
     #
     # if error occurred
-    if ls_Error is not None:
-        return False, ls_Error
+    if ls_error is not None:
+        return False, ls_error
     else:
         return True, None
 
 
 """
-example function to get/download Storj(V3) object's data and store it in given file 
-with destFullFileName (on local computer)
+example function to get/download Storj(V3) object's data and store it in given file
+with dest_full_pathname (on local computer)
 """
 
 
-def download_file(storjObj, bucketHandle, storjPath, destFullPathName):
+def download_file(storj_obj, project, bucket_name, storj_path, download_options, dest_full_pathname):
     #
     # open / create file with the given name to save the downloaded data
-    file_handle = open(destFullPathName, 'w+b')
+    file_handle = open(dest_full_pathname, 'w+b')
     #
     # call to get downloader handle
-    downloader, ls_Error = storjObj.download(bucketHandle, storjPath)
-    if ls_Error is not None:
-        return False, ls_Error
+    download_result, ls_error = storj_obj.download_object(project, bucket_name, storj_path, download_options)
+    if ls_error is not None:
+        return False, ls_error
     #
     # get size of file to be downloaded from storj
-    file_size, ls_Error = get_file_size(storjObj,bucketHandle,storjPath)
-    if ls_Error is not None:
-        return False, ls_Error
+    file_size, ls_error = get_file_size(storj_obj, project, bucket_name, storj_path)
+    if ls_error is not None:
+        return False, ls_error
     else:
-        print("File size to be downloaded: ",file_size)
+        print("File size to be downloaded: ", file_size)
     #
     # set packet size to be used while downloading
     size_to_read = 256
@@ -92,35 +92,35 @@ def download_file(storjObj, bucketHandle, storjPath, destFullPathName):
     downloaded_total = 0
     while True:
         # call to read data from Storj bucket
-        lc_dataReadPtr, read_size, ls_Error = storjObj.download_read(downloader, size_to_read)
-        if ls_Error is not None:
-            return False, ls_Error
+        lc_data_read_ptr, read_result, ls_error = storj_obj.download_read(download_result.download, size_to_read)
+        if ls_error is not None:
+            return False, ls_error
         #
         # file writing process from the last written position if new data is downloaded
-        if read_size != 0:
+        if int(read_result.bytes_read) != 0:
             #
             # --------------------------------------------
             # data conversion to type python readable form
             # conversion of LP_c_ubyte to python readable data variable
-            lc_dataRead = string_at(lc_dataReadPtr, read_size)
+            lc_data_read = string_at(lc_data_read_ptr, int(read_result.bytes_read))
             # --------------------------------------------
             #
             file_handle.seek(downloaded_total)
-            file_handle.write(lc_dataRead)
+            file_handle.write(lc_data_read)
         #
         # update last read location
-        downloaded_total += read_size
+        downloaded_total += int(read_result.bytes_read)
         #
         # break if download complete
         if downloaded_total == file_size:
             break
     #
     # close downloader and free downloader access
-    ls_Error = storjObj.download_close(downloader)
+    ls_error = storj_obj.close_download(download_result.download)
     #
     # if error occurred
-    if ls_Error is not None:
-        return False, ls_Error
+    if ls_error is not None:
+        return False, ls_error
     else:
         return True, None
 
@@ -129,36 +129,16 @@ def download_file(storjObj, bucketHandle, storjPath, destFullPathName):
 example function to get Storj(V3) object's size to be downloaded
 """
 
-def get_file_size(storjObj, bucketHandle, storjPath):
+
+def get_file_size(storj_obj, project, bucket_name, storj_path):
     #
-    # create list option object
-    lO_listOption = ListOptions()
-    lO_listOption.prefix = c_char_p("".encode('utf-8'))
-    lO_listOption.cursor = c_char_p("".encode('utf-8'))
-    lO_listOption.delimiter = c_char(' '.encode('utf-8'))
-    lO_listOption.recursive = True
-    lO_listOption.direction = STORJ_AFTER
-    lO_listOption.limit = 0
-    #
-    # get list of objects in specified bucket
-    objectsList, err = storjObj.list_objects(bucketHandle, lO_listOption)
-    if err is not None:
-        return 0, err
+    # get object data
+    obj_result, ls_error = storj_obj.stat_object(project, bucket_name, storj_path)
+    if ls_error is not None:
+        return 0, ls_error
     else:
-        # find object using path
-        for i in range(objectsList.length):
-            if objectsList.items[i].path is None:
-                break
-            if objectsList.items[i].path.decode('utf-8') == storjPath:
-                return int(objectsList.items[i].size), None
-
-    # free and delete list configuration object
-    lO_listOption = None
-    del lO_listOption
-    #
-    # if object not found
-    return 0, "Object not found in bucket"
-
+        # find object size
+        return int(obj_result.object.contents.system.content_length), None
 
 
 if __name__ == "__main__":
@@ -175,31 +155,22 @@ if __name__ == "__main__":
     destFullFileName = "filename with extension to save on local system"
 
     # create an object of libUplinkPy class
-    StorjObj = libUplinkPy()
+    StorjObj = LibUplinkPy()
 
     # function calls
-    # create new uplink
-    print("\nSetting-up new uplink...")
-    uplinkHandle, err = StorjObj.new_uplink()
+    # request access using passphrase
+    print("\nRequesting Access using passphrase...")
+    access_result, err = StorjObj.request_access_with_passphrase(satellite, myAPIKey, myEncryptionPassphrase)
     if err is not None:
         print(err)
         exit()
-    print("New uplink: SET-UP!")
-    #
-
-    # parse Api Key
-    print("\nParsing the API Key...")
-    parseApiKeyHandle, err = StorjObj.parse_api_key(myAPIKey)
-    if err is not None:
-        print(err)
-        exit()
-    print("API Key: PARSED!")
+    print("Request Access: SUCCESS!")
     #
 
     # open Storj project
     print(
-        "\nOpening the Storj project, corresponding to the parsed API Key, on " + satellite + " satellite...")
-    projectHandle, err = StorjObj.open_project(uplinkHandle, parseApiKeyHandle, satellite)
+        "\nOpening the Storj project, corresponding to the parsed Access, on " + satellite + " satellite...")
+    project_result, err = StorjObj.open_project(access_result.access)
     if err is not None:
         print(err)
         exit()
@@ -208,260 +179,200 @@ if __name__ == "__main__":
 
     # enlist all the buckets in given Storj project
     print("\nListing bucket's names and creation time...")
-    bucketsList, err = StorjObj.list_buckets(projectHandle, None)
+    bucket_list, err = StorjObj.list_buckets(project_result.project, None)
     if err is not None:
         print(err)
         exit()
     else:
         # print all bucket name and creation time
-        for i in range(bucketsList.length):
-            if bucketsList.items[i].name is None:
-                break
-            print(bucketsList.items[i].name.decode('utf-8'), " | ",
-                  datetime.fromtimestamp(bucketsList.items[i].created))
+        for item in bucket_list:
+            print(item.contents.name.decode("utf-8"), " | ", datetime.fromtimestamp(item.contents.created))
         print("Buckets listing: COMPLETE!")
     #
 
     # delete given bucket
     print("\nDeleting '" + myBucket + "' bucket...")
-    err = StorjObj.delete_bucket(projectHandle, myBucket)
+    bucket_result, err = StorjObj.delete_bucket(project_result.project, myBucket)
     if err is not None:
         print(err)
     else:
         print("Desired bucket: DELETED")
-
     #
-    # set bucket config according to this link:
-    # https://godoc.org/storj.io/storj/lib/uplink#BucketConfig
-    lO_configBucket = BucketConfig()
-    lO_configBucket.path_cipher = STORJ_ENC_AESGCM
-    lO_configBucket.encryption_parameters.cipher_suite = STORJ_ENC_AESGCM
-    lO_configBucket.encryption_parameters.block_size = 7424
-    lO_configBucket.redundancy_scheme.algorithm = STORJ_REED_SOLOMON
-    lO_configBucket.redundancy_scheme.share_size = 256
-    lO_configBucket.redundancy_scheme.required_shares = 29
-    lO_configBucket.redundancy_scheme.repair_shares = 35
-    lO_configBucket.redundancy_scheme.optimal_shares = 80
-    lO_configBucket.redundancy_scheme.total_shares = 130
-    # create bucket in given project with above configuration or None
+
+    # if delete bucket fails due to "not empty", delete all the objects and try again
+    if bool(bucket_result.error):
+        if ERROR_BUCKET_NOT_EMPTY == bucket_result.error.contents.code:
+            print("\nDeleting object's inside bucket and try to delete bucket again...")
+            # set list options before calling list objects (optional)
+            lO_listOption = ListObjectsOptions()
+            lO_listOption.recursive = True
+            # list objects in given bucket with above options
+            print("Listing and deleting object's inside bucket...")
+            objects_list, err = StorjObj.list_objects(project_result.project, myBucket, lO_listOption)
+            if err is not None:
+                print(err)
+            else:
+                # iterate through all objects path
+                for obj in objects_list:
+                    # delete selected object
+                    print("Deleting '" + obj.contents.key.decode('utf-8'))
+                    object_result, err = StorjObj.delete_object(project_result.project, myBucket, obj.contents.key.decode('utf-8'))
+                print("Delete all objects inside the bucket : COMPLETE!")
+
+                # try to delete given bucket
+                print("\nDeleting '" + myBucket + "' bucket...")
+                bucket_result, err = StorjObj.delete_bucket(project_result.project, myBucket)
+                if err is not None:
+                    print(err)
+                else:
+                    print("Desired bucket: DELETED")
+    #
+
+    # create bucket in given project
     print("\nCreating '" + myBucket + "' bucket...")
-    bucketHandle, err = StorjObj.create_bucket(projectHandle, myBucket, lO_configBucket)
+    bucket_result, err = StorjObj.ensure_bucket(project_result.project, myBucket)
     if err is not None:
         print(err)
         exit()
     print("Desired Bucket: CREATED!")
-    # free and delete bucket configuration object
-    lO_configBucket = None
-    del lO_configBucket
-    #
-
-    # get encryption access to upload and download data
-    print("\nCreating serialized encryption key...")
-    serializedEncryptionAccess, err = StorjObj.get_encryption_access(projectHandle, myEncryptionPassphrase)
-    if err is not None:
-        print(err)
-        exit()
-    print("Serialized encryption key: CREATED!")
-    #
-
-    # open bucket in given project with given name and access
-    print("\nOpening '" + myBucket + "' bucket...")
-    bucketHandle, err = StorjObj.open_bucket(projectHandle, serializedEncryptionAccess, myBucket)
-    if err is not None:
-        print(err)
-        exit()
-    print("Desired bucket: OPENED!")
-    #
 
     # as an example of 'put' , lets read and upload a local file
     # upload file/object
     print("\nUploading data...")
-    uploadStatus, err = upload_file(StorjObj, bucketHandle, myStorjUploadPath, None, srcFullFileName)
+    uploadStatus, err = upload_file(StorjObj, project_result.project, myBucket, myStorjUploadPath, None, srcFullFileName)
     if err is not None or uploadStatus is False:
         print(err)
         exit()
     print("Upload: COMPLETE!")
     #
-
+    #
     # set list options before calling list objects (optional)
-    lO_listOption = ListOptions()
-    lO_listOption.prefix = c_char_p("".encode('utf-8'))
-    lO_listOption.cursor = c_char_p("".encode('utf-8'))
-    lO_listOption.delimiter = c_char(' '.encode('utf-8'))
+    lO_listOption = ListObjectsOptions()
     lO_listOption.recursive = True
-    lO_listOption.direction = STORJ_AFTER
-    lO_listOption.limit = 0
     # list objects in given bucket with above options or None
     print("\nListing object's names...")
-    objectsList, err = StorjObj.list_objects(bucketHandle, lO_listOption)
+    objects_list, err = StorjObj.list_objects(project_result.project, myBucket, lO_listOption)
     if err is not None:
         print(err)
         exit()
     else:
         # print all objects path
-        for i in range(objectsList.length):
-            if objectsList.items[i].path is None:
-                break
-            print(objectsList.items[i].path.decode('utf-8'))
+        for obj in objects_list:
+            print(obj.contents.key.decode('utf-8'))
         print("Objects listing: COMPLETE!")
-    # free and delete bucket configuration object
-    lO_listOption = None
-    del lO_listOption
     #
 
     # as an example of 'get' , lets download an object and write it to a local file
     # download file/object
     print("\nDownloading data...")
-    downloadStatus, err = download_file(StorjObj, bucketHandle, myStorjUploadPath, destFullFileName)
+    downloadStatus, err = download_file(StorjObj, project_result.project, myBucket, myStorjUploadPath, None, destFullFileName)
     if err is not None or downloadStatus is False:
         print(err)
         exit()
     print("Download: COMPLETE!")
     #
 
-    # as an example of how to create shareable Scope key for easy storj access without API key and Encryption PassPhrase
-    # create new Scope
-    print("\nCreating new Scope...")
-    newScopeHandle, err = StorjObj.new_scope(satellite, parseApiKeyHandle, serializedEncryptionAccess)
+    # as an example of how to create shareable Access for easy storj access without API key and Encryption PassPhrase
+    # create new Access with permissions
+    print("\nCreating new Access...")
+    # set permissions for the new access to be created
+    permissions = Permission()
+    permissions.allow_list = True
+    permissions.allow_delete = False
+    # set shared prefix as list of dictionaries for the new access to be created
+    shared_prefix = [{"bucket": myBucket, "prefix": ""}]
+    # create new access
+    new_access_result, err = StorjObj.access_share(access_result.access, permissions, shared_prefix)
     if err is not None:
         print(err)
         exit()
-    print("New Scope: CREATED!")
-	#
+    print("New Access: CREATED!")
+    #
 
-    # generate serialized Scope key
-    print("\nGenerating serialized Scope key...")
-    serializedScope, err = StorjObj.serialize_scope(newScopeHandle)
+    # generate serialized access to share
+    print("\nGenerating serialized Access...")
+    serialized_access_result, err = StorjObj.access_serialize(new_access_result.access)
     if err is not None:
         print(err)
         exit()
-    print("Serialized Scope key: ", serializedScope)
-    #
-    #
-
-    # close given bucket using handle
-    print("\nClosing bucket...")
-    err = StorjObj.close_bucket(bucketHandle)
-    if err is not None:
-        print(err)
-        exit()
-    print("Bucket CLOSED!")
+    print("Serialized shareable Access: ", serialized_access_result.string.decode("utf-8"))
     #
 
+    #
     # close given project using handle
     print("\nClosing Storj project...")
-    err = StorjObj.close_project(projectHandle)
+    err = StorjObj.close_project(project_result.project)
     if err is not None:
         print(err)
         exit()
     print("Project CLOSED!")
     #
 
-    # close given uplink using handle
-    print("\nClosing uplink...")
-    err = StorjObj.close_uplink(uplinkHandle)
+    #
+    # as an example of how to retrieve information from shareable Access for storj access
+    # retrieving Access from serialized Access
+    print("\nParsing serialized Access...")
+    shared_access_result, err = StorjObj.parse_access(serialized_access_result.string)
     if err is not None:
         print(err)
         exit()
-    print("Uplink CLOSED!")
+    print("Parsing Access: COMPLETE")
     #
 
-    # as an example of how to retrieve information from shareable Scope key for storj access
-    # retrieving Scope from serialized Scope key
-    print("\nParsing serialized Scope key...")
-    parsedScope, err = StorjObj.parse_scope(serializedScope)
-    if err is not None:
-        print(err)
-        exit()
-    print("Parsing Scope key: COMPLETE")
-    #
-
-    # retrieving satellite from Scope
-    print("\nRetrieving satellite address from Scope...")
-    satelliteFromScope, err = StorjObj.get_scope_satellite_address(parsedScope)
-    if err is not None:
-        print(err)
-        exit()
-    print("Satellite address from Scope: ", satelliteFromScope)
-    #
-
-    # retrieving API key from Scope
-    print("\nRetrieving API key from Scope...")
-    apiKeyFromScope, err = StorjObj.get_scope_api_key(parsedScope)
-    if err is not None:
-        print(err)
-        exit()
-    print("API key from Scope: PARSED!")
-    #
-
-    # retrieving encryption access from Scope
-    print("\nRetrieving Encryption Access from Scope...")
-    encryptionAccessFromScope, err = StorjObj.get_scope_enc_access(parsedScope)
-    if err is not None:
-        print(err)
-        exit()
-    print("Encryption Access from Scope: PARSED!")
-    #
-
-    # create new uplink
-    print("\nSetting-up new uplink...")
-    uplinkScopeHandle, err = StorjObj.new_uplink()
-    if err is not None:
-        print(err)
-        exit()
-    print("New uplink: SET-UP!")
-    #
-
-    # open Storj project using Scope key values
+    # open Storj project
     print(
-        "\nOpening the Storj project, corresponding to the parsed API Key, on " + satellite + " satellite...")
-    projectScopeHandle, err = StorjObj.open_project(uplinkScopeHandle, apiKeyFromScope, satelliteFromScope)
+        "\nOpening the Storj project, corresponding to the shared Access...")
+    shared_project_result, err = StorjObj.open_project(shared_access_result.access)
     if err is not None:
         print(err)
         exit()
     print("Desired Storj project: OPENED!")
+    #
 
-    # open bucket in given project with given name and access
-    print("\nOpening '" + myBucket + "' bucket...")
-    bucketScopeHandle, err = StorjObj.open_bucket(projectScopeHandle, encryptionAccessFromScope, myBucket)
+    # enlist all the buckets in given Storj project
+    print("\nListing bucket's names and creation time...")
+    bucket_list, err = StorjObj.list_buckets(shared_project_result.project, None)
     if err is not None:
         print(err)
         exit()
-    print("Desired bucket: OPENED!")
+    else:
+        # print all bucket name and creation time
+        for item in bucket_list:
+            print(item.contents.name.decode("utf-8"), " | ", datetime.fromtimestamp(item.contents.created))
+        print("Buckets listing: COMPLETE!")
     #
 
-    # delete given object
-    print("\nDeleting '" + myStorjUploadPath + "' object...")
-    err = StorjObj.delete_object(bucketScopeHandle, myStorjUploadPath)
+    # set list options before calling list objects (optional)
+    lO_listOption = ListObjectsOptions()
+    lO_listOption.recursive = True
+    # list objects in given bucket with above options or None
+    print("\nListing object's names...")
+    objects_list, err = StorjObj.list_objects(shared_project_result.project, myBucket, lO_listOption)
+    if err is not None:
+        print(err)
+        exit()
+    else:
+        # print all objects path
+        for obj in objects_list:
+            print(obj.contents.key.decode('utf-8'))
+        print("Objects listing: COMPLETE!")
+    #
+
+    # try to delete given bucket
+    print("\nTrying to delete '" + myStorjUploadPath)
+    shared_object_result, err = StorjObj.delete_object(shared_project_result.project, myBucket, myStorjUploadPath)
     if err is not None:
         print(err)
     else:
-        print("Desired object: DELETED!")
+        print("Desired object: DELETED")
     #
 
-    # close given bucket using handle
-    print("\nClosing bucket...")
-    err = StorjObj.close_bucket(bucketScopeHandle)
-    if err is not None:
-        print(err)
-        exit()
-    print("Bucket CLOSED!")
     #
-
-    # close given project using handle
+    # close given project with shared Access
     print("\nClosing Storj project...")
-    err = StorjObj.close_project(projectScopeHandle)
+    err = StorjObj.close_project(shared_project_result.project)
     if err is not None:
         print(err)
         exit()
     print("Project CLOSED!")
-    #
-
-    # close given uplink using handle
-    print("\nClosing uplink...")
-    err = StorjObj.close_uplink(uplinkScopeHandle)
-    if err is not None:
-        print(err)
-        exit()
-    print("Uplink CLOSED!")
     #

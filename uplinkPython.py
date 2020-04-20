@@ -1,141 +1,158 @@
 ##################################
 # Python Bindings for Storj (V3) #
 ##################################
-
-from ctypes import *
 import os
-import tempfile
+from ctypes import *
 
 ##############################################
 # Structure classes for go structure objects #
 ##############################################
 
-# Defines:
-# CipherSuite ENUM
-(STORJ_ENC_UNSPECIFIED, STORJ_ENC_NULL, STORJ_ENC_AESGCM, STORJ_ENC_SECRET_BOX) = map(c_int, range(4))
+# Error defines:
+ERROR_INTERNAL = 0x02
+ERROR_CANCELED = 0x03
+ERROR_INVALID_HANDLE = 0x04
+ERROR_TOO_MANY_REQUESTS = 0x05
+ERROR_BANDWIDTH_LIMIT_EXCEEDED = 0x06
 
-# RedundancyAlgorithm ENUM
-(STORJ_INVALID_REDUNDANCY_ALGORITHM, STORJ_REED_SOLOMON) = map(c_int, range(2))
+ERROR_BUCKET_NAME_INVALID = 0x10
+ERROR_BUCKET_ALREADY_EXISTS = 0x11
+ERROR_BUCKET_NOT_EMPTY = 0x12
+ERROR_BUCKET_NOT_FOUND = 0x13
 
-# ListDirection ENUM
-(STORJ_BEFORE, STORJ_BACKWARD, STORJ_FORWARD, STORJ_AFTER) = map(c_int, [-2, -1, 1, 2])
-
-
-# Uplink configuration nested structure
-class TLS(Structure):
-    _fields_ = [("SkipPeerCAWhitelist", c_bool), ("peer_ca_whitelist_path", c_char_p)]
-
-
-class Volatile(Structure):
-    _fields_ = [("TLS", TLS), ("peer_id_version", c_char_p), ("max_inline_size", c_int32),
-                ("max_memory", c_int32), ("dial_timeout", c_int32), ("user_agent", c_char_p)]
+ERROR_OBJECT_KEY_INVALID = 0x20
+ERROR_OBJECT_NOT_FOUND = 0x21
+ERROR_UPLOAD_DONE = 0x22
 
 
-class UplinkConfig(Structure):
-    _fields_ = [("Volatile", Volatile)]
+# Various handle structures:
+class Handle(Structure):
+    _fields_ = [("_handle", c_size_t)]
 
 
-# Uplink reference structure
-class UplinkRef(Structure):
-    _fields_ = [("_handle", c_long)]
+class Access(Structure):
+    _fields_ = [("_handle", c_size_t)]
 
 
-# API key reference structure
-class APIKeyRef(Structure):
-    _fields_ = [("_handle", c_long)]
+class Project(Structure):
+    _fields_ = [("_handle", c_size_t)]
 
 
-# Project reference structure
-class ProjectRef(Structure):
-    _fields_ = [("_handle", c_long)]
+class Download(Structure):
+    _fields_ = [("_handle", c_size_t)]
 
 
-# Access reference structure
-class EncryptionAccessRef(Structure):
-    _fields_ = [("_handle", c_long)]
+class Upload(Structure):
+    _fields_ = [("_handle", c_size_t)]
 
 
-# Bucket reference structure
-class BucketRef(Structure):
-    _fields_ = [("_handle", c_long)]
+# Various configuration structures:
+class Config(Structure):
+    _fields_ = [("user_agent", c_char_p), ("dial_timeout_milliseconds", c_int32),
+                ("temp_directory", c_char_p)]
 
 
-# Upload reference structure
-class UploaderRef(Structure):
-    _fields_ = [("_handle", c_long)]
+class Bucket(Structure):
+    _fields_ = [("name", c_char_p), ("created", c_int64)]
 
 
-# Download reference structure
-class DownloaderRef(Structure):
-    _fields_ = [("_handle", c_long)]
+class SystemMetadata(Structure):
+    _fields_ = [("created", c_int64), ("expires", c_int64), ("content_length", c_int64)]
 
 
-# Scope reference structure
-class ScopeRef(Structure):
-    _fields_ = [("_handle", c_long)]
+class CustomMetadataEntry(Structure):
+    _fields_ = [("key", c_char_p), ("key_length", c_size_t), ("value", c_char_p), ("value_length", c_size_t)]
+
+
+class CustomMetadata(Structure):
+    _fields_ = [("entries", POINTER(CustomMetadataEntry)), ("count", c_size_t)]
+
+
+class Object(Structure):
+    _fields_ = [("key", c_char_p), ("is_prefix", c_bool), ("system", SystemMetadata),
+                ("custom", CustomMetadata)]
 
 
 class UploadOptions(Structure):
-    _fields_ = [("content_type", c_char_p), ("expires", c_int64)]
+    _fields_ = [("expires", c_int64)]
 
 
-class EncryptionParameters(Structure):
-    _fields_ = [("cipher_suite", c_int), ("block_size", c_int32)]
+class DownloadOptions(Structure):
+    _fields_ = [("offset", c_int64), ("length", c_int64)]
 
 
-class RedundancyScheme(Structure):
-    _fields_ = [("algorithm", c_int), ("share_size", c_int32), ("required_shares", c_int16),
-                ("repair_shares", c_int16), ("optimal_shares", c_int16), ("total_shares", c_int16)]
+class ListObjectsOptions(Structure):
+    _fields_ = [("prefix", c_char_p), ("cursor", c_char_p), ("recursive", c_bool), ("system", c_bool),
+                ("custom", c_bool)]
 
 
-class BucketConfig(Structure):
-    _fields_ = [("path_cipher", c_int), ("encryption_parameters", EncryptionParameters),
-                ("redundancy_scheme", RedundancyScheme)]
+class ListBucketsOptions(Structure):
+    _fields_ = [("cursor", c_char_p)]
 
 
-class BucketInfo(Structure):
-    _fields_ = [("name", c_char_p), ("created", c_int64), ("path_cipher", c_int), ("segment_size", c_int64),
-                ("encryption_parameters", EncryptionParameters), ("redundancy_scheme", RedundancyScheme)]
+class ObjectIterator(Structure):
+    _fields_ = [("_handle", c_size_t)]
 
 
-class BucketListOptions(Structure):
-    _fields_ = [("cursor", c_char_p), ("direction", c_int8), ("limit", c_int64)]
+class BucketIterator(Structure):
+    _fields_ = [("_handle", c_size_t)]
 
 
-class BucketList(Structure):
-    _fields_ = [("more", c_bool), ("items", POINTER(BucketInfo)), ("length", c_int32)]
+class Permission(Structure):
+    _fields_ = [("allow_download", c_bool), ("allow_upload", c_bool), ("allow_list", c_bool), ("allow_delete", c_bool),
+                ("not_before", c_int64), ("not_after", c_int64)]
 
 
-class ObjectInfo(Structure):
-    _fields_ = [("version", c_int32), ("bucket", BucketInfo), ("path", c_char_p),
-                ("is_prefix", c_bool), ("content_type", c_char_p), ("size", c_int64), ("created", c_int64),
-                ("modified", c_int64), ("expires", c_int64)]
+class SharePrefix(Structure):
+    _fields_ = [("bucket", c_char_p), ("prefix", c_char_p)]
 
 
-class ObjectList(Structure):
-    _fields_ = [("bucket", c_char_p), ("prefix", c_char_p), ("more", c_bool), ("items", POINTER(ObjectInfo)),
-                ("length", c_int32)]
+class Error(Structure):
+    _fields_ = [("code", c_int32), ("message", c_char_p)]
 
 
-class ListOptions(Structure):
-    _fields_ = [("prefix", c_char_p), ("cursor", c_char_p), ("delimiter", c_char), ("recursive", c_bool),
-                ("direction", c_int), ("limit", c_int64)]
+# Various result structures:
+class AccessResult(Structure):
+    _fields_ = [("access", POINTER(Access)), ("error", POINTER(Error))]
 
 
-class EncryptionRestriction(Structure):
-    _fields_ = [("bucket", c_char_p), ("path_prefix", c_char_p)]
+class ProjectResult(Structure):
+    _fields_ = [("project", POINTER(Project)), ("error", POINTER(Error))]
 
 
-class Caveat(Structure):
-    _fields_ = [("disallow_reads", c_bool), ("disallow_writes", c_bool), ("disallow_lists", c_bool),
-                ("disallow_deletes", c_bool)]
+class BucketResult(Structure):
+    _fields_ = [("bucket", POINTER(Bucket)), ("error", POINTER(Error))]
+
+
+class ObjectResult(Structure):
+    _fields_ = [("object", POINTER(Object)), ("error", POINTER(Error))]
+
+
+class UploadResult(Structure):
+    _fields_ = [("upload", POINTER(Upload)), ("error", POINTER(Error))]
+
+
+class DownloadResult(Structure):
+    _fields_ = [("download", POINTER(Download)), ("error", POINTER(Error))]
+
+
+class WriteResult(Structure):
+    _fields_ = [("bytes_written", c_size_t), ("error", POINTER(Error))]
+
+
+class ReadResult(Structure):
+    _fields_ = [("bytes_read", c_size_t), ("error", POINTER(Error))]
+
+
+class StringResult(Structure):
+    _fields_ = [("string", c_char_p), ("error", POINTER(Error))]
 
 
 #########################################################
 # Python Storj class with all Storj functions' bindings #
 #########################################################
 
-class libUplinkPy:
+class LibUplinkPy:
     def __init__(self):
         # private members of PyStorj class with reference objects
         # include the golang exported libuplink library functions
@@ -143,1040 +160,826 @@ class libUplinkPy:
         self.m_libUplink = CDLL(so_path)
 
     """
-    function to create new Storj uplink
+    function requests satellite for a new access grant using a passphrase
     pre-requisites: none
-    inputs: none
-    output: Uplink Handle (long), Error (string) if any else None
+    inputs: Satellite Address (String), API key (String) and Passphrase (String)
+    output: AccessResult (Object), Error (String) if any else None
     """
 
-    def new_uplink(self):
-        #
-        # set-up uplink configuration
-        lO_uplinkConfig = UplinkConfig()
-        lO_uplinkConfig.Volatile.TLS.SkipPeerCAWhitelist = True
-        ls_temppath = tempfile.gettempdir()
-        print(ls_temppath)
-        lO_tempPath = c_char_p(ls_temppath.encode('utf-8'))
+    def request_access_with_passphrase(self, ps_satellite, ps_api_key, ps_passphrase):
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.new_uplink.argtypes = [UplinkConfig, c_char_p, POINTER(c_char_p)]
-        self.m_libUplink.new_uplink.restype = UplinkRef
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
+        self.m_libUplink.request_access_with_passphrase.argtypes = [c_char_p, c_char_p, c_char_p]
+        self.m_libUplink.request_access_with_passphrase.restype = AccessResult
         #
-        # create new uplink by calling the exported golang function
-        mO_uplinkRef = self.m_libUplink.new_uplink(lO_uplinkConfig, lO_tempPath, byref(lc_errorPtr))
+        # prepare the input for the function
+        lc_satellite_ptr = c_char_p(ps_satellite.encode('utf-8'))
+        lc_api_key_ptr = c_char_p(ps_api_key.encode('utf-8'))
+        lc_passphrase_ptr = c_char_p(ps_passphrase.encode('utf-8'))
+
+        # get access to Storj by calling the exported golang function
+        lo_access_result = self.m_libUplink.request_access_with_passphrase(lc_satellite_ptr, lc_api_key_ptr,
+                                                                           lc_passphrase_ptr)
         #
         # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
+        if bool(lo_access_result.error):
+            return lo_access_result, lo_access_result.error.contents.message.decode("utf-8")
         else:
-            return mO_uplinkRef._handle, None
+            return lo_access_result, None
 
     """
-    function to parse API key, to be used by Storj
+    function requests satellite for a new access grant using a passphrase and custom configuration
     pre-requisites: none
-    inputs: API key (string)
-    output: Parsed Api Key Handle (long), Error (string) if any else None
+    inputs: Config (Object), Satellite Address (String), API key (String) and Passphrase (String)
+    output: AccessResult (Object), Error (String) if any else None
     """
 
-    def parse_api_key(self, ps_API_Key):
+    def config_request_access_with_passphrase(self, po_config, ps_satellite, ps_api_key, ps_passphrase):
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.parse_api_key.argtypes = [c_char_p, POINTER(c_char_p)]
-        self.m_libUplink.parse_api_key.restype = APIKeyRef
+        self.m_libUplink.config_request_access_with_passphrase.argtypes = [Config, c_char_p, c_char_p, c_char_p]
+        self.m_libUplink.config_request_access_with_passphrase.restype = AccessResult
         #
         # prepare the input for the function
-        lc_ApiKeyPtr = c_char_p(ps_API_Key.encode('utf-8'))
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        # parse the API key by calling the exported golang function
-        lO_apiKeyParsedRef = self.m_libUplink.parse_api_key(lc_ApiKeyPtr, byref(lc_errorPtr))
+        if po_config is None:
+            lo_config = Config()
+        else:
+            lo_config = po_config
+        lc_satellite_ptr = c_char_p(ps_satellite.encode('utf-8'))
+        lc_api_key_ptr = c_char_p(ps_api_key.encode('utf-8'))
+        lc_passphrase_ptr = c_char_p(ps_passphrase.encode('utf-8'))
+
+        # get access to Storj by calling the exported golang function
+        lo_access_result = self.m_libUplink.config_request_access_with_passphrase(lo_config, lc_satellite_ptr,
+                                                                                  lc_api_key_ptr,
+                                                                                  lc_passphrase_ptr)
         #
         # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
+        if bool(lo_access_result.error):
+            return lo_access_result, lo_access_result.error.contents.message.decode("utf-8")
         else:
-            return lO_apiKeyParsedRef._handle, None
+            return lo_access_result, None
 
     """
-        function to serialize API key
-        pre-requisites: none
-        inputs: API key Handle (long)
-        output: Serialized Api Key (string), Error (string) if any else None
-        """
+    function opens Storj(V3) project using access grant.
+    pre-requisites: request_access_with_passphrase or parse_access function has been already called
+    inputs: Access (Object)
+    output: ProjectResult (Object), Error (String) if any else None
+    """
 
-    def serialize_api_key(self, pl_API_Key):
+    def open_project(self, po_access):
+        #
+        # ensure access object is already created
+        if po_access is None:
+            ls_error = "Invalid access object, please check the parameter passed and try again."
+            return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.serialize_api_key.argtypes = [APIKeyRef, POINTER(c_char_p)]
-        self.m_libUplink.serialize_api_key.restype = c_char_p
+        self.m_libUplink.open_project.argtypes = [POINTER(Access)]
+        self.m_libUplink.open_project.restype = ProjectResult
         #
-        # prepare the input for the function
-        lO_ApiKeyPtr = APIKeyRef()
-        lO_ApiKeyPtr._handle = pl_API_Key
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        # parse the API key by calling the exported golang function
-        lc_apiKeySerialized = self.m_libUplink.serialize_api_key(lO_ApiKeyPtr, byref(lc_errorPtr))
-        #
-        # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
-        else:
-            return lc_apiKeySerialized.decode("utf-8"), None
-
-    """
-    function to open a Storj project
-    pre-requisites: new_uplink() and parse_api_key() functions have been already called
-    inputs: Uplink Handle (long), Api Key Parsed Handle (long), Satellite Address (string)
-    output: Project Handle (long), Error (string) if any else None
-    """
-
-    def open_project(self, pl_uplinkHandle, pl_apiKeyParsedHandle, ps_satelliteAddress):
-        #
-        # ensure uplink and parsed API key objects are already created
-        if pl_uplinkHandle <= 0:
-            ls_Error = "Invalid Uplink handle, please check parameter[1] passed and try again."
-            return None, ls_Error
-        if pl_apiKeyParsedHandle <= 0:
-            ls_Error = "Invalid ParsedApiKey handle, please check parameter[2] passed and try again."
-            return None, ls_Error
-        #
-        # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.open_project.argtypes = [UplinkRef, c_char_p, APIKeyRef, POINTER(c_char_p)]
-        self.m_libUplink.open_project.restype = ProjectRef
-        #
-        # prepare the input for the function
-        lc_satelliteAddressPtr = c_char_p(ps_satelliteAddress.encode('utf-8'))
-        lO_uplinkRef = UplinkRef()
-        lO_uplinkRef._handle = pl_uplinkHandle
-        lO_APIKeyRef = APIKeyRef()
-        lO_APIKeyRef._handle = pl_apiKeyParsedHandle
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
         # open project by calling the exported golang function
-        lO_projectRef = self.m_libUplink.open_project(lO_uplinkRef, lc_satelliteAddressPtr,
-                                                      lO_APIKeyRef, byref(lc_errorPtr))
+        lo_project_result = self.m_libUplink.open_project(po_access)
         #
         # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
+        if bool(lo_project_result.error):
+            return lo_project_result, lo_project_result.error.contents.message.decode("utf-8")
         else:
-            return lO_projectRef._handle, None
+            return lo_project_result, None
 
     """
-    function to get encryption access to upload and download data on Storj
-    pre-requisites: open_project() function has been already called
-    inputs: Project Handle (long), Encryption Pass Phrase (string)
-    output: Serialized Encryption Access (string), Error (string) if any else None
+    function opens Storj(V3) project using access grant and custom configuration.
+    pre-requisites: request_access_with_passphrase or parse_access function has been already called
+    inputs: Config (Object), Access (Object)
+    output: ProjectResult (Object), Error (String) if any else None
     """
 
-    def get_encryption_access(self, pl_projectHandle, ps_encryptionPassPhrase):
+    def config_open_project(self, po_config, po_access):
         #
-        # ensure project handle is valid
-        if pl_projectHandle <= 0:
-            ls_Error = "Invalid Storj Project handle, please check parameter[1] passed and try again."
-            return None, ls_Error
+        # ensure access object is already created
+        if po_access is None:
+            ls_error = "Invalid access object, please check the parameter passed and try again."
+            return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.project_salted_key_from_passphrase.argtypes = [ProjectRef, c_char_p, POINTER(c_char_p)]
-        self.m_libUplink.project_salted_key_from_passphrase.restype = POINTER(c_uint8)
+        self.m_libUplink.config_open_project.argtypes = [Config, POINTER(Access)]
+        self.m_libUplink.config_open_project.restype = ProjectResult
         #
         # prepare the input for the function
-        lc_encryptionPassPhrasePtr = c_char_p(ps_encryptionPassPhrase.encode('utf-8'))
-        lO_ProjectRef = ProjectRef()
-        lO_ProjectRef._handle = pl_projectHandle
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        # get encryption key by calling the exported golang function
-        li_saltedKeyPtr = self.m_libUplink.project_salted_key_from_passphrase(lO_ProjectRef, lc_encryptionPassPhrasePtr,
-                                                                              byref(lc_errorPtr))
-        #
-        # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
-        #
-        # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.new_encryption_access_with_default_key.argtypes = [POINTER(c_uint8)]
-        self.m_libUplink.new_encryption_access_with_default_key.restype = EncryptionAccessRef
-        #
-        # get encryption key by calling the exported golang function
-        lO_EncryptionAccessRef = self.m_libUplink.new_encryption_access_with_default_key(li_saltedKeyPtr)
-        #
-        # ensure encryption key handle is valid
-        if lO_EncryptionAccessRef._handle <= 0:
-            ls_Error = "FAILED to created encryption access from the salted key!"
-            return None, ls_Error
-
-        # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.set_default_key.argtypes = [EncryptionAccessRef, POINTER(c_uint8), POINTER(c_char_p)]
-        self.m_libUplink.set_default_key.restype = None
-        #
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        # get encryption key by calling the exported golang function
-        self.m_libUplink.set_default_key(lO_EncryptionAccessRef, li_saltedKeyPtr, lc_errorPtr)
-        #
-        # ensure encryption key handle is valid
-        if lO_EncryptionAccessRef._handle <= 0:
-            ls_Error = "FAILED to created encryption access from the salted key!"
-            return None, ls_Error
-
-        self.m_libUplink.serialize_encryption_access.argtypes = [EncryptionAccessRef, POINTER(c_char_p)]
-        self.m_libUplink.serialize_encryption_access.restype = c_char_p
-        #
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        # get encryption key by calling the exported golang function
-        lc_serializedEncryptionAccess = self.m_libUplink.serialize_encryption_access(lO_EncryptionAccessRef,
-                                                                                     byref(lc_errorPtr))
-        #
-        # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
+        if po_config is None:
+            lo_config = Config()
         else:
-            return lc_serializedEncryptionAccess.decode("utf-8"), None
-
-    """
-    function to open an already existing bucket in Storj project
-    pre-requisites: get_encryption_access() function has been already called
-    inputs: Project Handle (long), Serialized Encryption Access (string), Bucket Name (string)
-    output: Bucket Handle (long), Error (string) if any else None
-    """
-
-    def open_bucket(self, pl_projectHandle, ps_serializedEncryptionAccess, ps_bucketName):
+            lo_config = po_config
         #
-        # ensure project handle and encryption handles are valid
-        if pl_projectHandle <= 0:
-            ls_Error = "Invalid Storj Project handle, please check parameter[1] passed and try again."
-            return None, ls_Error
-        if ps_serializedEncryptionAccess is None:
-            ls_Error = "Invalid Encryption Access, please check parameter[2] passed and try again."
-            return None, ls_Error
+        # open project by calling the exported golang function
+        lo_project_result = self.m_libUplink.config_open_project(lo_config, po_access)
+        #
+        # if error occurred
+        if bool(lo_project_result.error):
+            return lo_project_result, lo_project_result.error.contents.message.decode("utf-8")
+        else:
+            return lo_project_result, None
+
+    """
+    function creates a new bucket and ignores the error when it already exists
+    pre-requisites: open_project function has been already called
+    inputs: Project (Object) ,Bucket Name (String)
+    output: BucketResult (Object), Error (String) if any else None
+    """
+
+    def ensure_bucket(self, po_project, ps_bucket_name):
+        #
+        # ensure project object is valid
+        if po_project is None:
+            ls_error = "Invalid project object, please check the parameter passed and try again."
+            return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.open_bucket.argtypes = [ProjectRef, c_char_p, c_char_p, POINTER(c_char_p)]
-        self.m_libUplink.open_bucket.restype = BucketRef
+        self.m_libUplink.ensure_bucket.argtypes = [POINTER(Project), c_char_p]
+        self.m_libUplink.ensure_bucket.restype = BucketResult
         #
         # prepare the input for the function
-        lc_bucketNamePtr = c_char_p(ps_bucketName.encode('utf-8'))
-        lO_ProjectRef = ProjectRef()
-        lO_ProjectRef._handle = pl_projectHandle
-        lc_serializedEncryptionAccessPtr = c_char_p(ps_serializedEncryptionAccess.encode('utf-8'))
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        # open bucket by calling the exported golang function
-        lO_bucketRef = self.m_libUplink.open_bucket(lO_ProjectRef, lc_bucketNamePtr, lc_serializedEncryptionAccessPtr,
-                                                    byref(lc_errorPtr))
+        lc_bucket_name_ptr = c_char_p(ps_bucket_name.encode('utf-8'))
+
+        # open bucket if doesn't exist by calling the exported golang function
+        lo_bucket_result = self.m_libUplink.ensure_bucket(po_project, lc_bucket_name_ptr)
         #
         # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
+        if bool(lo_bucket_result.error):
+            return lo_bucket_result, lo_bucket_result.error.contents.message.decode("utf-8")
         else:
-            return lO_bucketRef._handle, None
+            return lo_bucket_result, None
 
     """
-    function to get uploader handle used to upload data to Storj (V3) bucket's path
-    pre-requisites: open_bucket() function has been already called
-    inputs: Bucket Handle (long), Storj Path/File Name (string) within the opened bucket, Upload Options (obj)
-    output: Uploader Handle (long), Error (string) if any else None
+    function returns information about a bucket.
+    pre-requisites: open_project function has been already called
+    inputs: Project (Object) ,Bucket Name (String)
+    output: BucketResult (Object), Error (String) if any else None
     """
 
-    def upload(self, pl_bucketHandle, ps_storjPath, po_uploadOptions):
+    def stat_bucket(self, po_project, ps_bucket_name):
         #
-        # ensure bucket handle is valid
-        if pl_bucketHandle <= 0:
-            ls_Error = "Invalid Bucket handle, please check parameter[1] passed and try again."
-            return None, ls_Error
+        # ensure project object is valid
+        if po_project is None:
+            ls_error = "Invalid project object, please check the parameter passed and try again."
+            return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        if po_uploadOptions is None:
-            self.m_libUplink.upload.argtypes = [BucketRef, c_char_p, POINTER(UploadOptions), POINTER(c_char_p)]
-            lO_UploadOptions = POINTER(UploadOptions)()
-        else:
-            self.m_libUplink.upload.argtypes = [BucketRef, c_char_p, UploadOptions, POINTER(c_char_p)]
-            lO_UploadOptions = po_uploadOptions
-        self.m_libUplink.upload.restype = UploaderRef
+        self.m_libUplink.stat_bucket.argtypes = [POINTER(Project), c_char_p]
+        self.m_libUplink.stat_bucket.restype = BucketResult
         #
         # prepare the input for the function
-        lc_storjPathPtr = c_char_p(ps_storjPath.encode('utf-8'))
-        lO_BucketRef = BucketRef()
-        lO_BucketRef._handle = pl_bucketHandle
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        # get uploader ref by calling the exported golang function
-        lO_uploaderRef = self.m_libUplink.upload(lO_BucketRef, lc_storjPathPtr, lO_UploadOptions, byref(lc_errorPtr))
+        lc_bucket_name_ptr = c_char_p(ps_bucket_name.encode('utf-8'))
+
+        # get bucket information by calling the exported golang function
+        lo_bucket_result = self.m_libUplink.stat_bucket(po_project, lc_bucket_name_ptr)
         #
         # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
+        if bool(lo_bucket_result.error):
+            return lo_bucket_result, lo_bucket_result.error.contents.message.decode("utf-8")
         else:
-            return lO_uploaderRef._handle, None
+            return lo_bucket_result, None
 
     """
-    function to write data to Storj (V3) bucket's path
-    pre-requisites: upload() function has been already called
-    inputs: Uploader Handle (long)0, Data to upload (LP_c_ubyte), Size of data to upload (int)
-    output: Size of data uploaded (long), Error (string) if any else None
+    function returns information about an object at the specific key.
+    pre-requisites: open_project
+    inputs: Project (Object) ,Bucket Name (String) , Object Key(String)
+    output: ObjectResult (Object), Error (string) if any else None
     """
 
-    def upload_write(self, pl_uploaderHandle, pbt_dataToWritePtr, pi_sizeToWrite):
+    def stat_object(self, po_project, ps_bucket_name, ps_storj_path):
         #
-        # ensure uploader handle is valid
-        if pl_uploaderHandle <= 0:
-            ls_Error = "Invalid Uploader handle, please check parameter[1] passed and try again."
-            return None, ls_Error
+        # ensure project object is valid
+        if po_project is None:
+            ls_error = "Invalid project object, please check the parameter passed and try again."
+            return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.upload_write.argtypes = [UploaderRef, POINTER(c_uint8), c_size_t, POINTER(c_char_p)]
-        self.m_libUplink.upload_write.restype = c_size_t
+        self.m_libUplink.stat_object.argtypes = [POINTER(Project), c_char_p, c_char_p]
+        self.m_libUplink.stat_object.restype = ObjectResult
+        #
+        # prepare the input for the function
+        lc_bucket_name_ptr = c_char_p(ps_bucket_name.encode('utf-8'))
+        lc_storj_path_ptr = c_char_p(ps_storj_path.encode('utf-8'))
+
+        # get object information by calling the exported golang function
+        lo_object_result = self.m_libUplink.stat_object(po_project, lc_bucket_name_ptr, lc_storj_path_ptr)
+        #
+        # if error occurred
+        if bool(lo_object_result.error):
+            return lo_object_result, lo_object_result.error.contents.message.decode("utf-8")
+        else:
+            return lo_object_result, None
+
+    """
+    function creates a new bucket.
+    pre-requisites: open_project function has been already called
+    inputs: Project (Object) ,Bucket Name (String)
+    output: BucketResult (Object), Error (String) if any else None
+    """
+
+    def create_bucket(self, po_project, ps_bucket_name):
+        #
+        # ensure project object is valid
+        if po_project is None:
+            ls_error = "Invalid project object, please check the parameter passed and try again."
+            return None, ls_error
+        #
+        # declare types of arguments and response of the corresponding golang function
+        self.m_libUplink.create_bucket.argtypes = [POINTER(Project), c_char_p]
+        self.m_libUplink.create_bucket.restype = BucketResult
+        #
+        # prepare the input for the function
+        lc_bucket_name_ptr = c_char_p(ps_bucket_name.encode('utf-8'))
+
+        # create bucket by calling the exported golang function
+        lo_bucket_result = self.m_libUplink.create_bucket(po_project, lc_bucket_name_ptr)
+        #
+        # if error occurred
+        if bool(lo_bucket_result.error):
+            return lo_bucket_result, lo_bucket_result.error.contents.message.decode("utf-8")
+        else:
+            return lo_bucket_result, None
+
+    """
+    function starts an upload to the specified key.
+    pre-requisites: open_project function has been already called
+    inputs: Project (Object), Bucket Name (String), Object Key(String), Upload Options(Object)
+    output: UploadResult (Object), Error (String) if any else None
+    """
+
+    def upload_object(self, po_project, ps_bucket_name, ps_storj_path, po_upload_options):
+        #
+        # ensure project object is valid
+        if po_project is None:
+            ls_error = "Invalid project object, please check the parameter passed and try again."
+            return None, ls_error
+        #
+        # declare types of arguments and response of the corresponding golang function
+        self.m_libUplink.upload_object.argtypes = [POINTER(Project), c_char_p, c_char_p, POINTER(UploadOptions)]
+        self.m_libUplink.upload_object.restype = UploadResult
+        #
+        # prepare the input for the function
+        if po_upload_options is None:
+            lo_upload_options = POINTER(UploadOptions)()
+        else:
+            lo_upload_options = byref(po_upload_options)
+
+        lc_bucket_name_ptr = c_char_p(ps_bucket_name.encode('utf-8'))
+        lc_storj_path_ptr = c_char_p(ps_storj_path.encode('utf-8'))
+
+        # get uploader by calling the exported golang function
+        lo_upload_result = self.m_libUplink.upload_object(po_project, lc_bucket_name_ptr, lc_storj_path_ptr,
+                                                          lo_upload_options)
+        #
+        # if error occurred
+        if bool(lo_upload_result.error):
+            return lo_upload_result, lo_upload_result.error.contents.message.decode("utf-8")
+        else:
+            return lo_upload_result, None
+
+    #
+    """
+    function uploads bytes data passed as parameter to the object's data stream.
+    pre-requisites: upload_object function has been already called
+    inputs: Upload (Object), Bytes Data Stream(LP_c_ubyte) , Length (Integer)
+    output: WriteResult (Object), Error (String) if any else None
+    """
+
+    def upload_write(self, po_upload, pbt_data_to_write_ptr, pi_size_to_write):
+        #
+        # ensure upload object is valid
+        if po_upload is None:
+            ls_error = "Invalid upload object, please check the parameter passed and try again."
+            return None, ls_error
+        #
+        # declare types of arguments and response of the corresponding golang function
+        self.m_libUplink.upload_write.argtypes = [POINTER(Upload), POINTER(c_uint8), c_size_t]
+        self.m_libUplink.upload_write.restype = WriteResult
         #
         # prepare the inputs for the function
-        lc_sizeToWrite = c_size_t(pi_sizeToWrite)
-        lO_UploaderRef = UploaderRef()
-        lO_UploaderRef._handle = pl_uploaderHandle
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
+        lc_size_to_write = c_size_t(pi_size_to_write)
+
         # upload data by calling the exported golang function
-        lc_sizeWritten = self.m_libUplink.upload_write(lO_UploaderRef, pbt_dataToWritePtr, lc_sizeToWrite,
-                                                       byref(lc_errorPtr))
+        lo_write_result = self.m_libUplink.upload_write(po_upload, pbt_data_to_write_ptr, lc_size_to_write)
         #
         # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
+        if bool(lo_write_result.error):
+            return lo_write_result, lo_write_result.error.contents.message.decode("utf-8")
         else:
-            return lc_sizeWritten, None
+            return lo_write_result, None
 
     """
-    function to commit and finalize file for uploaded data to Storj (V3) bucket's path
-    pre-requisites: upload() function has been already called
-    inputs: Uploader Handle (long)
-    output: Error (string) if any else None
+    function commits the uploaded data.
+    pre-requisites: upload_object function has been already called
+    inputs: Upload (Object)
+    output: Error (Object) if any else None
     """
 
-    def upload_commit(self, pl_uploaderHandle):
+    def upload_commit(self, po_upload):
         #
-        # ensure uploader handle is valid
-        if pl_uploaderHandle <= 0:
-            ls_Error = "Invalid Uploader handle, please check parameter[1] passed and try again."
-            return ls_Error
+        # ensure upload object is valid
+        if po_upload is None:
+            ls_error = "Invalid upload object, please check the parameter passed and try again."
+            return ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.upload_write.argtypes = [UploaderRef, POINTER(c_char_p)]
-        self.m_libUplink.upload_write.restype = None
+        self.m_libUplink.upload_commit.argtypes = [POINTER(Upload)]
+        self.m_libUplink.upload_commit.restype = POINTER(Error)
         #
-        # prepare the inputs for the function
-        lO_UploaderRef = UploaderRef()
-        lO_UploaderRef._handle = pl_uploaderHandle
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
+
         # upload commit by calling the exported golang function
-        self.m_libUplink.upload_commit(lO_UploaderRef, byref(lc_errorPtr))
+        lo_error = self.m_libUplink.upload_commit(po_upload)
         #
         # if error occurred
-        if lc_errorPtr.value is not None:
-            return lc_errorPtr.value.decode("utf-8")
+        if bool(lo_error):
+            return lo_error
         else:
             return None
 
     """
-    function to get downloader handle to download Storj (V3) object's data and store it on local computer
-    pre-requisites: open_bucket() function has been already called
-    inputs: Bucket Handle (long), Storj Path/File Name (string) within the opened bucket
-    output: Downloader Handle (long), Error (string) if any else None
+    function aborts an ongoing upload.
+    pre-requisites: upload_object function has been already called
+    inputs: Upload (Object)
+    output: Error (Object) if any else None
     """
 
-    def download(self, pl_bucketHandle, ps_storjPath):
+    def upload_abort(self, po_upload):
         #
-        # ensure bucket handle is valid
-        if pl_bucketHandle <= 0:
-            ls_Error = "Invalid Bucket handle, please check parameter[1] passed and try again."
-            return None, ls_Error
+        # ensure upload object is valid
+        if po_upload is None:
+            ls_error = "Invalid upload object, please check the parameter passed and try again."
+            return ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.download.argtypes = [BucketRef, c_char_p, POINTER(c_char_p)]
-        self.m_libUplink.download.restype = DownloaderRef
+        self.m_libUplink.upload_abort.argtypes = [POINTER(Upload)]
+        self.m_libUplink.upload_abort.restype = POINTER(Error)
+        #
+
+        # abort ongoing upload by calling the exported golang function
+        lo_error = self.m_libUplink.upload_abort(po_upload)
+        #
+        # if error occurred
+        if bool(lo_error):
+            return lo_error
+        else:
+            return None
+
+    """
+    function to set custom meta information while uploading data
+    pre-requisites: upload_object function has been already called
+    inputs: Upload (Object), CustomMetadata (Object)
+    output: Error (Object) if any else None
+    """
+
+    def upload_set_custom_metadata(self, po_upload, po_custom_metadata):
+        #
+        # ensure upload object is valid
+        if po_upload is None:
+            ls_error = "Invalid upload object, please check the parameter passed and try again."
+            return ls_error
+        #
+        # declare types of arguments and response of the corresponding golang function
+        self.m_libUplink.upload_set_custom_metadata.argtypes = [POINTER(Upload), CustomMetadata]
+        self.m_libUplink.upload_set_custom_metadata.restype = POINTER(Error)
         #
         # prepare the input for the function
-        lc_storjPathPtr = c_char_p(ps_storjPath.encode('utf-8'))
-        lO_BucketRef = BucketRef()
-        lO_BucketRef._handle = pl_bucketHandle
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        # get downloader ref by calling the exported golang function
-        lO_downloaderRef = self.m_libUplink.download(lO_BucketRef, lc_storjPathPtr, byref(lc_errorPtr))
+        if po_custom_metadata is None:
+            lo_custom_metadata = CustomMetadata()
+        else:
+            lo_custom_metadata = po_custom_metadata
+        #
+        # set custom metadata to upload by calling the exported golang function
+        lo_error = self.m_libUplink.upload_set_custom_metadata(po_upload, lo_custom_metadata)
         #
         # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
+        if bool(lo_error):
+            return lo_error
         else:
-            return lO_downloaderRef._handle, None
+            return None
 
     """
-    function to read Storj (V3) object's data and return the data
-    pre-requisites: download() function has been already called
-    inputs: Downloader Handle (long), Length of data to download (int)
-    output: Data downloaded (LP_c_ubyte), Size of data downloaded (int), Error (string) if any else None
+    function returns information about the downloaded object.
+    pre-requisites: download_object function has been already called
+    inputs: Download (Object)
+    output: Object Result (Object), Error (String) if any else None
     """
 
-    def download_read(self, pl_downloaderHandle, pi_sizeToRead):
+    def download_info(self, po_download):
         #
-        # ensure downloader handle is valid
-        if pl_downloaderHandle <= 0:
-            ls_Error = "Invalid Downloader handle, please check parameter[1] passed and try again."
-            return None, None, ls_Error
+        # ensure download object is valid
+        if po_download is None:
+            ls_error = "Invalid download object, please check the parameter passed and try again."
+            return ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.download_read.argtypes = [DownloaderRef, POINTER(c_uint8), c_size_t, POINTER(c_char_p)]
-        self.m_libUplink.download_read.restype = c_size_t
+        self.m_libUplink.download_info.argtypes = [POINTER(Download)]
+        self.m_libUplink.download_info.restype = ObjectResult
         #
-        # prepare the inputs for the function
-        lc_data_size = c_int32(pi_sizeToRead)
-        lc_dataToWrite = [0]
-        lc_dataToWrite = (c_uint8 * lc_data_size.value)(*lc_dataToWrite)
-        lc_dataToWritePtr = cast(lc_dataToWrite, POINTER(c_uint8))
-        lc_sizeToRead = c_size_t(pi_sizeToRead)
-        lO_DownloaderRef = DownloaderRef()
-        lO_DownloaderRef._handle = pl_downloaderHandle
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        # read file by calling the exported golang function
-        lc_sizeRead = self.m_libUplink.download_read(lO_DownloaderRef, lc_dataToWritePtr, lc_sizeToRead,
-                                                     byref(lc_errorPtr))
+        # get last download info by calling the exported golang function
+        lo_object_result = self.m_libUplink.download_info(po_download)
         #
         # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, None, lc_errorPtr.value.decode("utf-8")
+        if bool(lo_object_result.error):
+            return lo_object_result, lo_object_result.error.contents.message.decode("utf-8")
         else:
-            return lc_dataToWritePtr, int(lc_sizeRead), None
+            return lo_object_result, None
 
     """
-    function to close downloader after completing the data read process
-    pre-requisites: download() function has been already called
-    inputs: Downloader Handle (long)
-    output: Error (string) if any else None
+    function returns the last information about the uploaded object.
+    pre-requisites: upload_object function has been already called
+    inputs: Upload (Object)
+    output: Object Result (Object), Error (String) if any else None
     """
 
-    def download_close(self, pl_downloaderHandle):
+    def upload_info(self, po_upload):
         #
-        # ensure downloader handle is valid
-        if pl_downloaderHandle <= 0:
-            ls_Error = "Invalid Downloader handle, please check parameter[1] passed and try again."
-            return ls_Error
+        # ensure upload object is valid
+        if po_upload is None:
+            ls_error = "Invalid upload object, please check the parameter passed and try again."
+            return ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.download_close.argtypes = [DownloaderRef, POINTER(c_char_p)]
-        self.m_libUplink.download_close.restype = None
+        self.m_libUplink.upload_info.argtypes = [POINTER(Upload)]
+        self.m_libUplink.upload_info.restype = ObjectResult
+        #
+        # get last upload info by calling the exported golang function
+        lo_object_result = self.m_libUplink.upload_info(po_upload)
+        #
+        # if error occurred
+        if bool(lo_object_result.error):
+            return lo_object_result, lo_object_result.error.contents.message.decode("utf-8")
+        else:
+            return lo_object_result, None
+
+    """
+    function starts download to the specified key.
+    pre-requisites: open_project function has been already called
+    inputs: Project (Object), Bucket Name(String), Object Key(String), Download Options(Object)
+    output: DownloadResult (Object), Error (String) if any else None
+    """
+
+    def download_object(self, po_project, ps_bucket_name, ps_storj_path, po_download_options):
+        #
+        # ensure project object is valid
+        if po_project is None:
+            ls_error = "Invalid project object, please check the parameter passed and try again."
+            return None, ls_error
+        #
+        # declare types of arguments and response of the corresponding golang function
+        self.m_libUplink.download_object.argtypes = [POINTER(Project), c_char_p, c_char_p, POINTER(DownloadOptions)]
+        self.m_libUplink.download_object.restype = DownloadResult
+        #
+        # prepare the input for the function
+        if po_download_options is None:
+            lo_download_options = POINTER(DownloadOptions)()
+        else:
+            lo_download_options = byref(po_download_options)
+
+        lc_bucket_name_ptr = c_char_p(ps_bucket_name.encode('utf-8'))
+        lc_storj_path_ptr = c_char_p(ps_storj_path.encode('utf-8'))
+
+        # get downloader by calling the exported golang function
+        lo_download_result = self.m_libUplink.download_object(po_project, lc_bucket_name_ptr, lc_storj_path_ptr,
+                                                              lo_download_options)
+        #
+        # if error occurred
+        if bool(lo_download_result.error):
+            return lo_download_result, lo_download_result.error.contents.message.decode("utf-8")
+        else:
+            return lo_download_result, None
+
+    """
+    function downloads from object's data stream into bytes up to length amount.
+    pre-requisites: download_object function has been already called
+    inputs: Download (Object), Length(Integer)
+    output: Data downloaded (LP_c_ubyte), ReadResult (Object), Error (String) if any else None
+    """
+
+    def download_read(self, po_download, pi_size_to_read):
+        #
+        # ensure download object is valid
+        if po_download is None:
+            ls_error = "Invalid download object, please check the parameter passed and try again."
+            return None, None, ls_error
+        #
+        # declare types of arguments and response of the corresponding golang function
+        self.m_libUplink.download_read.argtypes = [POINTER(Download), POINTER(c_uint8), c_size_t]
+        self.m_libUplink.download_read.restype = ReadResult
         #
         # prepare the inputs for the function
-        lO_DownloaderRef = DownloaderRef()
-        lO_DownloaderRef._handle = pl_downloaderHandle
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
+        lc_data_size = c_int32(pi_size_to_read)
+        lc_data_to_write = [0]
+        lc_data_to_write = (c_uint8 * lc_data_size.value)(*lc_data_to_write)
+        lc_data_to_write_ptr = cast(lc_data_to_write, POINTER(c_uint8))
+        lc_size_to_read = c_size_t(pi_size_to_read)
+
+        # read data from Storj by calling the exported golang function
+        lc_read_result = self.m_libUplink.download_read(po_download, lc_data_to_write_ptr, lc_size_to_read)
+        #
+        # if error occurred
+        if bool(lc_read_result.error):
+            return lc_data_to_write_ptr, lc_read_result, lc_read_result.error.contents.message.decode("utf-8")
+        else:
+            return lc_data_to_write_ptr, lc_read_result, None
+
+    """
+    function closes the download.
+    pre-requisites: download_object function has been already called
+    inputs: Download (Object)
+    output: Error (Object) if any else None
+    """
+
+    def close_download(self, po_download):
+        #
+        # ensure download object is valid
+        if po_download is None:
+            ls_error = "Invalid download object, please check the parameter passed and try again."
+            return None, ls_error
+        #
+        # declare types of arguments and response of the corresponding golang function
+        self.m_libUplink.close_download.argtypes = [POINTER(Download)]
+        self.m_libUplink.close_download.restype = POINTER(Error)
+        #
         # close downloader by calling the exported golang function
-        self.m_libUplink.download_close(lO_DownloaderRef, byref(lc_errorPtr))
+        lo_error = self.m_libUplink.close_download(po_download)
         #
         # if error occurred
-        if lc_errorPtr.value is not None:
-            return lc_errorPtr.value.decode("utf-8")
+        if bool(lo_error):
+            return lo_error
         else:
             return None
 
     """
-    function to create new bucket in Storj project
-    pre-requisites: open_project() function has been already called
-    inputs: Project Handle (long), Bucket Name (string), Bucket Config (obj)
-    output: Bucket Info Handle (long), Error (string) if any else None
+    function closes the Storj(V3) project.
+    pre-requisites: open_project function has been already called
+    inputs: Project (Object)
+    output: Error (Object) if any else None
     """
 
-    def create_bucket(self, pl_projectHandle, ps_bucketName, po_bucketConfig):
+    def close_project(self, po_project):
         #
-        # ensure project handle is valid
-        if pl_projectHandle <= 0:
-            ls_Error = "Invalid Storj Project handle, please check parameter[1] passed and try again."
-            return None, ls_Error
+        # ensure project object is valid
+        if po_project is None:
+            ls_error = "Invalid project object, please check the parameter passed and try again."
+            return ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        if po_bucketConfig is None:
-            self.m_libUplink.create_bucket.argtypes = [ProjectRef, c_char_p, POINTER(BucketConfig), POINTER(c_char_p)]
-            lO_BucketConfig = POINTER(BucketConfig)()
-        else:
-            self.m_libUplink.create_bucket.argtypes = [ProjectRef, c_char_p, BucketConfig, POINTER(c_char_p)]
-            lO_BucketConfig = po_bucketConfig
-        self.m_libUplink.create_bucket.restype = BucketInfo
-        #
-        # prepare the input for the function
-        lc_BucketName = c_char_p(ps_bucketName.encode('utf-8'))
-        lO_ProjectRef = ProjectRef()
-        lO_ProjectRef._handle = pl_projectHandle
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        #  by calling the exported golang function
-        lO_bucketInfo = self.m_libUplink.create_bucket(lO_ProjectRef, lc_BucketName, lO_BucketConfig,
-                                                       byref(lc_errorPtr))
-        #
-        # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
-        else:
-            return lO_bucketInfo, None
-
-    """
-    function to close currently opened Bucket
-    pre-requisites: open_bucket() function has been already called, successfully
-    inputs: Bucket Handle (long)
-    output: Error (string) if any else None
-    """
-
-    def close_bucket(self, pl_bucketHandle):
-        #
-        # ensure bucket handle is valid
-        if pl_bucketHandle <= 0:
-            ls_Error = "Invalid Bucket handle, please check parameter[1] passed and try again."
-            return ls_Error
-        #
-        # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.close_bucket.argtypes = [BucketRef, POINTER(c_char_p)]
-        self.m_libUplink.close_bucket.restype = None
-        #
-        # prepare the input for the function
-        lO_BucketRef = BucketRef()
-        lO_BucketRef._handle = pl_bucketHandle
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        #
-        # close bucket by calling the exported golang function
-        self.m_libUplink.close_bucket(lO_BucketRef, byref(lc_errorPtr))
-        #
-        # if error occurred
-        if lc_errorPtr.value is not None:
-            return lc_errorPtr.value.decode("utf-8")
-        else:
-            return None
-
-    """
-    function to close currently opened Storj project
-    pre-requisites: open_project() function has been already called
-    inputs: Project Handle (long)
-    output: Error (string) if any else None
-    """
-
-    def close_project(self, pl_projectHandle):
-        #
-        # ensure project handle is valid
-        if pl_projectHandle <= 0:
-            ls_Error = "Invalid Storj Project handle, please check parameter[1] passed and try again."
-            return ls_Error
-        #
-        # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.close_project.argtypes = [ProjectRef, POINTER(c_char_p)]
-        self.m_libUplink.close_project.restype = None
-        #
-        # prepare the input for the function
-        lO_projectRef = ProjectRef()
-        lO_projectRef._handle = pl_projectHandle
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
+        self.m_libUplink.close_project.argtypes = [POINTER(Project)]
+        self.m_libUplink.close_project.restype = POINTER(Error)
         #
         # close Storj project by calling the exported golang function
-        self.m_libUplink.close_project(lO_projectRef, byref(lc_errorPtr))
+        lo_error = self.m_libUplink.close_project(po_project)
         #
         # if error occurred
-        if lc_errorPtr.value is not None:
-            return lc_errorPtr.value.decode("utf-8")
+        if bool(lo_error):
+            return lo_error
         else:
             return None
 
     """
-    function to close currently opened uplink
-    pre-requisites: new_uplink() function has been already called
-    inputs: Uplink Handle (long)
-    output: Error (string) if any else None
+    function lists buckets
+    pre-requisites: open_project function has been already called
+    inputs: Project (Object), ListBucketsOptions (Object)
+    output: Bucket List (Python List), Error (String) if any else None
     """
 
-    def close_uplink(self, pl_uplinkHandle):
+    def list_buckets(self, po_project, po_list_bucket_options):
         #
-        # ensure uplink handle is valid
-        if pl_uplinkHandle <= 0:
-            ls_Error = "Invalid Uplink handle, please check parameter[1] passed and try again."
-            return ls_Error
+        # ensure project object is valid
+        if po_project is None:
+            ls_error = "Invalid project object, please check the parameter passed and try again."
+            return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.close_uplink.argtypes = [UplinkRef, POINTER(c_char_p)]
-        self.m_libUplink.close_uplink.restype = None
+        self.m_libUplink.list_buckets.argtypes = [POINTER(Project), POINTER(ListBucketsOptions)]
+        self.m_libUplink.list_buckets.restype = POINTER(BucketIterator)
+        #
+        self.m_libUplink.bucket_iterator_item.argtypes = [POINTER(BucketIterator)]
+        self.m_libUplink.bucket_iterator_item.restype = POINTER(Bucket)
+        #
+        self.m_libUplink.bucket_iterator_next.argtypes = [POINTER(BucketIterator)]
+        self.m_libUplink.bucket_iterator_next.restype = c_bool
         #
         # prepare the input for the function
-        lO_UplinkRef = UplinkRef()
-        lO_UplinkRef._handle = pl_uplinkHandle
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        #
-        # close uplink by calling the exported golang function
-        self.m_libUplink.close_uplink(lO_UplinkRef, byref(lc_errorPtr))
+        if po_list_bucket_options is None:
+            lo_list_bucket_options = POINTER(ListBucketsOptions)()
+        else:
+            lo_list_bucket_options = byref(po_list_bucket_options)
+
+        # get bucket list by calling the exported golang function
+        lo_bucket_iterator = self.m_libUplink.list_buckets(po_project, lo_list_bucket_options)
+        lo_bucket_list = list()
+        while self.m_libUplink.bucket_iterator_next(lo_bucket_iterator):
+            lo_bucket_list.append(self.m_libUplink.bucket_iterator_item(lo_bucket_iterator))
+
         #
         # if error occurred
-        if lc_errorPtr.value is not None:
-            return lc_errorPtr.value.decode("utf-8")
+        if len(lo_bucket_list) == 0:
+            return None, "No bucket found!"
         else:
-            return None
+            return lo_bucket_list, None
 
     """
-    function to list all the buckets in a Storj project
-    pre-requisites: open_project() function has been already called
-    inputs: Project Handle (long), Bucket List Options (obj)
-    output: Bucket List (obj), Error (string) if any else None
+    function lists objects
+    pre-requisites: open_project function has been already called
+    inputs: Project (Object), Bucket Name (String), ListObjectsOptions (Object)
+    output: Bucket List (Python List), Error (String) if any else None
     """
 
-    def list_buckets(self, pl_projectHandle, po_bucketListOptions):
+    def list_objects(self, po_project, ps_bucket_name, po_list_object_options):
         #
-        # ensure project handle is valid
-        if pl_projectHandle <= 0:
-            ls_Error = "Invalid Storj Project handle, please check parameter[1] passed and try again."
-            return None, ls_Error
+        # ensure project object is valid
+        if po_project is None:
+            ls_error = "Invalid project object, please check the parameter passed and try again."
+            return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        if po_bucketListOptions is None:
-            self.m_libUplink.list_buckets.argtypes = [ProjectRef, POINTER(BucketListOptions), POINTER(c_char_p)]
-            lO_BucketListOptions = POINTER(BucketListOptions)()
-        else:
-            self.m_libUplink.list_buckets.argtypes = [ProjectRef, BucketListOptions, POINTER(c_char_p)]
-            lO_BucketListOptions = po_bucketListOptions
-        self.m_libUplink.list_buckets.restype = BucketList
+        self.m_libUplink.list_objects.argtypes = [POINTER(Project), c_char_p, POINTER(ListObjectsOptions)]
+        self.m_libUplink.list_objects.restype = POINTER(ObjectIterator)
+        #
+        self.m_libUplink.object_iterator_item.argtypes = [POINTER(ObjectIterator)]
+        self.m_libUplink.object_iterator_item.restype = POINTER(Object)
+        #
+        self.m_libUplink.object_iterator_next.argtypes = [POINTER(ObjectIterator)]
+        self.m_libUplink.object_iterator_next.restype = c_bool
         #
         # prepare the input for the function
-        lO_ProjectRef = ProjectRef()
-        lO_ProjectRef._handle = pl_projectHandle
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        #  by calling the exported golang function
-        lO_bucketList = self.m_libUplink.list_buckets(lO_ProjectRef, lO_BucketListOptions, byref(lc_errorPtr))
+        if po_list_object_options is None:
+            lo_list_object_options = POINTER(ListObjectsOptions)()
+        else:
+            lo_list_object_options = byref(po_list_object_options)
+        lc_bucket_name_ptr = c_char_p(ps_bucket_name.encode('utf-8'))
+
+        # get object list by calling the exported golang function
+        lo_object_iterator = self.m_libUplink.list_objects(po_project, lc_bucket_name_ptr, lo_list_object_options)
+        lo_object_list = list()
+        while self.m_libUplink.object_iterator_next(lo_object_iterator):
+            lo_object_list.append(self.m_libUplink.object_iterator_item(lo_object_iterator))
+
         #
         # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
+        if len(lo_object_list) == 0:
+            return None, "No object found!"
         else:
-            return lO_bucketList, None
+            return lo_object_list, None
 
     """
-    function to list all the objects in a bucket
-    pre-requisites: open_project() function has been already called
-    inputs: Bucket Handle (long), List Options (obj)
-    output: Bucket List (obj), Error (string) if any else None
+    function deletes a bucket.
+    pre-requisites: open_project function has been already called
+    inputs: Project (Object), Bucket Name (String)
+    output: BucketResult (Object), Error (String) if any else None
     """
 
-    def list_objects(self, pl_bucketHandle, po_listOptions):
-        #
-        # ensure project handle is valid
-        if pl_bucketHandle <= 0:
-            ls_Error = "Invalid Bucket handle, please check parameter[1] passed and try again."
-            return None, ls_Error
-        #
-        # declare types of arguments and response of the corresponding golang function
-        if po_listOptions is None:
-            self.m_libUplink.list_objects.argtypes = [BucketRef, POINTER(ListOptions), POINTER(c_char_p)]
-            lO_ListOptions = POINTER(ListOptions)()
-        else:
-            self.m_libUplink.list_objects.argtypes = [BucketRef, POINTER(ListOptions), POINTER(c_char_p)]
-            lO_ListOptions = byref(po_listOptions)
-        self.m_libUplink.list_objects.restype = ObjectList
-        #
-        # prepare the input for the function
-        lO_ProjectRef = BucketRef()
-        lO_ProjectRef._handle = pl_bucketHandle
-
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        #  by calling the exported golang function
-        lO_objectList = self.m_libUplink.list_objects(lO_ProjectRef, lO_ListOptions, byref(lc_errorPtr))
-        #
-        # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
-        else:
-            return lO_objectList, None
-
-    """
-    function to delete a bucket (if bucket contains any Objects at time of deletion, they may be lost permanently)
-    pre-requisites: open_project() function has been already called, successfully
-    inputs: Storj Project Handle (long), Bucket Name (string)
-    output: Error (string) if any else None
-    """
-
-    def delete_bucket(self, pl_projectHandle, ps_bucketName):
-        #
-        # ensure project handle is valid
-        if pl_projectHandle <= 0:
-            ls_Error = "Invalid Storj Project handle, please check parameter[1] passed and try again."
-            return ls_Error
-        #
-        # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.delete_bucket.argtypes = [ProjectRef, c_char_p, POINTER(c_char_p)]
-        self.m_libUplink.delete_bucket.restype = None
-        #
-        # prepare the input for the function
-        lc_BucketName = c_char_p(ps_bucketName.encode('utf-8'))
-        lO_ProjectRef = ProjectRef()
-        lO_ProjectRef._handle = pl_projectHandle
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        #  by calling the exported golang function
-        self.m_libUplink.delete_bucket(lO_ProjectRef, lc_BucketName, byref(lc_errorPtr))
-        #
-        # if error occurred
-        if lc_errorPtr.value is not None:
-            return lc_errorPtr.value.decode("utf-8")
-        else:
-            return None
-
-    """
-    function to delete an object in a bucket
-    pre-requisites: open_bucket() function has been already called, successfully
-    inputs: Bucket Handle (long), Object Path (string)
-    output: Error (string) if any else None
-    """
-
-    def delete_object(self, pl_bucketHandle, ps_objectPath):
-        #
-        # ensure project handle is valid
-        if pl_bucketHandle <= 0:
-            ls_Error = "Invalid Bucket handle, please check parameter[1] passed and try again."
-            return ls_Error
-        #
-        # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.delete_object.argtypes = [BucketRef, c_char_p, POINTER(c_char_p)]
-        self.m_libUplink.delete_object.restype = None
-        #
-        # prepare the input for the function
-        lc_ObjectPath = c_char_p(ps_objectPath.encode('utf-8'))
-        lO_BucketRef = BucketRef()
-        lO_BucketRef._handle = pl_bucketHandle
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        #  by calling the exported golang function
-        self.m_libUplink.delete_object(lO_BucketRef, lc_ObjectPath, byref(lc_errorPtr))
-        #
-        # if error occurred
-        if lc_errorPtr.value is not None:
-            return lc_errorPtr.value.decode("utf-8")
-        else:
-            return None
-
-    """
-    function to free Bucket List pointer
-    pre-requisites: list_bucket() function has been already called
-    inputs: Bucket List (obj)
-    output: Error (string) if any else None
-    """
-
-    def free_bucket_list(self, po_bucketList):
-        #
-        # ensure bucket list pointer is valid
-        if po_bucketList is None:
-            ls_Error = "Empty object passed/object memory already free, please check parameter[1] passed and try again."
-            return ls_Error
-        #
-        # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.free_bucket_list.argtypes = [BucketList]
-        self.m_libUplink.free_bucket_list.restype = None
-        #
-        # close uplink by calling the exported golang function
-        self.m_libUplink.free_bucket_list(po_bucketList)
-        #
-        # is successful:
-        return None
-
-    """
-    function to free Object List pointer
-    pre-requisites: list_objects() function has been already called
-    inputs: Object List (obj)
-    output: Error (string) if any else None
-    """
-
-    def free_list_objects(self, po_objectList):
-        #
-        # ensure object list pointer is valid
-        if po_objectList is None:
-            ls_Error = "Empty object passed/object memory already free, please check parameter[1] passed and try again."
-            return ls_Error
-        #
-        # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.free_list_objects.argtypes = [ObjectList]
-        self.m_libUplink.free_list_objects.restype = None
-        #
-        # free list objects by calling the exported golang function
-        self.m_libUplink.free_list_objects(po_objectList)
-        #
-        # is successful:
-        return None
-
-    """
-    function to create new Scope key
-    pre-requisites: parse_api_key() and get_encryption_access() functions have been already called
-    inputs: Satellite Address (string), Api Key Parsed Handle (long),  Serialized Encryption Access (string)
-    output: Scope Handle (long), Error (string) if any else None
-    """
-
-    def new_scope(self, ps_satelliteAddress, pl_apiKeyParsedHandle, ps_serializedEncryptionAccess):
+    def delete_bucket(self, po_project, ps_bucket_name):
         #
         # ensure project handle and encryption handles are valid
-        if pl_apiKeyParsedHandle <= 0:
-            ls_Error = "Invalid ParsedApiKey handle, please check parameter[2] passed and try again."
-            return None, ls_Error
+        if po_project is None:
+            ls_error = "Invalid project object, please check the parameter passed and try again."
+            return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.parse_encryption_access.argtypes = [c_char_p, POINTER(c_char_p)]
-        self.m_libUplink.parse_encryption_access.restype = EncryptionAccessRef
+        self.m_libUplink.delete_bucket.argtypes = [POINTER(Project), c_char_p]
+        self.m_libUplink.delete_bucket.restype = BucketResult
         #
         # prepare the input for the function
-        lc_encryptionAccessPtr = c_char_p(ps_serializedEncryptionAccess.encode('utf-8'))
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        # get encryption access by calling the exported golang function
-        lO_EncryptionAccessRef = self.m_libUplink.parse_encryption_access(lc_encryptionAccessPtr, byref(lc_errorPtr))
+        lc_bucket_name_ptr = c_char_p(ps_bucket_name.encode('utf-8'))
+
+        # delete bucket by calling the exported golang function
+        lo_bucket_result = self.m_libUplink.delete_bucket(po_project, lc_bucket_name_ptr)
         #
         # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
-        #
-        #
-        # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.new_scope.argtypes = [c_char_p, APIKeyRef, EncryptionAccessRef, POINTER(c_char_p)]
-        self.m_libUplink.new_scope.restype = ScopeRef
-        #
-        # prepare the input for the function
-        lc_satelliteAddressPtr = c_char_p(ps_satelliteAddress.encode('utf-8'))
-        lO_APIKeyRef = APIKeyRef()
-        lO_APIKeyRef._handle = pl_apiKeyParsedHandle
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        # create new scope by calling the exported golang function
-        lO_ScopeRef = self.m_libUplink.new_scope(lc_satelliteAddressPtr, lO_APIKeyRef, lO_EncryptionAccessRef,
-                                                 byref(lc_errorPtr))
-        #
-        # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
+        if bool(lo_bucket_result.error):
+            return lo_bucket_result, lo_bucket_result.error.contents.message.decode("utf-8")
         else:
-            return lO_ScopeRef._handle, None
+            return lo_bucket_result, None
 
     """
-    function to get Scope satellite address
-    pre-requisites: none
-    inputs: Scope Handle (long)
-    output: Satellite Address (string), Error (string) if any else None
+    function deletes an object.
+    pre-requisites: open_project function has been already called
+    inputs: Project (Object), Bucket Name (String), Object Key (String)
+    output: ObjectResult (Object), Error (String) if any else None
     """
 
-    def get_scope_satellite_address(self, pl_scopeHandle):
+    def delete_object(self, po_project, ps_bucket_name, ps_storj_path):
         #
         # ensure project handle and encryption handles are valid
-        if pl_scopeHandle <= 0:
-            ls_Error = "Invalid Scope handle, please check parameter[1] passed and try again."
-            return None, ls_Error
+        if po_project is None:
+            ls_error = "Invalid project object, please check the parameter passed and try again."
+            return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.get_scope_satellite_address.argtypes = [ScopeRef, POINTER(c_char_p)]
-        self.m_libUplink.get_scope_satellite_address.restype = c_char_p
+        self.m_libUplink.delete_object.argtypes = [POINTER(Project), c_char_p, c_char_p]
+        self.m_libUplink.delete_object.restype = ObjectResult
         #
         # prepare the input for the function
-        lO_ScopeRef = ScopeRef()
-        lO_ScopeRef._handle = pl_scopeHandle
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        # get satellite address from Scope by calling the exported golang function
-        lc_satelliteAddressPtr = self.m_libUplink.get_scope_satellite_address(lO_ScopeRef, byref(lc_errorPtr))
+        lc_bucket_name_ptr = c_char_p(ps_bucket_name.encode('utf-8'))
+        lc_storj_path_ptr = c_char_p(ps_storj_path.encode('utf-8'))
+
+        # delete object by calling the exported golang function
+        lo_object_result = self.m_libUplink.delete_object(po_project, lc_bucket_name_ptr, lc_storj_path_ptr)
         #
         # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
+        if bool(lo_object_result.error):
+            return lo_object_result, lo_object_result.error.contents.message.decode("utf-8")
         else:
-            return lc_satelliteAddressPtr.decode("utf-8"), None
+            return lo_object_result, None
 
     """
-        function to get Scope API key
-        pre-requisites: none
-        inputs: Scope Handle (long)
-        output: Parsed Api Key Handle (long), Error (string) if any else None
-        """
-
-    def get_scope_api_key(self, pl_scopeHandle):
-        #
-        # ensure project handle and encryption handles are valid
-        if pl_scopeHandle <= 0:
-            ls_Error = "Invalid Scope handle, please check parameter[1] passed and try again."
-            return None, ls_Error
-        #
-        # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.get_scope_api_key.argtypes = [ScopeRef, POINTER(c_char_p)]
-        self.m_libUplink.get_scope_api_key.restype = APIKeyRef
-        #
-        # prepare the input for the function
-        lO_ScopeRef = ScopeRef()
-        lO_ScopeRef._handle = pl_scopeHandle
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        # get Api Key from Scope by calling the exported golang function
-        lO_APIKeyRef = self.m_libUplink.get_scope_api_key(lO_ScopeRef, byref(lc_errorPtr))
-        #
-        # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
-        else:
-            return lO_APIKeyRef._handle, None
-
-    """
-        function to get Scope Encryption Access
-        pre-requisites: none
-        inputs: Scope Handle (long)
-        output: Serialized Encryption Access (string), Error (string) if any else None
-        """
-
-    def get_scope_enc_access(self, pl_scopeHandle):
-        #
-        # ensure project handle and encryption handles are valid
-        if pl_scopeHandle <= 0:
-            ls_Error = "Invalid Scope handle, please check parameter[1] passed and try again."
-            return None, ls_Error
-        #
-        # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.get_scope_enc_access.argtypes = [ScopeRef, POINTER(c_char_p)]
-        self.m_libUplink.get_scope_enc_access.restype = EncryptionAccessRef
-        #
-        # prepare the input for the function
-        lO_ScopeRef = ScopeRef()
-        lO_ScopeRef._handle = pl_scopeHandle
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        # get encryption access from Scope by calling the exported golang function
-        lO_EncryptionAccessRef = self.m_libUplink.get_scope_enc_access(lO_ScopeRef, byref(lc_errorPtr))
-        #
-        # ensure encryption key handle is valid
-        if lO_EncryptionAccessRef._handle <= 0:
-            ls_Error = "FAILED to created encryption access from the salted key!"
-            return None, ls_Error
-
-        self.m_libUplink.serialize_encryption_access.argtypes = [EncryptionAccessRef, POINTER(c_char_p)]
-        self.m_libUplink.serialize_encryption_access.restype = c_char_p
-        #
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        # get serialized encryption access by calling the exported golang function
-        lc_serializedEncryptionAccess = self.m_libUplink.serialize_encryption_access(lO_EncryptionAccessRef,
-                                                                                     byref(lc_errorPtr))
-        #
-        # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
-        else:
-            return lc_serializedEncryptionAccess.decode("utf-8"), None
-
-    """
-    function to get Parsed Scope key
+    function to parses serialized access grant string
     pre-requisites: none
-    inputs: Serialized Scope Key (string)
-    output: Parsed Scope Key Handle (long), Error (string) if any else None
+    inputs: Serialized Access (String)
+    output: AccessResult (Object), Error (String) if any else None
     """
 
-    def parse_scope(self, ps_serializedScope):
+    def parse_access(self, ps_serialized_access):
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.parse_scope.argtypes = [c_char_p, POINTER(c_char_p)]
-        self.m_libUplink.parse_scope.restype = ScopeRef
+        self.m_libUplink.parse_access.argtypes = [c_char_p]
+        self.m_libUplink.parse_access.restype = AccessResult
         #
-        # prepare the input for the function
-        lc_serializedScopePtr = c_char_p(ps_serializedScope.encode('utf-8'))
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        # get parsed scope by calling the exported golang function
-        lO_ScopeRef = self.m_libUplink.parse_scope(lc_serializedScopePtr, byref(lc_errorPtr))
+
+        # get parsed access by calling the exported golang function
+        lo_access_result = self.m_libUplink.parse_access(ps_serialized_access)
         #
         # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
+        if bool(lo_access_result.error):
+            return lo_access_result, lo_access_result.error.contents.message.decode("utf-8")
         else:
-            return lO_ScopeRef._handle, None
+            return lo_access_result, None
 
     """
-    function to get serialized Scope key
-    pre-requisites: none
-    inputs: Parsed Scope Handle (long)
-    output: Serialized Scope Key (string), Error (string) if any else None
+    function serializes access grant into a string.
+    pre-requisites: request_access_with_passphrase or parse_access function has been already called
+    inputs: Access (Object)
+    output: StringResult (Object), Error (String) if any else None
     """
 
-    def serialize_scope(self, pl_scopeHandle):
+    def access_serialize(self, po_access):
         #
-        # ensure scope handle is valid
-        if pl_scopeHandle <= 0:
-            ls_Error = "Invalid Scope handle, please check parameter[1] passed and try again."
-            return None, ls_Error
+        # ensure access object is valid
+        if po_access is None:
+            ls_error = "Invalid access object, please check parameter passed and try again."
+            return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.serialize_scope.argtypes = [ScopeRef, POINTER(c_char_p)]
-        self.m_libUplink.serialize_scope.restype = c_char_p
+        self.m_libUplink.access_serialize.argtypes = [POINTER(Access)]
+        self.m_libUplink.access_serialize.restype = StringResult
         #
-        # prepare the input for the function
-        lO_ScopeRef = ScopeRef()
-        lO_ScopeRef._handle = pl_scopeHandle
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        # get serialized by calling the exported golang function
-        lc_serializedScopePtr = self.m_libUplink.serialize_scope(lO_ScopeRef, byref(lc_errorPtr))
+        # get serialized access by calling the exported golang function
+        lc_string_result = self.m_libUplink.access_serialize(po_access)
         #
         # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
+        if bool(lc_string_result.error):
+            return lc_string_result, lc_string_result.error.contents.message.decode("utf-8")
         else:
-            return lc_serializedScopePtr.decode("utf-8"), None
+            return lc_string_result, None
 
     """
-    function to restrict Scope key with the provided caveat and encryption restrictions
-    pre-requisites: none
-    inputs: Parsed Scope Key Handle (long), Caveat (obj), Encryption Restriction (list of dictionaries)
-    output: Restricted Scope Key Handle (long), Error (string) if any else None
+    function creates new access grant with specific permission. Permission will be applied to prefixes when defined.
+    pre-requisites: request_access_with_passphrase or parse_access function has been already called
+    inputs: Access (Object), Permission (Object), Share Prefix (Python List of Dictionaries)
+    output: String Result (Object), Error (String) if any else None
     """
 
-    def restrict_scope(self, pl_scopeHandle, po_caveat, po_encryptionRestriction):
+    def access_share(self, po_access, po_permission, po_shared_prefix):
         #
-        # ensure scope handle is valid
-        if pl_scopeHandle <= 0:
-            ls_Error = "Invalid Scope handle, please check parameter[1] passed and try again."
-            return None, ls_Error
+        # ensure access object is valid
+        if po_access is None:
+            ls_error = "Invalid access object, please check parameter passed and try again."
+            return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libUplink.restrict_scope.argtypes = [ScopeRef, Caveat, POINTER(EncryptionRestriction), c_size_t,
-                                                    POINTER(c_char_p)]
-        self.m_libUplink.restrict_scope.restype = ScopeRef
+        self.m_libUplink.access_share.argtypes = [POINTER(Access), Permission, POINTER(SharePrefix), c_size_t]
+        self.m_libUplink.access_share.restype = AccessResult
         #
         # prepare the input for the function
-        lO_ScopeRef = ScopeRef()
-        lO_ScopeRef._handle = pl_scopeHandle
-        # check and create valid Caveat parameter
-        if po_caveat is None:
-            lO_Caveat = Caveat()
+        # check and create valid Permission parameter
+        if po_permission is None:
+            lo_permission = Permission()
         else:
-            lO_Caveat = po_caveat
-        # check and create valid EncryptionRestriction parameter
-        # po_encryptionRestriction = [{"bucket": "bucketname01", "path_prefix": "uploadPath01/data"}]
-        if po_encryptionRestriction is None:
-            lO_EncryptionRestriction = POINTER(EncryptionRestriction)()
-            lc_erArraySize = c_size_t(0)
+            lo_permission = po_permission
+        # check and create valid Share Prefix parameter
+        # po_shared_prefix = [{"bucket": "bucketname01", "prefix": "uploadPath01/data"}]
+        if po_shared_prefix is None:
+            lo_shared_prefix = POINTER(SharePrefix)()
+            lc_array_size = c_size_t(0)
         else:
-            num_of_structs = len(po_encryptionRestriction)
-            li_arraySize = (EncryptionRestriction * num_of_structs)()
-            lO_erArray = cast(li_arraySize, POINTER(EncryptionRestriction))
-            for i, val in enumerate(po_encryptionRestriction):
-                lO_erArray[i] = EncryptionRestriction(c_char_p(val['bucket'].encode('utf-8')),
-                                                      c_char_p(val['path_prefix'].encode('utf-8')))
-            lO_EncryptionRestriction = lO_erArray
-            lc_erArraySize = c_size_t(num_of_structs)
-        # create error ref pointer
-        lc_errorPtr = c_char_p()
-        # get parsed scope by calling the exported golang function
-        lO_ScopeRefRet = self.m_libUplink.restrict_scope(lO_ScopeRef, lO_Caveat, lO_EncryptionRestriction, lc_erArraySize,
-                                                      byref(lc_errorPtr))
+            num_of_structs = len(po_shared_prefix)
+            li_array_size = (SharePrefix * num_of_structs)()
+            lo_array = cast(li_array_size, POINTER(SharePrefix))
+            for i, val in enumerate(po_shared_prefix):
+                lo_array[i] = SharePrefix(c_char_p(val['bucket'].encode('utf-8')),
+                                          c_char_p(val['prefix'].encode('utf-8')))
+            lo_shared_prefix = lo_array
+            lc_array_size = c_size_t(num_of_structs)
+        #
+        # get shareable access by calling the exported golang function
+        lo_access_result = self.m_libUplink.access_share(po_access, lo_permission, lo_shared_prefix,
+                                                         lc_array_size)
         #
         # if error occurred
-        if lc_errorPtr.value is not None:
-            return None, lc_errorPtr.value.decode("utf-8")
+        if bool(lo_access_result.error):
+            return lo_access_result, lo_access_result.error.contents.message.decode("utf-8")
         else:
-            return lO_ScopeRefRet._handle, None
+            return lo_access_result, None
