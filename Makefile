@@ -9,9 +9,9 @@
     
     all: build
     build: 
-	git clone https://github.com/storj/uplink-c	
-	cd uplink-c; $(GOBUILD) -o $(LIBRARY_NAME) -buildmode=c-shared;mv *.so ../
+	    git clone $(GIT_REPO)
+	    cd uplink-c; $(GOBUILD) -o $(LIBRARY_NAME) -buildmode=c-shared;mv *.so ../
     clean: 
-	$(GOCLEAN)
-	rm -f $(LIBRARY_NAME)
-	rm -rf $(UPLINKC_NAME)
+	    $(GOCLEAN)
+	    rm -f $(LIBRARY_NAME)
+	    rm -rf $(UPLINKC_NAME)
