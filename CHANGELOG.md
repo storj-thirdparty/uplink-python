@@ -1,5 +1,11 @@
 # storj-python binding changelog
 
+## [1.0.1] - 06-05-2020
+### Changelog:
+* Migrated package on pip (pypi) from storjPython to storj-python
+* Building libuplinkc.so is now handled by pip install.
+
+
 ## [1.0.1] - 19-04-2020
 ### Changelog:
 * Changes made according to latest storj/uplink-c RC v1.0.1
