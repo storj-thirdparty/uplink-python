@@ -91,4 +91,4 @@ The sample *hello_storj.py* code calls the *uplink.py* file and imports the *Lib
 For more information on function definations and diagrams, check out the [Detail](//github.com/storj-thirdparty/uplink-python/wiki/Detail) or jump to:
 * [Uplink-Python Binding Functions](//github.com/storj-thirdparty/uplink-python/wiki/#binding-functions)
 * [Flow Diagram](//github.com/storj-thirdparty/uplink-python/wiki/#flow-diagram)
-* [libuplink Documentation] (https://godoc.org/storj.io/uplink)
+* [libuplink Documentation](https://godoc.org/storj.io/uplink)
