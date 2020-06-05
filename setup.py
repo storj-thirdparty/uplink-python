@@ -15,12 +15,12 @@ class Install(install):
     def find_module_path():
         for p in sys.path:
             if os.path.isdir(p) and "site-packages" in os.listdir(p):
-                new_path = os.path.join(p, "site-packages", "storjPython")
+                new_path = os.path.join(p, "site-packages", "uplink_python")
                 try:
                     os.makedirs(new_path, exist_ok=True)
-                    os.system("echo Directory storjPython created successfully.")
+                    os.system("echo Directory uplink_python created successfully.")
                 except OSError as error:
-                    os.system("echo Error in creating storjPython directory. Error: "+str(error))
+                    os.system("echo Error in creating uplink_python directory. Error: "+str(error))
                 return new_path
 
     def run(self):
@@ -50,17 +50,17 @@ class Install(install):
 
 
 setuptools.setup(
-    name="storj-python",
-    version="1.0.1",
+    name="uplink-python",
+    version="1.0.2",
     author="Utropicmedia",
     author_email="development@utropicmedia.com",
     license='Apache Software License',
     description="Python-native language binding for storj-uplink-c to communicate with the Storj network.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/utropicmedia/storj-python",
+    url="https://github.com/storj-thirdparty/uplink-python",
 
-    packages=['storjPython'],
+    packages=['uplink_python'],
     install_requires=[
        'wheel'
     ],

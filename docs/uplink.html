@@ -1,0 +1,916 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module uplink_python.uplink</title>
+<meta charset="utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="uplink_python.html"><font color="#ffffff">uplink_python</font></a>.uplink</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/webwerks/PycharmProjects/storjPython/pip/uplink_python/uplink.py">/Users/webwerks/PycharmProjects/storjPython/pip/uplink_python/uplink.py</a></font></td></tr></table>
+    <p><tt>Python&nbsp;Bindings&nbsp;for&nbsp;Storj&nbsp;(V3)</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="posixpath.html">posixpath</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="_ctypes.html#Structure">_ctypes.Structure</a>(_ctypes._CData)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="uplink_python.uplink.html#Access">Access</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.uplink.html#AccessResult">AccessResult</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.uplink.html#Bucket">Bucket</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.uplink.html#BucketIterator">BucketIterator</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.uplink.html#BucketResult">BucketResult</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.uplink.html#Config">Config</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.uplink.html#Handle">Handle</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.uplink.html#ListBucketsOptions">ListBucketsOptions</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.uplink.html#ListObjectsOptions">ListObjectsOptions</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.uplink.html#ObjectIterator">ObjectIterator</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.uplink.html#Permission">Permission</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.uplink.html#ProjectResult">ProjectResult</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.uplink.html#SharePrefix">SharePrefix</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.uplink.html#StringResult">StringResult</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="uplink_python.exchange.html#DataExchange">uplink_python.exchange.DataExchange</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="uplink_python.uplink.html#LibUplinkPy">LibUplinkPy</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Access">class <strong>Access</strong></a>(<a href="_ctypes.html#Structure">_ctypes.Structure</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Access">Access</a>&nbsp;structure<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="uplink_python.uplink.html#Access">Access</a></dd>
+<dd><a href="_ctypes.html#Structure">_ctypes.Structure</a></dd>
+<dd>_ctypes._CData</dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><a name="Access-__init__"><strong>__init__</strong></a>(...)</dt><dd><tt>x.<a href="#Access-__init__">__init__</a>(...)&nbsp;initializes&nbsp;x;&nbsp;see&nbsp;help(type(x))&nbsp;for&nbsp;signature</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of _ctypes.PyCStructType object&gt;<dd><tt>T.<a href="#Access-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<hr>
+Methods inherited from _ctypes._CData:<br>
+<dl><dt><a name="Access-__ctypes_from_outparam__"><strong>__ctypes_from_outparam__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="Access-__hash__"><strong>__hash__</strong></a>(...)</dt><dd><tt>x.<a href="#Access-__hash__">__hash__</a>()&nbsp;&lt;==&gt;&nbsp;hash(x)</tt></dd></dl>
+
+<dl><dt><a name="Access-__reduce__"><strong>__reduce__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="Access-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="AccessResult">class <strong>AccessResult</strong></a>(<a href="_ctypes.html#Structure">_ctypes.Structure</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#AccessResult">AccessResult</a>&nbsp;structure<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="uplink_python.uplink.html#AccessResult">AccessResult</a></dd>
+<dd><a href="_ctypes.html#Structure">_ctypes.Structure</a></dd>
+<dd>_ctypes._CData</dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>access</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<dl><dt><strong>error</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><a name="AccessResult-__init__"><strong>__init__</strong></a>(...)</dt><dd><tt>x.<a href="#AccessResult-__init__">__init__</a>(...)&nbsp;initializes&nbsp;x;&nbsp;see&nbsp;help(type(x))&nbsp;for&nbsp;signature</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of _ctypes.PyCStructType object&gt;<dd><tt>T.<a href="#AccessResult-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<hr>
+Methods inherited from _ctypes._CData:<br>
+<dl><dt><a name="AccessResult-__ctypes_from_outparam__"><strong>__ctypes_from_outparam__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="AccessResult-__hash__"><strong>__hash__</strong></a>(...)</dt><dd><tt>x.<a href="#AccessResult-__hash__">__hash__</a>()&nbsp;&lt;==&gt;&nbsp;hash(x)</tt></dd></dl>
+
+<dl><dt><a name="AccessResult-__reduce__"><strong>__reduce__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="AccessResult-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Bucket">class <strong>Bucket</strong></a>(<a href="_ctypes.html#Structure">_ctypes.Structure</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Bucket">Bucket</a>&nbsp;structure<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="uplink_python.uplink.html#Bucket">Bucket</a></dd>
+<dd><a href="_ctypes.html#Structure">_ctypes.Structure</a></dd>
+<dd>_ctypes._CData</dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>created</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<dl><dt><strong>name</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><a name="Bucket-__init__"><strong>__init__</strong></a>(...)</dt><dd><tt>x.<a href="#Bucket-__init__">__init__</a>(...)&nbsp;initializes&nbsp;x;&nbsp;see&nbsp;help(type(x))&nbsp;for&nbsp;signature</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of _ctypes.PyCStructType object&gt;<dd><tt>T.<a href="#Bucket-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<hr>
+Methods inherited from _ctypes._CData:<br>
+<dl><dt><a name="Bucket-__ctypes_from_outparam__"><strong>__ctypes_from_outparam__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="Bucket-__hash__"><strong>__hash__</strong></a>(...)</dt><dd><tt>x.<a href="#Bucket-__hash__">__hash__</a>()&nbsp;&lt;==&gt;&nbsp;hash(x)</tt></dd></dl>
+
+<dl><dt><a name="Bucket-__reduce__"><strong>__reduce__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="Bucket-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="BucketIterator">class <strong>BucketIterator</strong></a>(<a href="_ctypes.html#Structure">_ctypes.Structure</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#BucketIterator">BucketIterator</a>&nbsp;structure<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="uplink_python.uplink.html#BucketIterator">BucketIterator</a></dd>
+<dd><a href="_ctypes.html#Structure">_ctypes.Structure</a></dd>
+<dd>_ctypes._CData</dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><a name="BucketIterator-__init__"><strong>__init__</strong></a>(...)</dt><dd><tt>x.<a href="#BucketIterator-__init__">__init__</a>(...)&nbsp;initializes&nbsp;x;&nbsp;see&nbsp;help(type(x))&nbsp;for&nbsp;signature</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of _ctypes.PyCStructType object&gt;<dd><tt>T.<a href="#BucketIterator-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<hr>
+Methods inherited from _ctypes._CData:<br>
+<dl><dt><a name="BucketIterator-__ctypes_from_outparam__"><strong>__ctypes_from_outparam__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="BucketIterator-__hash__"><strong>__hash__</strong></a>(...)</dt><dd><tt>x.<a href="#BucketIterator-__hash__">__hash__</a>()&nbsp;&lt;==&gt;&nbsp;hash(x)</tt></dd></dl>
+
+<dl><dt><a name="BucketIterator-__reduce__"><strong>__reduce__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="BucketIterator-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="BucketResult">class <strong>BucketResult</strong></a>(<a href="_ctypes.html#Structure">_ctypes.Structure</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#BucketResult">BucketResult</a>&nbsp;structure<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="uplink_python.uplink.html#BucketResult">BucketResult</a></dd>
+<dd><a href="_ctypes.html#Structure">_ctypes.Structure</a></dd>
+<dd>_ctypes._CData</dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>bucket</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<dl><dt><strong>error</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><a name="BucketResult-__init__"><strong>__init__</strong></a>(...)</dt><dd><tt>x.<a href="#BucketResult-__init__">__init__</a>(...)&nbsp;initializes&nbsp;x;&nbsp;see&nbsp;help(type(x))&nbsp;for&nbsp;signature</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of _ctypes.PyCStructType object&gt;<dd><tt>T.<a href="#BucketResult-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<hr>
+Methods inherited from _ctypes._CData:<br>
+<dl><dt><a name="BucketResult-__ctypes_from_outparam__"><strong>__ctypes_from_outparam__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="BucketResult-__hash__"><strong>__hash__</strong></a>(...)</dt><dd><tt>x.<a href="#BucketResult-__hash__">__hash__</a>()&nbsp;&lt;==&gt;&nbsp;hash(x)</tt></dd></dl>
+
+<dl><dt><a name="BucketResult-__reduce__"><strong>__reduce__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="BucketResult-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Config">class <strong>Config</strong></a>(<a href="_ctypes.html#Structure">_ctypes.Structure</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Config">Config</a>&nbsp;structure<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="uplink_python.uplink.html#Config">Config</a></dd>
+<dd><a href="_ctypes.html#Structure">_ctypes.Structure</a></dd>
+<dd>_ctypes._CData</dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>dial_timeout_milliseconds</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<dl><dt><strong>temp_directory</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<dl><dt><strong>user_agent</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><a name="Config-__init__"><strong>__init__</strong></a>(...)</dt><dd><tt>x.<a href="#Config-__init__">__init__</a>(...)&nbsp;initializes&nbsp;x;&nbsp;see&nbsp;help(type(x))&nbsp;for&nbsp;signature</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of _ctypes.PyCStructType object&gt;<dd><tt>T.<a href="#Config-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<hr>
+Methods inherited from _ctypes._CData:<br>
+<dl><dt><a name="Config-__ctypes_from_outparam__"><strong>__ctypes_from_outparam__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="Config-__hash__"><strong>__hash__</strong></a>(...)</dt><dd><tt>x.<a href="#Config-__hash__">__hash__</a>()&nbsp;&lt;==&gt;&nbsp;hash(x)</tt></dd></dl>
+
+<dl><dt><a name="Config-__reduce__"><strong>__reduce__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="Config-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Handle">class <strong>Handle</strong></a>(<a href="_ctypes.html#Structure">_ctypes.Structure</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Handle">Handle</a>&nbsp;structure<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="uplink_python.uplink.html#Handle">Handle</a></dd>
+<dd><a href="_ctypes.html#Structure">_ctypes.Structure</a></dd>
+<dd>_ctypes._CData</dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><a name="Handle-__init__"><strong>__init__</strong></a>(...)</dt><dd><tt>x.<a href="#Handle-__init__">__init__</a>(...)&nbsp;initializes&nbsp;x;&nbsp;see&nbsp;help(type(x))&nbsp;for&nbsp;signature</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of _ctypes.PyCStructType object&gt;<dd><tt>T.<a href="#Handle-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<hr>
+Methods inherited from _ctypes._CData:<br>
+<dl><dt><a name="Handle-__ctypes_from_outparam__"><strong>__ctypes_from_outparam__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="Handle-__hash__"><strong>__hash__</strong></a>(...)</dt><dd><tt>x.<a href="#Handle-__hash__">__hash__</a>()&nbsp;&lt;==&gt;&nbsp;hash(x)</tt></dd></dl>
+
+<dl><dt><a name="Handle-__reduce__"><strong>__reduce__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="Handle-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="LibUplinkPy">class <strong>LibUplinkPy</strong></a>(<a href="uplink_python.exchange.html#DataExchange">uplink_python.exchange.DataExchange</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Python&nbsp;Storj&nbsp;class&nbsp;with&nbsp;all&nbsp;Storj&nbsp;functions'&nbsp;bindings<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="LibUplinkPy-access_serialize"><strong>access_serialize</strong></a>(self, access)</dt><dd><tt>function&nbsp;serializes&nbsp;access&nbsp;grant&nbsp;into&nbsp;a&nbsp;string.<br>
+pre-requisites:&nbsp;request_access_with_passphrase&nbsp;or&nbsp;parse_access&nbsp;function<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;<a href="#Access">Access</a>&nbsp;(Object)<br>
+output:&nbsp;<a href="#StringResult">StringResult</a>&nbsp;(Object),&nbsp;Error&nbsp;(String)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-access_share"><strong>access_share</strong></a>(self, access, permission, shared_prefix)</dt><dd><tt>function&nbsp;creates&nbsp;new&nbsp;access&nbsp;grant&nbsp;with&nbsp;specific&nbsp;permission.&nbsp;<a href="#Permission">Permission</a>&nbsp;will<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;be&nbsp;applied&nbsp;to&nbsp;prefixes&nbsp;when&nbsp;defined.<br>
+pre-requisites:&nbsp;request_access_with_passphrase&nbsp;or&nbsp;parse_access&nbsp;function&nbsp;has<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;<a href="#Access">Access</a>&nbsp;(Object),&nbsp;<a href="#Permission">Permission</a>&nbsp;(Object),&nbsp;Share&nbsp;Prefix&nbsp;(Python&nbsp;List&nbsp;of&nbsp;Dictionaries)<br>
+output:&nbsp;String&nbsp;Result&nbsp;(Object),&nbsp;Error&nbsp;(String)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-close_project"><strong>close_project</strong></a>(self, project)</dt><dd><tt>function&nbsp;closes&nbsp;the&nbsp;Storj(V3)&nbsp;project.<br>
+pre-requisites:&nbsp;open_project&nbsp;function&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;Project&nbsp;(Object)<br>
+output:&nbsp;Error&nbsp;(Object)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-config_open_project"><strong>config_open_project</strong></a>(self, config, access)</dt><dd><tt>function&nbsp;opens&nbsp;Storj(V3)&nbsp;project&nbsp;using&nbsp;access&nbsp;grant&nbsp;and&nbsp;custom&nbsp;configuration.<br>
+pre-requisites:&nbsp;request_access_with_passphrase&nbsp;or&nbsp;parse_access&nbsp;function<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;<a href="#Config">Config</a>&nbsp;(Object),&nbsp;<a href="#Access">Access</a>&nbsp;(Object)<br>
+output:&nbsp;<a href="#ProjectResult">ProjectResult</a>&nbsp;(Object),&nbsp;Error&nbsp;(String)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-config_request_access_with_passphrase"><strong>config_request_access_with_passphrase</strong></a>(self, po_config, satellite, api_key, passphrase)</dt><dd><tt>function&nbsp;requests&nbsp;satellite&nbsp;for&nbsp;a&nbsp;new&nbsp;access&nbsp;grant&nbsp;using&nbsp;a&nbsp;passphrase&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;custom&nbsp;configuration<br>
+pre-requisites:&nbsp;none<br>
+inputs:&nbsp;<a href="#Config">Config</a>&nbsp;(Object),&nbsp;Satellite&nbsp;Address&nbsp;(String),&nbsp;API&nbsp;key&nbsp;(String)&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Passphrase&nbsp;(String)<br>
+output:&nbsp;<a href="#AccessResult">AccessResult</a>&nbsp;(Object),&nbsp;Error&nbsp;(String)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-create_bucket"><strong>create_bucket</strong></a>(self, project, bucket_name)</dt><dd><tt>function&nbsp;creates&nbsp;a&nbsp;new&nbsp;bucket.<br>
+pre-requisites:&nbsp;open_project&nbsp;function&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;Project&nbsp;(Object)&nbsp;,<a href="#Bucket">Bucket</a>&nbsp;Name&nbsp;(String)<br>
+output:&nbsp;<a href="#BucketResult">BucketResult</a>&nbsp;(Object),&nbsp;Error&nbsp;(String)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-delete_bucket"><strong>delete_bucket</strong></a>(self, project, bucket_name)</dt><dd><tt>function&nbsp;deletes&nbsp;a&nbsp;bucket.<br>
+pre-requisites:&nbsp;open_project&nbsp;function&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;Project&nbsp;(Object),&nbsp;<a href="#Bucket">Bucket</a>&nbsp;Name&nbsp;(String)<br>
+output:&nbsp;<a href="#BucketResult">BucketResult</a>&nbsp;(Object),&nbsp;Error&nbsp;(String)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-delete_object"><strong>delete_object</strong></a>(self, project, bucket_name, storj_path)</dt><dd><tt>function&nbsp;deletes&nbsp;an&nbsp;object.<br>
+pre-requisites:&nbsp;open_project&nbsp;function&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;Project&nbsp;(Object),&nbsp;<a href="#Bucket">Bucket</a>&nbsp;Name&nbsp;(String),&nbsp;Object&nbsp;Key&nbsp;(String)<br>
+output:&nbsp;ObjectResult&nbsp;(Object),&nbsp;Error&nbsp;(String)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-ensure_bucket"><strong>ensure_bucket</strong></a>(self, project, bucket_name)</dt><dd><tt>function&nbsp;creates&nbsp;a&nbsp;new&nbsp;bucket&nbsp;and&nbsp;ignores&nbsp;the&nbsp;error&nbsp;when&nbsp;it&nbsp;already&nbsp;exists<br>
+pre-requisites:&nbsp;open_project&nbsp;function&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;Project&nbsp;(Object)&nbsp;,<a href="#Bucket">Bucket</a>&nbsp;Name&nbsp;(String)<br>
+output:&nbsp;<a href="#BucketResult">BucketResult</a>&nbsp;(Object),&nbsp;Error&nbsp;(String)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-list_buckets"><strong>list_buckets</strong></a>(self, project, list_bucket_options)</dt><dd><tt>function&nbsp;lists&nbsp;buckets<br>
+pre-requisites:&nbsp;open_project&nbsp;function&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;Project&nbsp;(Object),&nbsp;<a href="#ListBucketsOptions">ListBucketsOptions</a>&nbsp;(Object)<br>
+output:&nbsp;<a href="#Bucket">Bucket</a>&nbsp;List&nbsp;(Python&nbsp;List),&nbsp;Error&nbsp;(String)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-list_objects"><strong>list_objects</strong></a>(self, project, bucket_name, list_object_options)</dt><dd><tt>function&nbsp;lists&nbsp;objects<br>
+pre-requisites:&nbsp;open_project&nbsp;function&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;Project&nbsp;(Object),&nbsp;<a href="#Bucket">Bucket</a>&nbsp;Name&nbsp;(String),&nbsp;<a href="#ListObjectsOptions">ListObjectsOptions</a>&nbsp;(Object)<br>
+output:&nbsp;<a href="#Bucket">Bucket</a>&nbsp;List&nbsp;(Python&nbsp;List),&nbsp;Error&nbsp;(String)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-open_project"><strong>open_project</strong></a>(self, po_access)</dt><dd><tt>function&nbsp;opens&nbsp;Storj(V3)&nbsp;project&nbsp;using&nbsp;access&nbsp;grant.<br>
+pre-requisites:&nbsp;request_access_with_passphrase&nbsp;or&nbsp;parse_access&nbsp;function<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;<a href="#Access">Access</a>&nbsp;(Object)<br>
+output:&nbsp;<a href="#ProjectResult">ProjectResult</a>&nbsp;(Object),&nbsp;Error&nbsp;(String)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-parse_access"><strong>parse_access</strong></a>(self, serialized_access)</dt><dd><tt>function&nbsp;to&nbsp;parses&nbsp;serialized&nbsp;access&nbsp;grant&nbsp;string<br>
+pre-requisites:&nbsp;none<br>
+inputs:&nbsp;Serialized&nbsp;<a href="#Access">Access</a>&nbsp;(String)<br>
+output:&nbsp;<a href="#AccessResult">AccessResult</a>&nbsp;(Object),&nbsp;Error&nbsp;(String)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-request_access_with_passphrase"><strong>request_access_with_passphrase</strong></a>(self, satellite, api_key, passphrase)</dt><dd><tt>function&nbsp;requests&nbsp;satellite&nbsp;for&nbsp;a&nbsp;new&nbsp;access&nbsp;grant&nbsp;using&nbsp;a&nbsp;passphrase<br>
+pre-requisites:&nbsp;none<br>
+inputs:&nbsp;Satellite&nbsp;Address&nbsp;(String),&nbsp;API&nbsp;key&nbsp;(String)&nbsp;and&nbsp;Passphrase&nbsp;(String)<br>
+output:&nbsp;<a href="#AccessResult">AccessResult</a>&nbsp;(Object),&nbsp;Error&nbsp;(String)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-stat_bucket"><strong>stat_bucket</strong></a>(self, project, bucket_name)</dt><dd><tt>function&nbsp;returns&nbsp;information&nbsp;about&nbsp;a&nbsp;bucket.<br>
+pre-requisites:&nbsp;open_project&nbsp;function&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;Project&nbsp;(Object)&nbsp;,<a href="#Bucket">Bucket</a>&nbsp;Name&nbsp;(String)<br>
+output:&nbsp;<a href="#BucketResult">BucketResult</a>&nbsp;(Object),&nbsp;Error&nbsp;(String)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-stat_object"><strong>stat_object</strong></a>(self, project, bucket_name, storj_path)</dt><dd><tt>function&nbsp;returns&nbsp;information&nbsp;about&nbsp;an&nbsp;object&nbsp;at&nbsp;the&nbsp;specific&nbsp;key.<br>
+pre-requisites:&nbsp;open_project<br>
+inputs:&nbsp;Project&nbsp;(Object)&nbsp;,<a href="#Bucket">Bucket</a>&nbsp;Name&nbsp;(String)&nbsp;,&nbsp;Object&nbsp;Key(String)<br>
+output:&nbsp;ObjectResult&nbsp;(Object),&nbsp;Error&nbsp;(string)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="uplink_python.exchange.html#DataExchange">uplink_python.exchange.DataExchange</a>:<br>
+<dl><dt><a name="LibUplinkPy-__init__"><strong>__init__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="LibUplinkPy-close_download"><strong>close_download</strong></a>(self, download)</dt><dd><tt>function&nbsp;closes&nbsp;the&nbsp;download.<br>
+pre-requisites:&nbsp;download_object&nbsp;function&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;Download&nbsp;(Object)<br>
+output:&nbsp;Error&nbsp;(Object)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-download_info"><strong>download_info</strong></a>(self, download)</dt><dd><tt>function&nbsp;returns&nbsp;information&nbsp;about&nbsp;the&nbsp;downloaded&nbsp;object.<br>
+pre-requisites:&nbsp;download_object&nbsp;function&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;Download&nbsp;(Object)<br>
+output:&nbsp;Object&nbsp;Result&nbsp;(Object),&nbsp;Error&nbsp;(String)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-download_object"><strong>download_object</strong></a>(self, project, bucket_name, storj_path, download_options)</dt><dd><tt>function&nbsp;starts&nbsp;download&nbsp;to&nbsp;the&nbsp;specified&nbsp;key.<br>
+pre-requisites:&nbsp;open_project&nbsp;function&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;Project&nbsp;(Object),&nbsp;<a href="#Bucket">Bucket</a>&nbsp;Name(String),&nbsp;Object&nbsp;Key(String),&nbsp;Download&nbsp;Options(Object)<br>
+output:&nbsp;DownloadResult&nbsp;(Object),&nbsp;Error&nbsp;(String)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-download_read"><strong>download_read</strong></a>(self, download, pi_size_to_read)</dt><dd><tt>function&nbsp;downloads&nbsp;from&nbsp;object's&nbsp;data&nbsp;stream&nbsp;into&nbsp;bytes&nbsp;up&nbsp;to&nbsp;length&nbsp;amount.<br>
+pre-requisites:&nbsp;download_object&nbsp;function&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;Download&nbsp;(Object),&nbsp;Length(Integer)<br>
+output:&nbsp;Data&nbsp;downloaded&nbsp;(LP_c_ubyte),&nbsp;ReadResult&nbsp;(Object),&nbsp;Error&nbsp;(String)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-upload_abort"><strong>upload_abort</strong></a>(self, upload)</dt><dd><tt>function&nbsp;aborts&nbsp;an&nbsp;ongoing&nbsp;upload.<br>
+pre-requisites:&nbsp;upload_object&nbsp;function&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;Upload&nbsp;(Object)<br>
+output:&nbsp;Error&nbsp;(Object)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-upload_commit"><strong>upload_commit</strong></a>(self, upload)</dt><dd><tt>function&nbsp;commits&nbsp;the&nbsp;uploaded&nbsp;data.<br>
+pre-requisites:&nbsp;upload_object&nbsp;function&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;Upload&nbsp;(Object)<br>
+output:&nbsp;Error&nbsp;(Object)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-upload_info"><strong>upload_info</strong></a>(self, upload)</dt><dd><tt>function&nbsp;returns&nbsp;the&nbsp;last&nbsp;information&nbsp;about&nbsp;the&nbsp;uploaded&nbsp;object.<br>
+pre-requisites:&nbsp;upload_object&nbsp;function&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;Upload&nbsp;(Object)<br>
+output:&nbsp;Object&nbsp;Result&nbsp;(Object),&nbsp;Error&nbsp;(String)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-upload_object"><strong>upload_object</strong></a>(self, project, bucket_name, storj_path, upload_options)</dt><dd><tt>function&nbsp;starts&nbsp;an&nbsp;upload&nbsp;to&nbsp;the&nbsp;specified&nbsp;key.<br>
+pre-requisites:&nbsp;open_project&nbsp;function&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;Project&nbsp;(Object),&nbsp;<a href="#Bucket">Bucket</a>&nbsp;Name&nbsp;(String),&nbsp;Object&nbsp;Key(String),&nbsp;Upload&nbsp;Options(Object)<br>
+output:&nbsp;UploadResult&nbsp;(Object),&nbsp;Error&nbsp;(String)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-upload_set_custom_metadata"><strong>upload_set_custom_metadata</strong></a>(self, upload, custom_metadata)</dt><dd><tt>function&nbsp;to&nbsp;set&nbsp;custom&nbsp;meta&nbsp;information&nbsp;while&nbsp;uploading&nbsp;data<br>
+pre-requisites:&nbsp;upload_object&nbsp;function&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;Upload&nbsp;(Object),&nbsp;CustomMetadata&nbsp;(Object)<br>
+output:&nbsp;Error&nbsp;(Object)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LibUplinkPy-upload_write"><strong>upload_write</strong></a>(self, upload, data_to_write_ptr, size_to_write)</dt><dd><tt>function&nbsp;uploads&nbsp;bytes&nbsp;data&nbsp;passed&nbsp;as&nbsp;parameter&nbsp;to&nbsp;the&nbsp;object's&nbsp;data&nbsp;stream.<br>
+pre-requisites:&nbsp;upload_object&nbsp;function&nbsp;has&nbsp;been&nbsp;already&nbsp;called<br>
+inputs:&nbsp;Upload&nbsp;(Object),&nbsp;Bytes&nbsp;Data&nbsp;Stream(LP_c_ubyte)&nbsp;,&nbsp;Length&nbsp;(Integer)<br>
+output:&nbsp;WriteResult&nbsp;(Object),&nbsp;Error&nbsp;(String)&nbsp;if&nbsp;any&nbsp;else&nbsp;None</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ListBucketsOptions">class <strong>ListBucketsOptions</strong></a>(<a href="_ctypes.html#Structure">_ctypes.Structure</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#ListBucketsOptions">ListBucketsOptions</a>&nbsp;structure<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="uplink_python.uplink.html#ListBucketsOptions">ListBucketsOptions</a></dd>
+<dd><a href="_ctypes.html#Structure">_ctypes.Structure</a></dd>
+<dd>_ctypes._CData</dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>cursor</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><a name="ListBucketsOptions-__init__"><strong>__init__</strong></a>(...)</dt><dd><tt>x.<a href="#ListBucketsOptions-__init__">__init__</a>(...)&nbsp;initializes&nbsp;x;&nbsp;see&nbsp;help(type(x))&nbsp;for&nbsp;signature</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of _ctypes.PyCStructType object&gt;<dd><tt>T.<a href="#ListBucketsOptions-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<hr>
+Methods inherited from _ctypes._CData:<br>
+<dl><dt><a name="ListBucketsOptions-__ctypes_from_outparam__"><strong>__ctypes_from_outparam__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="ListBucketsOptions-__hash__"><strong>__hash__</strong></a>(...)</dt><dd><tt>x.<a href="#ListBucketsOptions-__hash__">__hash__</a>()&nbsp;&lt;==&gt;&nbsp;hash(x)</tt></dd></dl>
+
+<dl><dt><a name="ListBucketsOptions-__reduce__"><strong>__reduce__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="ListBucketsOptions-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ListObjectsOptions">class <strong>ListObjectsOptions</strong></a>(<a href="_ctypes.html#Structure">_ctypes.Structure</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#ListObjectsOptions">ListObjectsOptions</a>&nbsp;structure<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="uplink_python.uplink.html#ListObjectsOptions">ListObjectsOptions</a></dd>
+<dd><a href="_ctypes.html#Structure">_ctypes.Structure</a></dd>
+<dd>_ctypes._CData</dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>cursor</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<dl><dt><strong>custom</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<dl><dt><strong>prefix</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<dl><dt><strong>recursive</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<dl><dt><strong>system</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><a name="ListObjectsOptions-__init__"><strong>__init__</strong></a>(...)</dt><dd><tt>x.<a href="#ListObjectsOptions-__init__">__init__</a>(...)&nbsp;initializes&nbsp;x;&nbsp;see&nbsp;help(type(x))&nbsp;for&nbsp;signature</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of _ctypes.PyCStructType object&gt;<dd><tt>T.<a href="#ListObjectsOptions-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<hr>
+Methods inherited from _ctypes._CData:<br>
+<dl><dt><a name="ListObjectsOptions-__ctypes_from_outparam__"><strong>__ctypes_from_outparam__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="ListObjectsOptions-__hash__"><strong>__hash__</strong></a>(...)</dt><dd><tt>x.<a href="#ListObjectsOptions-__hash__">__hash__</a>()&nbsp;&lt;==&gt;&nbsp;hash(x)</tt></dd></dl>
+
+<dl><dt><a name="ListObjectsOptions-__reduce__"><strong>__reduce__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="ListObjectsOptions-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ObjectIterator">class <strong>ObjectIterator</strong></a>(<a href="_ctypes.html#Structure">_ctypes.Structure</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#ObjectIterator">ObjectIterator</a>&nbsp;structure<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="uplink_python.uplink.html#ObjectIterator">ObjectIterator</a></dd>
+<dd><a href="_ctypes.html#Structure">_ctypes.Structure</a></dd>
+<dd>_ctypes._CData</dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><a name="ObjectIterator-__init__"><strong>__init__</strong></a>(...)</dt><dd><tt>x.<a href="#ObjectIterator-__init__">__init__</a>(...)&nbsp;initializes&nbsp;x;&nbsp;see&nbsp;help(type(x))&nbsp;for&nbsp;signature</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of _ctypes.PyCStructType object&gt;<dd><tt>T.<a href="#ObjectIterator-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<hr>
+Methods inherited from _ctypes._CData:<br>
+<dl><dt><a name="ObjectIterator-__ctypes_from_outparam__"><strong>__ctypes_from_outparam__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="ObjectIterator-__hash__"><strong>__hash__</strong></a>(...)</dt><dd><tt>x.<a href="#ObjectIterator-__hash__">__hash__</a>()&nbsp;&lt;==&gt;&nbsp;hash(x)</tt></dd></dl>
+
+<dl><dt><a name="ObjectIterator-__reduce__"><strong>__reduce__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="ObjectIterator-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Permission">class <strong>Permission</strong></a>(<a href="_ctypes.html#Structure">_ctypes.Structure</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Permission">Permission</a>&nbsp;structure<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="uplink_python.uplink.html#Permission">Permission</a></dd>
+<dd><a href="_ctypes.html#Structure">_ctypes.Structure</a></dd>
+<dd>_ctypes._CData</dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>allow_delete</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<dl><dt><strong>allow_download</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<dl><dt><strong>allow_list</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<dl><dt><strong>allow_upload</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<dl><dt><strong>not_after</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<dl><dt><strong>not_before</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><a name="Permission-__init__"><strong>__init__</strong></a>(...)</dt><dd><tt>x.<a href="#Permission-__init__">__init__</a>(...)&nbsp;initializes&nbsp;x;&nbsp;see&nbsp;help(type(x))&nbsp;for&nbsp;signature</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of _ctypes.PyCStructType object&gt;<dd><tt>T.<a href="#Permission-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<hr>
+Methods inherited from _ctypes._CData:<br>
+<dl><dt><a name="Permission-__ctypes_from_outparam__"><strong>__ctypes_from_outparam__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="Permission-__hash__"><strong>__hash__</strong></a>(...)</dt><dd><tt>x.<a href="#Permission-__hash__">__hash__</a>()&nbsp;&lt;==&gt;&nbsp;hash(x)</tt></dd></dl>
+
+<dl><dt><a name="Permission-__reduce__"><strong>__reduce__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="Permission-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ProjectResult">class <strong>ProjectResult</strong></a>(<a href="_ctypes.html#Structure">_ctypes.Structure</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#ProjectResult">ProjectResult</a>&nbsp;structure<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="uplink_python.uplink.html#ProjectResult">ProjectResult</a></dd>
+<dd><a href="_ctypes.html#Structure">_ctypes.Structure</a></dd>
+<dd>_ctypes._CData</dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>error</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<dl><dt><strong>project</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><a name="ProjectResult-__init__"><strong>__init__</strong></a>(...)</dt><dd><tt>x.<a href="#ProjectResult-__init__">__init__</a>(...)&nbsp;initializes&nbsp;x;&nbsp;see&nbsp;help(type(x))&nbsp;for&nbsp;signature</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of _ctypes.PyCStructType object&gt;<dd><tt>T.<a href="#ProjectResult-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<hr>
+Methods inherited from _ctypes._CData:<br>
+<dl><dt><a name="ProjectResult-__ctypes_from_outparam__"><strong>__ctypes_from_outparam__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="ProjectResult-__hash__"><strong>__hash__</strong></a>(...)</dt><dd><tt>x.<a href="#ProjectResult-__hash__">__hash__</a>()&nbsp;&lt;==&gt;&nbsp;hash(x)</tt></dd></dl>
+
+<dl><dt><a name="ProjectResult-__reduce__"><strong>__reduce__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="ProjectResult-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SharePrefix">class <strong>SharePrefix</strong></a>(<a href="_ctypes.html#Structure">_ctypes.Structure</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#SharePrefix">SharePrefix</a>&nbsp;structure<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="uplink_python.uplink.html#SharePrefix">SharePrefix</a></dd>
+<dd><a href="_ctypes.html#Structure">_ctypes.Structure</a></dd>
+<dd>_ctypes._CData</dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>bucket</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<dl><dt><strong>prefix</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><a name="SharePrefix-__init__"><strong>__init__</strong></a>(...)</dt><dd><tt>x.<a href="#SharePrefix-__init__">__init__</a>(...)&nbsp;initializes&nbsp;x;&nbsp;see&nbsp;help(type(x))&nbsp;for&nbsp;signature</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of _ctypes.PyCStructType object&gt;<dd><tt>T.<a href="#SharePrefix-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<hr>
+Methods inherited from _ctypes._CData:<br>
+<dl><dt><a name="SharePrefix-__ctypes_from_outparam__"><strong>__ctypes_from_outparam__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="SharePrefix-__hash__"><strong>__hash__</strong></a>(...)</dt><dd><tt>x.<a href="#SharePrefix-__hash__">__hash__</a>()&nbsp;&lt;==&gt;&nbsp;hash(x)</tt></dd></dl>
+
+<dl><dt><a name="SharePrefix-__reduce__"><strong>__reduce__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="SharePrefix-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="StringResult">class <strong>StringResult</strong></a>(<a href="_ctypes.html#Structure">_ctypes.Structure</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#StringResult">StringResult</a>&nbsp;structure<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="uplink_python.uplink.html#StringResult">StringResult</a></dd>
+<dd><a href="_ctypes.html#Structure">_ctypes.Structure</a></dd>
+<dd>_ctypes._CData</dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>error</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<dl><dt><strong>string</strong></dt>
+<dd><tt>Structure/Union&nbsp;member</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><a name="StringResult-__init__"><strong>__init__</strong></a>(...)</dt><dd><tt>x.<a href="#StringResult-__init__">__init__</a>(...)&nbsp;initializes&nbsp;x;&nbsp;see&nbsp;help(type(x))&nbsp;for&nbsp;signature</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="_ctypes.html#Structure">_ctypes.Structure</a>:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of _ctypes.PyCStructType object&gt;<dd><tt>T.<a href="#StringResult-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<hr>
+Methods inherited from _ctypes._CData:<br>
+<dl><dt><a name="StringResult-__ctypes_from_outparam__"><strong>__ctypes_from_outparam__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="StringResult-__hash__"><strong>__hash__</strong></a>(...)</dt><dd><tt>x.<a href="#StringResult-__hash__">__hash__</a>()&nbsp;&lt;==&gt;&nbsp;hash(x)</tt></dd></dl>
+
+<dl><dt><a name="StringResult-__reduce__"><strong>__reduce__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="StringResult-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-POINTER"><strong>POINTER</strong></a>(...)</dt></dl>
+ <dl><dt><a name="-addressof"><strong>addressof</strong></a>(...)</dt><dd><tt><a href="#-addressof">addressof</a>(C&nbsp;instance)&nbsp;-&gt;&nbsp;integer<br>
+Return&nbsp;the&nbsp;address&nbsp;of&nbsp;the&nbsp;C&nbsp;instance&nbsp;internal&nbsp;buffer</tt></dd></dl>
+ <dl><dt><a name="-alignment"><strong>alignment</strong></a>(...)</dt><dd><tt><a href="#-alignment">alignment</a>(C&nbsp;type)&nbsp;-&gt;&nbsp;integer<br>
+<a href="#-alignment">alignment</a>(C&nbsp;instance)&nbsp;-&gt;&nbsp;integer<br>
+Return&nbsp;the&nbsp;alignment&nbsp;requirements&nbsp;of&nbsp;a&nbsp;C&nbsp;instance</tt></dd></dl>
+ <dl><dt><a name="-byref"><strong>byref</strong></a>(...)</dt><dd><tt><a href="#-byref">byref</a>(C&nbsp;instance[,&nbsp;offset=0])&nbsp;-&gt;&nbsp;byref-object<br>
+Return&nbsp;a&nbsp;pointer&nbsp;lookalike&nbsp;to&nbsp;a&nbsp;C&nbsp;instance,&nbsp;only&nbsp;usable<br>
+as&nbsp;function&nbsp;argument</tt></dd></dl>
+ <dl><dt><a name="-get_errno"><strong>get_errno</strong></a>(...)</dt></dl>
+ <dl><dt><a name="-pointer"><strong>pointer</strong></a>(...)</dt></dl>
+ <dl><dt><a name="-resize"><strong>resize</strong></a>(...)</dt><dd><tt>Resize&nbsp;the&nbsp;memory&nbsp;buffer&nbsp;of&nbsp;a&nbsp;ctypes&nbsp;instance</tt></dd></dl>
+ <dl><dt><a name="-set_conversion_mode"><strong>set_conversion_mode</strong></a>(...)</dt><dd><tt><a href="#-set_conversion_mode">set_conversion_mode</a>(encoding,&nbsp;errors)&nbsp;-&gt;&nbsp;(previous-encoding,&nbsp;previous-errors)<br>
+&nbsp;<br>
+Set&nbsp;the&nbsp;encoding&nbsp;and&nbsp;error&nbsp;handling&nbsp;ctypes&nbsp;uses&nbsp;when&nbsp;converting<br>
+between&nbsp;unicode&nbsp;and&nbsp;strings.&nbsp;&nbsp;Returns&nbsp;the&nbsp;previous&nbsp;values.</tt></dd></dl>
+ <dl><dt><a name="-set_errno"><strong>set_errno</strong></a>(...)</dt></dl>
+ <dl><dt><a name="-sizeof"><strong>sizeof</strong></a>(...)</dt><dd><tt><a href="#-sizeof">sizeof</a>(C&nbsp;type)&nbsp;-&gt;&nbsp;integer<br>
+<a href="#-sizeof">sizeof</a>(C&nbsp;instance)&nbsp;-&gt;&nbsp;integer<br>
+Return&nbsp;the&nbsp;size&nbsp;in&nbsp;bytes&nbsp;of&nbsp;a&nbsp;C&nbsp;instance</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>DEFAULT_MODE</strong> = 4<br>
+<strong>ERROR_BANDWIDTH_LIMIT_EXCEEDED</strong> = 6<br>
+<strong>ERROR_BUCKET_ALREADY_EXISTS</strong> = 17<br>
+<strong>ERROR_BUCKET_NAME_INVALID</strong> = 16<br>
+<strong>ERROR_BUCKET_NOT_EMPTY</strong> = 18<br>
+<strong>ERROR_BUCKET_NOT_FOUND</strong> = 19<br>
+<strong>ERROR_CANCELED</strong> = 3<br>
+<strong>ERROR_INTERNAL</strong> = 2<br>
+<strong>ERROR_INVALID_HANDLE</strong> = 4<br>
+<strong>ERROR_OBJECT_KEY_INVALID</strong> = 32<br>
+<strong>ERROR_OBJECT_NOT_FOUND</strong> = 33<br>
+<strong>ERROR_TOO_MANY_REQUESTS</strong> = 5<br>
+<strong>ERROR_UPLOAD_DONE</strong> = 34<br>
+<strong>RTLD_GLOBAL</strong> = 8<br>
+<strong>RTLD_LOCAL</strong> = 4<br>
+<strong>cdll</strong> = &lt;ctypes.LibraryLoader object&gt;<br>
+<strong>memmove</strong> = &lt;CFunctionType object&gt;<br>
+<strong>memset</strong> = &lt;CFunctionType object&gt;<br>
+<strong>pydll</strong> = &lt;ctypes.LibraryLoader object&gt;<br>
+<strong>pythonapi</strong> = &lt;PyDLL 'None', handle fffffffffffffffe at 10ee7f1d0&gt;</td></tr></table>
+</body></html>

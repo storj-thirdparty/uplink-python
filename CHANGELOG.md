@@ -1,4 +1,12 @@
-# storj-python binding changelog
+# uplink-python binding changelog
+
+## [1.0.2] - 02-06-2020
+### Changelog:
+* Migrated package on pip (pypi) from storj-python to uplink-python
+* Linting done using pylint
+* Changed file names according to snake_case python rule.
+* Splitted LibUplinkPy class into two parts and two files: uplink and exchange.
+
 
 ## [1.0.1] - 06-05-2020
 ### Changelog:
