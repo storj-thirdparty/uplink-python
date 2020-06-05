@@ -88,6 +88,6 @@ The sample *hello_storj.py* code calls the *uplink.py* file and imports the *Lib
 
 
 ## <b>Documentation</b>
-For more information on function definations and diagrams, check out the [Detail](//github.com/storj-thirdparty/wiki/Detail) or jump to:
-* [Uplink-Python Binding Functions](//github.com/storj-thirdparty/uplink-python/wiki/#uplink-python binding functions)
+For more information on function definations and diagrams, check out the [Detail](//github.com/storj-thirdparty/uplink-python/wiki/Detail) or jump to:
+* [Uplink-Python Binding Functions](//github.com/storj-thirdparty/uplink-python/wiki/#binding-functions)
 * [Flow Diagram](//github.com/storj-thirdparty/uplink-python/wiki/#flow-diagram)

@@ -3,7 +3,7 @@
 ![](https://github.com/storj-thirdparty/uplink-python/blob/master/README.assets/arch.drawio.png)
 
 
-## Uplink-Python Binding Functions
+## Binding Functions
 
 **NOTE**: Every function consists of error response. Please use it, to check if the function call was successful or not. In case, if it is not *None*, then you may also show the error's text. Please refer the sample *hello_storj.py* file, for example.
 
