@@ -1,4 +1,7 @@
 # <b>uplink-python binding</b>
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/aaee609406154b1794061386bb0ca60e)](https://app.codacy.com/gh/storj-thirdparty/uplink-python?utm_source=github.com&utm_medium=referral&utm_content=storj-thirdparty/uplink-python&utm_campaign=Badge_Grade_Dashboard)
+
 ### *Developed using v1.0.2 storj/uplink-c*
 
 ## <b>Initial Set-up (Important)</b>
