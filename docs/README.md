@@ -2,28 +2,28 @@
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/aaee609406154b1794061386bb0ca60e)](https://app.codacy.com/gh/storj-thirdparty/uplink-python?utm_source=github.com&utm_medium=referral&utm_content=storj-thirdparty/uplink-python&utm_campaign=Badge_Grade_Dashboard)
 
-### *Developed using v1.0.5 storj/uplink-c*
+> Developed using v1.0.5 storj/uplink-c
 
 ## <b>Initial Set-up (Important)</b>
 
-**NOTE**: for Golang
-
-Make sure your `PATH` includes the `$GOPATH/bin` directory, so that your commands can be easily used [Refer: Install the Go Tools](https://golang.org/doc/install):
-```
-export PATH=$PATH:$GOPATH/bin
-```
-
-Depending on your operating system, you will need to install:
-
-**On Unix**
-* A proper C/C++ compiler toolchain, like [GCC](https://gcc.gnu.org/)
-
-**On macOS**
-* [Xcode](https://developer.apple.com/xcode/download/) : You also need to install the XCode Command Line Tools by running xcode-select --install. Alternatively, if you already have the full Xcode installed, you can find them under the menu Xcode -> Open Developer Tool -> More Developer Tools.... This step will install clang, clang++, and make.
-
-**On Windows**
-* Install Visual C++ Build Environment: [Visual Studio Build Tools](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools) (using "Visual C++ build tools" workload) or [Visual Studio 2017 Community](https://visualstudio.microsoft.com/pl/thank-you-downloading-visual-studio/?sku=Community) (using the "Desktop development with C++" workload)
-* Make sure you have access to ```site-packages``` folder inside the directory where python is installed. To do this navigate to the directory where python is installed, if you get an error "Permission Denied", follow the instruction in message box and allow access using ```security tab```.
+> NOTE: For Golang
+>
+>Make sure your `PATH` includes the `$GOPATH/bin` directory, so that your commands can be easily used [Refer: Install the Go Tools](https://golang.org/doc/install):
+>```
+>export PATH=$PATH:$GOPATH/bin
+>```
+>
+>Depending on your operating system, you will need to install:
+>
+>**On Unix**
+>* A proper C/C++ compiler toolchain, like [GCC](https://gcc.gnu.org/)
+>
+>**On macOS**
+>* [Xcode](https://developer.apple.com/xcode/download/) : You also need to install the XCode Command Line Tools by running xcode-select --install. Alternatively, if you already have the full Xcode installed, you can find them under the menu Xcode -> Open Developer Tool -> More Developer Tools.... This step will install clang, clang++, and make.
+>
+>**On Windows**
+>* Install Visual C++ Build Environment: [Visual Studio Build Tools](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools) (using "Visual C++ build tools" workload) or [Visual Studio 2017 Community](https://visualstudio.microsoft.com/pl/thank-you-downloading-visual-studio/?sku=Community) (using the "Desktop development with C++" workload)
+>* Make sure you have access to ```site-packages``` folder inside the directory where python is installed. To do this navigate to the directory where python is installed, if you get an error "Permission Denied", follow the instruction in message box and allow access using ```security tab```.
 
 ## <b>Binding Set-up</b>
 
@@ -81,7 +81,7 @@ from uplink_python.exchange import DownloadOptions
 from uplink_python.uplink import ListObjectsOptions, Permission
 ```
 
-## <b>Sample Hello Storj!</b>
+## <b>Sample Hello Storj</b>
 
 File *hello_storj.py* can be found in folder where Python package was installed.
 
@@ -96,8 +96,6 @@ The sample *hello_storj.py* code calls the *uplink.py* file and imports the *Lib
 * list all buckets and objects with permission to shareable access.
 
 
-## <b>Documentation</b>
-For more information on function definations and diagrams, check out the [Detail](//github.com/storj-thirdparty/uplink-python/wiki/Detail) or jump to:
-* [Uplink-Python Binding Functions](//github.com/storj-thirdparty/uplink-python/wiki/#binding-functions)
-* [Flow Diagram](//github.com/storj-thirdparty/uplink-python/wiki/#flow-diagram)
-* [libuplink Documentation](https://godoc.org/storj.io/uplink)
+## <b>Flow Diagram</b>
+
+[Flow Diagram](/_images/arch.drawio.png ':include :type=iframe width=100% height=1000px')

@@ -1,102 +1,98 @@
-# pylint: disable=wildcard-import, unused-wildcard-import, too-few-public-methods
-"""
-Python Bindings for Storj (V3)
-"""
-from .exchange import *
+# pylint: disable=too-few-public-methods
+""" Python Bindings for Storj (V3) """
+
+from .exchange import DataExchange, Project, Error, c, ObjectResult, Object
+
 
 # Structure classes for go structure objects #
-
-ERROR_INTERNAL = 0x02
-ERROR_CANCELED = 0x03
-ERROR_INVALID_HANDLE = 0x04
-ERROR_TOO_MANY_REQUESTS = 0x05
-ERROR_BANDWIDTH_LIMIT_EXCEEDED = 0x06
-
-ERROR_BUCKET_NAME_INVALID = 0x10
-ERROR_BUCKET_ALREADY_EXISTS = 0x11
-ERROR_BUCKET_NOT_EMPTY = 0x12
-ERROR_BUCKET_NOT_FOUND = 0x13
-
-ERROR_OBJECT_KEY_INVALID = 0x20
-ERROR_OBJECT_NOT_FOUND = 0x21
-ERROR_UPLOAD_DONE = 0x22
-"""Error defines"""
-
-
 # Various handle structures:
-class Handle(Structure):
+class Handle(c.Structure):
+
     """ Handle structure """
-    _fields_ = [("_handle", c_size_t)]
+    _fields_ = [("_handle", c.c_size_t)]
 
 
-class Access(Structure):
+class Access(c.Structure):
+
     """ Access structure """
-    _fields_ = [("_handle", c_size_t)]
+    _fields_ = [("_handle", c.c_size_t)]
 
 
 # Various configuration structures:
-class Config(Structure):
+class Config(c.Structure):
+
     """ Config structure """
-    _fields_ = [("user_agent", c_char_p), ("dial_timeout_milliseconds", c_int32),
-                ("temp_directory", c_char_p)]
+    _fields_ = [("user_agent", c.c_char_p), ("dial_timeout_milliseconds", c.c_int32),
+                ("temp_directory", c.c_char_p)]
 
 
-class Bucket(Structure):
+class Bucket(c.Structure):
+
     """ Bucket structure """
-    _fields_ = [("name", c_char_p), ("created", c_int64)]
+    _fields_ = [("name", c.c_char_p), ("created", c.c_int64)]
 
 
-class ListObjectsOptions(Structure):
+class ListObjectsOptions(c.Structure):
+
     """ ListObjectsOptions structure """
-    _fields_ = [("prefix", c_char_p), ("cursor", c_char_p), ("recursive", c_bool),
-                ("system", c_bool), ("custom", c_bool)]
+    _fields_ = [("prefix", c.c_char_p), ("cursor", c.c_char_p), ("recursive", c.c_bool),
+                ("system", c.c_bool), ("custom", c.c_bool)]
 
 
-class ListBucketsOptions(Structure):
+class ListBucketsOptions(c.Structure):
+
     """ ListBucketsOptions structure """
-    _fields_ = [("cursor", c_char_p)]
+    _fields_ = [("cursor", c.c_char_p)]
 
 
-class ObjectIterator(Structure):
+class ObjectIterator(c.Structure):
+
     """ ObjectIterator structure """
-    _fields_ = [("_handle", c_size_t)]
+    _fields_ = [("_handle", c.c_size_t)]
 
 
-class BucketIterator(Structure):
+class BucketIterator(c.Structure):
+
     """ BucketIterator structure """
-    _fields_ = [("_handle", c_size_t)]
+    _fields_ = [("_handle", c.c_size_t)]
 
 
-class Permission(Structure):
+class Permission(c.Structure):
+
     """ Permission structure """
-    _fields_ = [("allow_download", c_bool), ("allow_upload", c_bool), ("allow_list", c_bool),
-                ("allow_delete", c_bool), ("not_before", c_int64), ("not_after", c_int64)]
+    _fields_ = [("allow_download", c.c_bool), ("allow_upload", c.c_bool), ("allow_list", c.c_bool),
+                ("allow_delete", c.c_bool), ("not_before", c.c_int64), ("not_after", c.c_int64)]
 
 
-class SharePrefix(Structure):
+class SharePrefix(c.Structure):
+
     """ SharePrefix structure """
-    _fields_ = [("bucket", c_char_p), ("prefix", c_char_p)]
+    _fields_ = [("bucket", c.c_char_p), ("prefix", c.c_char_p)]
 
 
 # Various result structures:
-class AccessResult(Structure):
+class AccessResult(c.Structure):
+
     """ AccessResult structure """
-    _fields_ = [("access", POINTER(Access)), ("error", POINTER(Error))]
+    _fields_ = [("access", c.POINTER(Access)), ("error", c.POINTER(Error))]
 
 
-class ProjectResult(Structure):
+class ProjectResult(c.Structure):
+
     """ ProjectResult structure """
-    _fields_ = [("project", POINTER(Project)), ("error", POINTER(Error))]
+    _fields_ = [("project", c.POINTER(Project)), ("error", c.POINTER(Error))]
 
 
-class BucketResult(Structure):
+class BucketResult(c.Structure):
+
     """ BucketResult structure """
-    _fields_ = [("bucket", POINTER(Bucket)), ("error", POINTER(Error))]
+    _fields_ = [("bucket", c.POINTER(Bucket)), ("error", c.POINTER(Error))]
 
 
-class StringResult(Structure):
+class StringResult(c.Structure):
+
     """ StringResult structure """
-    _fields_ = [("string", c_char_p), ("error", POINTER(Error))]
+    _fields_ = [("string", c.c_char_p), ("error", c.POINTER(Error))]
 
 
 #########################################################
@@ -104,9 +100,8 @@ class StringResult(Structure):
 #########################################################
 
 class LibUplinkPy(DataExchange):
-    """
-    Python Storj class with all Storj functions' bindings
-    """
+
+    """ Python Storj class with all Storj functions' bindings """
 
     #
     def request_access_with_passphrase(self, satellite, api_key, passphrase):
@@ -118,13 +113,14 @@ class LibUplinkPy(DataExchange):
         """
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.request_access_with_passphrase.argtypes = [c_char_p, c_char_p, c_char_p]
+        self.m_libuplink.request_access_with_passphrase.argtypes = [c.c_char_p, c.c_char_p,
+                                                                    c.c_char_p]
         self.m_libuplink.request_access_with_passphrase.restype = AccessResult
         #
         # prepare the input for the function
-        satellite_ptr = c_char_p(satellite.encode('utf-8'))
-        api_key_ptr = c_char_p(api_key.encode('utf-8'))
-        passphrase_ptr = c_char_p(passphrase.encode('utf-8'))
+        satellite_ptr = c.c_char_p(satellite.encode('utf-8'))
+        api_key_ptr = c.c_char_p(api_key.encode('utf-8'))
+        passphrase_ptr = c.c_char_p(passphrase.encode('utf-8'))
 
         # get access to Storj by calling the exported golang function
         access_result = self.m_libuplink.request_access_with_passphrase(satellite_ptr,
@@ -148,8 +144,8 @@ class LibUplinkPy(DataExchange):
         """
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.config_request_access_with_passphrase.argtypes = [Config, c_char_p,
-                                                                           c_char_p, c_char_p]
+        self.m_libuplink.config_request_access_with_passphrase.argtypes = [Config, c.c_char_p,
+                                                                           c.c_char_p, c.c_char_p]
         self.m_libuplink.config_request_access_with_passphrase.restype = AccessResult
         #
         # prepare the input for the function
@@ -157,9 +153,9 @@ class LibUplinkPy(DataExchange):
             config = Config()
         else:
             config = po_config
-        satellite_ptr = c_char_p(satellite.encode('utf-8'))
-        api_key_ptr = c_char_p(api_key.encode('utf-8'))
-        passphrase_ptr = c_char_p(passphrase.encode('utf-8'))
+        satellite_ptr = c.c_char_p(satellite.encode('utf-8'))
+        api_key_ptr = c.c_char_p(api_key.encode('utf-8'))
+        passphrase_ptr = c.c_char_p(passphrase.encode('utf-8'))
 
         # get access to Storj by calling the exported golang function
         access_result = self.m_libuplink.config_request_access_with_passphrase(config,
@@ -187,7 +183,7 @@ class LibUplinkPy(DataExchange):
             return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.open_project.argtypes = [POINTER(Access)]
+        self.m_libuplink.open_project.argtypes = [c.POINTER(Access)]
         self.m_libuplink.open_project.restype = ProjectResult
         #
         # open project by calling the exported golang function
@@ -213,7 +209,7 @@ class LibUplinkPy(DataExchange):
             return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.config_open_project.argtypes = [Config, POINTER(Access)]
+        self.m_libuplink.config_open_project.argtypes = [Config, c.POINTER(Access)]
         self.m_libuplink.config_open_project.restype = ProjectResult
         #
         # prepare the input for the function
@@ -242,11 +238,11 @@ class LibUplinkPy(DataExchange):
             return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.ensure_bucket.argtypes = [POINTER(Project), c_char_p]
+        self.m_libuplink.ensure_bucket.argtypes = [c.POINTER(Project), c.c_char_p]
         self.m_libuplink.ensure_bucket.restype = BucketResult
         #
         # prepare the input for the function
-        bucket_name_ptr = c_char_p(bucket_name.encode('utf-8'))
+        bucket_name_ptr = c.c_char_p(bucket_name.encode('utf-8'))
 
         # open bucket if doesn't exist by calling the exported golang function
         bucket_result = self.m_libuplink.ensure_bucket(project, bucket_name_ptr)
@@ -270,11 +266,11 @@ class LibUplinkPy(DataExchange):
             return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.stat_bucket.argtypes = [POINTER(Project), c_char_p]
+        self.m_libuplink.stat_bucket.argtypes = [c.POINTER(Project), c.c_char_p]
         self.m_libuplink.stat_bucket.restype = BucketResult
         #
         # prepare the input for the function
-        bucket_name_ptr = c_char_p(bucket_name.encode('utf-8'))
+        bucket_name_ptr = c.c_char_p(bucket_name.encode('utf-8'))
 
         # get bucket information by calling the exported golang function
         bucket_result = self.m_libuplink.stat_bucket(project, bucket_name_ptr)
@@ -298,12 +294,12 @@ class LibUplinkPy(DataExchange):
             return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.stat_object.argtypes = [POINTER(Project), c_char_p, c_char_p]
+        self.m_libuplink.stat_object.argtypes = [c.POINTER(Project), c.c_char_p, c.c_char_p]
         self.m_libuplink.stat_object.restype = ObjectResult
         #
         # prepare the input for the function
-        bucket_name_ptr = c_char_p(bucket_name.encode('utf-8'))
-        storj_path_ptr = c_char_p(storj_path.encode('utf-8'))
+        bucket_name_ptr = c.c_char_p(bucket_name.encode('utf-8'))
+        storj_path_ptr = c.c_char_p(storj_path.encode('utf-8'))
 
         # get object information by calling the exported golang function
         object_result = self.m_libuplink.stat_object(project, bucket_name_ptr,
@@ -328,11 +324,11 @@ class LibUplinkPy(DataExchange):
             return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.create_bucket.argtypes = [POINTER(Project), c_char_p]
+        self.m_libuplink.create_bucket.argtypes = [c.POINTER(Project), c.c_char_p]
         self.m_libuplink.create_bucket.restype = BucketResult
         #
         # prepare the input for the function
-        bucket_name_ptr = c_char_p(bucket_name.encode('utf-8'))
+        bucket_name_ptr = c.c_char_p(bucket_name.encode('utf-8'))
 
         # create bucket by calling the exported golang function
         bucket_result = self.m_libuplink.create_bucket(project, bucket_name_ptr)
@@ -356,8 +352,8 @@ class LibUplinkPy(DataExchange):
             return ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.close_project.argtypes = [POINTER(Project)]
-        self.m_libuplink.close_project.restype = POINTER(Error)
+        self.m_libuplink.close_project.argtypes = [c.POINTER(Project)]
+        self.m_libuplink.close_project.restype = c.POINTER(Error)
         #
         # close Storj project by calling the exported golang function
         error = self.m_libuplink.close_project(project)
@@ -381,20 +377,20 @@ class LibUplinkPy(DataExchange):
             return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.list_buckets.argtypes = [POINTER(Project), POINTER(ListBucketsOptions)]
-        self.m_libuplink.list_buckets.restype = POINTER(BucketIterator)
+        self.m_libuplink.list_buckets.argtypes = [c.POINTER(Project), c.POINTER(ListBucketsOptions)]
+        self.m_libuplink.list_buckets.restype = c.POINTER(BucketIterator)
         #
-        self.m_libuplink.bucket_iterator_item.argtypes = [POINTER(BucketIterator)]
-        self.m_libuplink.bucket_iterator_item.restype = POINTER(Bucket)
+        self.m_libuplink.bucket_iterator_item.argtypes = [c.POINTER(BucketIterator)]
+        self.m_libuplink.bucket_iterator_item.restype = c.POINTER(Bucket)
         #
-        self.m_libuplink.bucket_iterator_next.argtypes = [POINTER(BucketIterator)]
-        self.m_libuplink.bucket_iterator_next.restype = c_bool
+        self.m_libuplink.bucket_iterator_next.argtypes = [c.POINTER(BucketIterator)]
+        self.m_libuplink.bucket_iterator_next.restype = c.c_bool
         #
         # prepare the input for the function
         if list_bucket_options is None:
-            list_bucket_options_obj = POINTER(ListBucketsOptions)()
+            list_bucket_options_obj = c.POINTER(ListBucketsOptions)()
         else:
-            list_bucket_options_obj = byref(list_bucket_options)
+            list_bucket_options_obj = c.byref(list_bucket_options)
 
         # get bucket list by calling the exported golang function
         bucket_iterator = self.m_libuplink.list_buckets(project, list_bucket_options_obj)
@@ -422,22 +418,22 @@ class LibUplinkPy(DataExchange):
             return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.list_objects.argtypes = [POINTER(Project), c_char_p,
-                                                  POINTER(ListObjectsOptions)]
-        self.m_libuplink.list_objects.restype = POINTER(ObjectIterator)
+        self.m_libuplink.list_objects.argtypes = [c.POINTER(Project), c.c_char_p,
+                                                  c.POINTER(ListObjectsOptions)]
+        self.m_libuplink.list_objects.restype = c.POINTER(ObjectIterator)
         #
-        self.m_libuplink.object_iterator_item.argtypes = [POINTER(ObjectIterator)]
-        self.m_libuplink.object_iterator_item.restype = POINTER(Object)
+        self.m_libuplink.object_iterator_item.argtypes = [c.POINTER(ObjectIterator)]
+        self.m_libuplink.object_iterator_item.restype = c.POINTER(Object)
         #
-        self.m_libuplink.object_iterator_next.argtypes = [POINTER(ObjectIterator)]
-        self.m_libuplink.object_iterator_next.restype = c_bool
+        self.m_libuplink.object_iterator_next.argtypes = [c.POINTER(ObjectIterator)]
+        self.m_libuplink.object_iterator_next.restype = c.c_bool
         #
         # prepare the input for the function
         if list_object_options is None:
-            list_object_options_obj = POINTER(ListObjectsOptions)()
+            list_object_options_obj = c.POINTER(ListObjectsOptions)()
         else:
-            list_object_options_obj = byref(list_object_options)
-        bucket_name_ptr = c_char_p(bucket_name.encode('utf-8'))
+            list_object_options_obj = c.byref(list_object_options)
+        bucket_name_ptr = c.c_char_p(bucket_name.encode('utf-8'))
 
         # get object list by calling the exported golang function
         object_iterator = self.m_libuplink.list_objects(project, bucket_name_ptr,
@@ -466,11 +462,11 @@ class LibUplinkPy(DataExchange):
             return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.delete_bucket.argtypes = [POINTER(Project), c_char_p]
+        self.m_libuplink.delete_bucket.argtypes = [c.POINTER(Project), c.c_char_p]
         self.m_libuplink.delete_bucket.restype = BucketResult
         #
         # prepare the input for the function
-        bucket_name_ptr = c_char_p(bucket_name.encode('utf-8'))
+        bucket_name_ptr = c.c_char_p(bucket_name.encode('utf-8'))
 
         # delete bucket by calling the exported golang function
         bucket_result = self.m_libuplink.delete_bucket(project, bucket_name_ptr)
@@ -494,12 +490,12 @@ class LibUplinkPy(DataExchange):
             return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.delete_object.argtypes = [POINTER(Project), c_char_p, c_char_p]
+        self.m_libuplink.delete_object.argtypes = [c.POINTER(Project), c.c_char_p, c.c_char_p]
         self.m_libuplink.delete_object.restype = ObjectResult
         #
         # prepare the input for the function
-        bucket_name_ptr = c_char_p(bucket_name.encode('utf-8'))
-        storj_path_ptr = c_char_p(storj_path.encode('utf-8'))
+        bucket_name_ptr = c.c_char_p(bucket_name.encode('utf-8'))
+        storj_path_ptr = c.c_char_p(storj_path.encode('utf-8'))
 
         # delete object by calling the exported golang function
         object_result = self.m_libuplink.delete_object(project, bucket_name_ptr,
@@ -519,7 +515,7 @@ class LibUplinkPy(DataExchange):
         """
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.parse_access.argtypes = [c_char_p]
+        self.m_libuplink.parse_access.argtypes = [c.c_char_p]
         self.m_libuplink.parse_access.restype = AccessResult
         #
 
@@ -546,7 +542,7 @@ class LibUplinkPy(DataExchange):
             return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.access_serialize.argtypes = [POINTER(Access)]
+        self.m_libuplink.access_serialize.argtypes = [c.POINTER(Access)]
         self.m_libuplink.access_serialize.restype = StringResult
         #
         # get serialized access by calling the exported golang function
@@ -573,8 +569,8 @@ class LibUplinkPy(DataExchange):
             return None, ls_error
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.access_share.argtypes = [POINTER(Access), Permission,
-                                                  POINTER(SharePrefix), c_size_t]
+        self.m_libuplink.access_share.argtypes = [c.POINTER(Access), Permission,
+                                                  c.POINTER(SharePrefix), c.c_size_t]
         self.m_libuplink.access_share.restype = AccessResult
         #
         # prepare the input for the function
@@ -585,17 +581,17 @@ class LibUplinkPy(DataExchange):
         # check and create valid Share Prefix parameter
         # shared_prefix = [{"bucket": "bucket01", "prefix": "uploadPath01/data"}]
         if shared_prefix is None:
-            shared_prefix = POINTER(SharePrefix)()
-            array_size = c_size_t(0)
+            shared_prefix = c.POINTER(SharePrefix)()
+            array_size = c.c_size_t(0)
         else:
             num_of_structs = len(shared_prefix)
             li_array_size = (SharePrefix * num_of_structs)()
-            array = cast(li_array_size, POINTER(SharePrefix))
+            array = c.cast(li_array_size, c.POINTER(SharePrefix))
             for i, val in enumerate(shared_prefix):
-                array[i] = SharePrefix(c_char_p(val['bucket'].encode('utf-8')),
-                                       c_char_p(val['prefix'].encode('utf-8')))
+                array[i] = SharePrefix(c.c_char_p(val['bucket'].encode('utf-8')),
+                                       c.c_char_p(val['prefix'].encode('utf-8')))
             shared_prefix = array
-            array_size = c_size_t(num_of_structs)
+            array_size = c.c_size_t(num_of_structs)
         #
         # get shareable access by calling the exported golang function
         access_result = self.m_libuplink.access_share(access, permission, shared_prefix,
