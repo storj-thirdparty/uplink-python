@@ -1,12 +1,12 @@
-# pylint: disable=wildcard-import, unused-wildcard-import, too-many-arguments
-"""
-example project for storj-python binding shows how to use binding for various tasks.
-"""
-
+# pylint: disable=too-many-arguments
+""" example project for storj-python binding shows how to use binding for various tasks. """
+import os
 import sys
 from datetime import datetime
 
-from uplink_python.uplink import *
+from uplink_python.constants import ERROR_BUCKET_NOT_EMPTY
+from uplink_python.exchange import DownloadOptions
+from uplink_python.uplink import LibUplinkPy, ListObjectsOptions, Permission, c
 
 
 def upload_file(storj_obj, project, bucket_name, storj_path, upload_options, src_full_filename):
@@ -16,8 +16,9 @@ def upload_file(storj_obj, project, bucket_name, storj_path, upload_options, src
     """
     #
     # open file to be uploaded
+    DownloadOptions()
     file_handle = open(src_full_filename, 'r+b')
-    data_len = path.getsize(src_full_filename)
+    data_len = os.path.getsize(src_full_filename)
     #
     # call to get uploader handle
     upload_result, error = storj_obj.upload_object(project, bucket_name, storj_path,
@@ -43,9 +44,9 @@ def upload_file(storj_obj, project, bucket_name, storj_path, upload_options, src
         # data conversion to type required by function
         # get size of data in c type int32 variable
         # conversion of read bytes data to c type ubyte Array
-        data_to_write = (c_uint8 * c_int32(len(data_to_write)).value)(*data_to_write)
+        data_to_write = (c.c_uint8 * c.c_int32(len(data_to_write)).value)(*data_to_write)
         # conversion of c type ubyte Array to LP_c_ubyte required by upload write function
-        data_to_write_ptr = cast(data_to_write, POINTER(c_uint8))
+        data_to_write_ptr = c.cast(data_to_write, c.POINTER(c.c_uint8))
         # --------------------------------------------
         #
         # call to write data to Storj bucket
@@ -108,7 +109,7 @@ def download_file(storj_obj, project, bucket_name, storj_path, download_options,
             # --------------------------------------------
             # data conversion to type python readable form
             # conversion of LP_c_ubyte to python readable data variable
-            data_read = string_at(data_read_ptr, int(read_result.bytes_read))
+            data_read = c.string_at(data_read_ptr, int(read_result.bytes_read))
             # --------------------------------------------
             #
             file_handle.seek(downloaded_total)

@@ -1,5 +1,12 @@
 # uplink-python binding changelog
 
+## [1.0.5] - 19-07-2020
+### Changelog:
+* Update module to latest storj/uplink-c v1.0.5
+* Added unittest
+* Changed documentation
+* import statements changed
+
 ## [1.0.2] - 02-06-2020
 ### Changelog:
 * Migrated package on pip (pypi) from storj-python to uplink-python
