@@ -406,10 +406,6 @@ class LibUplinkPy(DataExchange):
         while self.m_libuplink.bucket_iterator_next(bucket_iterator):
             bucket_list.append(self.m_libuplink.bucket_iterator_item(bucket_iterator))
 
-        #
-        # if error occurred
-        if len(bucket_list) == 0:
-            return None, "No bucket found!"
         return bucket_list, None
 
     def list_objects(self, project, bucket_name, list_object_options):
