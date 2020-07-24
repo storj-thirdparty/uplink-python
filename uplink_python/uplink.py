@@ -383,6 +383,9 @@ class LibUplinkPy(DataExchange):
         self.m_libuplink.bucket_iterator_item.argtypes = [c.POINTER(BucketIterator)]
         self.m_libuplink.bucket_iterator_item.restype = c.POINTER(Bucket)
         #
+        self.m_libuplink.bucket_iterator_err.argtypes = [c.POINTER(BucketIterator)]
+        self.m_libuplink.bucket_iterator_err.restype = c.POINTER(Error)
+        #
         self.m_libuplink.bucket_iterator_next.argtypes = [c.POINTER(BucketIterator)]
         self.m_libuplink.bucket_iterator_next.restype = c.c_bool
         #
@@ -394,6 +397,11 @@ class LibUplinkPy(DataExchange):
 
         # get bucket list by calling the exported golang function
         bucket_iterator = self.m_libuplink.list_buckets(project, list_bucket_options_obj)
+        err = self.m_libuplink.bucket_iterator_err(bucket_iterator)
+        if err is not None:
+            # TODO: this message should be improved
+            return None, err.contents.message
+
         bucket_list = list()
         while self.m_libuplink.bucket_iterator_next(bucket_iterator):
             bucket_list.append(self.m_libuplink.bucket_iterator_item(bucket_iterator))
