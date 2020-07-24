@@ -2,6 +2,7 @@
 """ Python Bindings for Storj (V3) """
 
 from .exchange import DataExchange, Project, Error, c, ObjectResult, Object
+from .constants import ERROR_MESSAGES
 
 
 # Structure classes for go structure objects #
@@ -399,8 +400,7 @@ class LibUplinkPy(DataExchange):
         bucket_iterator = self.m_libuplink.list_buckets(project, list_bucket_options_obj)
         err = self.m_libuplink.bucket_iterator_err(bucket_iterator)
         if err is not None:
-            # TODO: this message should be improved
-            return None, err.contents.message
+            return None, ERROR_MESSAGES[err.contents.code]
 
         bucket_list = list()
         while self.m_libuplink.bucket_iterator_next(bucket_iterator):
