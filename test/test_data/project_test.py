@@ -1,18 +1,18 @@
 # pylint: disable=missing-docstring
 import unittest
 
-from .helper import Uplink
+from .helper import TestPy
 
 
 class ProjectTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.uplink = Uplink()
-        cls.access = cls.uplink.get_access()
+        cls.test_py = TestPy()
+        cls.access = cls.test_py.get_access()
 
     def test1_open_project(self):
-        _, error = self.uplink.open_project(self.access)
-        self.assertTrue(error is None, error)
+        project = self.access.open_project()
+        self.assertIsNotNone(project, "open_project failed")
 
 
 if __name__ == '__main__':

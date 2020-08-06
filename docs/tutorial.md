@@ -29,21 +29,20 @@ DESTINATION_FULL_FILENAME = "filename with extension to save on local system"
 
 ## Step 3: Create libuplink class object
 
-Next, you need to create an object of libUplinkPy class that will be used to call the libuplink functions.
+Next, you need to create an object of Uplink class that will be used to call the libuplink functions.
 
 ```py
-StorjObj = LibUplinkPy()
+from uplink_python.uplink import Uplink
+
+uplink = Uplink()
 ```
 
 ## Step 4: Create Access Handle
 
-Once you have initialized the libuplink class object, you need to create an access handle to sotrj network in the following way:
+Once you have initialized the Uplink class object, you need to create an access to storj network in the following way:
 
 ```py
-access_result, err = StorjObj.request_access_with_passphrase(MY_SATELLITE, MY_API_KEY, MY_ENCRYPTION_PASSPHRASE)
-if err is not None:
-    print(err)
-    sys.exit()
+access = uplink.request_access_with_passphrase(MY_SATELLITE, MY_API_KEY, MY_ENCRYPTION_PASSPHRASE)
 ```
 
 ## Step 5: Open Project
@@ -51,21 +50,15 @@ if err is not None:
 To perform the uplink operations you need to create a project, which can be done using the following code fragmeent:
 
 ```py
-project_result, err = StorjObj.open_project(access_result.access)
-if err is not None:
-    print(err)
-    sys.exit()
+project = access.open_project()
 ```
 
 ## Step 6: Create/Ensure Bucket
 
-All the uploading and downloading is performed inside and from a bucket on the sotrj network. To ensure that the bucket you have specified in your configurations above exists or create one if not, use the following code:
+All the uploading and downloading is performed inside and from a bucket on the storj network. To ensure that the bucket you have specified in your configurations above exists or create one if not, use the following code:
 
 ```py
-bucket_result, err = StorjObj.ensure_bucket(project_result.project, MY_BUCKET)
-if err is not None:
-    print(err)
-    sys.exit()
+bucket = project.ensure_bucket(MY_BUCKET)
 ```
 
 ## Step 7: Upload/Download
@@ -88,14 +81,16 @@ data_len = path.getsize(src_full_filename)
 While file handle acts as the source stream, upload handle acts as the destination stream and can be created as follows:
 
 ```py
-upload_result, error = storj_obj.upload_object(project, bucket_name, storj_path, upload_options)
+upload = project.upload_object(MY_BUCKET, MY_STORJ_UPLOAD_PATH)
 ```
 
-You can create *upload_options* by referring to the [libuplink documentation](https://godoc.org/storj.io/uplink) or simply pass *none*.
+You can pass an optional parameter *upload_options* by referring to the [libuplink documentation](https://godoc.org/storj.io/uplink) or simply pass *none*.
 
-#### Stream the data
+#### Stream data to Storj Network
 
-Once the source and desctination streams are created, its time to perform data streaming using the following code:
+Once the source and destination streams are created, its time to perform data streaming, this can be done in two ways:
+
+##### 1. Upload data by providing data bytes and size:
 
 ```py
 uploaded_total = 0
@@ -108,37 +103,35 @@ while uploaded_total < data_len:
         break
 
     # file reading process from the last read position
-    file_handle.seek(uploaded_total)
     data_to_write = file_handle.read(size_to_write)
 
-    # --------------------------------------------
-    # data conversion to type required by function
-    # get size of data in c type int32 variable
-    # conversion of read bytes data to c type ubyte Array
-    data_to_write = (c_uint8 * c_int32(len(data_to_write)).value)(*data_to_write)
-    # conversion of c type ubyte Array to LP_c_ubyte required by upload write function
-    data_to_write_ptr = cast(data_to_write, POINTER(c_uint8))
-    # --------------------------------------------
-
     # call to write data to Storj bucket
-    write_result, error = storj_obj.upload_write(upload_result.upload, data_to_write_ptr, size_to_write)
+    bytes_written = upload.write(data_to_write, size_to_write)
 
     # exit while loop if nothing left to upload / unable to upload
-    if int(write_result.bytes_written) == 0:
+    if bytes_written == 0:
         break
 
     # update last read location
-    uploaded_total += int(write_result.bytes_written)
+    uploaded_total += bytes_written
 ```
 
 The above code streams the data in chunks of 256 bytes. You can change this size as per your requirement and convenience.
+
+##### 2. Upload data by providing file handle:
+
+```py
+# file_handle should be a BinaryIO, i.e. file should be opened using 'r+b" flag.
+upload.write_file(file_handle)
+```
+An option parameter here is buffer_size (default = 0), if not passes would iterate throught the file and upload in blocks with appropriate buffer size based on system.
 
 #### Commit Upload
 
 Once the data has been successfully streamed, the upload needs to be committed using the following method:
 
 ```py
-error = storj_obj.upload_commit(upload_result.upload)
+upload.commit()
 ```
 
 ### Download Data
@@ -159,24 +152,25 @@ file_handle = open(dest_full_pathname, 'w+b')
 The source stream for downloading data from storj to the required file can be created using the following code:
 
 ```py
-download_result, error = storj_obj.download_object(project, bucket_name, storj_path, download_options)
+download = project.download_object(MY_BUCKET, MY_STORJ_UPLOAD_PATH)
 ```
 
-You can create *download_options* by referring to the [libuplink documentation](https://godoc.org/storj.io/uplink) or simply pass *none*.
+You can pass an optional parameter *download_options* by referring to the [libuplink documentation](https://godoc.org/storj.io/uplink) or simply pass *none*.
 
-#### Retrieve the Download File Size
+#### Stream data from Storj Network
+
+Once the source and destination streams are created, its time to perform data streaming, this can be done in two ways:
+
+##### 1. Downloading data by providing size_to_read:
+
+In this method we would provide size of data to be read from stream and maintaining a loop (if required) and writing the data to file ourself.
 
 Before streaming the data we need to know the amount of data we are downloading to avoid discrepancies. Fetching the data size can be done using the following code:
 
 ```py
-# get object data
-obj_result, error = storj_obj.stat_object(project, bucket_name, storj_path)
-
-# find object size
-file_size = int(obj_result.object.contents.system.content_length)
+# find size of object to be downloaded
+file_size = upload.file_size()
 ```
-
-#### Stream the data
 
 Now, its time to do the required downloading and can be done as follows:
 
@@ -187,23 +181,14 @@ size_to_read = 256
 downloaded_total = 0
 while True:
     # call to read data from Storj bucket
-    data_read_ptr, read_result, error = storj_obj.download_read(download_result.download,
-                                                                size_to_read)
+    data_read, bytes_read = download.read(size_to_read)
    
     # file writing process from the last written position if new data is downloaded
-    if int(read_result.bytes_read) != 0:
-        #
-        # --------------------------------------------
-        # data conversion to type python readable form
-        # conversion of LP_c_ubyte to python readable data variable
-        data_read = string_at(data_read_ptr, int(read_result.bytes_read))
-        # --------------------------------------------
-        #
-        file_handle.seek(downloaded_total)
+    if bytes_read != 0:
         file_handle.write(data_read)
     #
     # update last read location
-    downloaded_total += int(read_result.bytes_read)
+    downloaded_total += bytes_read
     #
     # break if download complete
     if downloaded_total == file_size:
@@ -212,13 +197,20 @@ while True:
 
 The above code streams the data in chunks of 256 bytes. You can change this size as per your requirement and convenience.
 
+##### 2. Downloading data by providing file handle:
+
+```py
+# file_handle should be a BinaryIO, i.e. file should be opened using 'w+b" flag.
+download.read_file(file_handle)
+```
+An option parameter here is buffer_size (default = 0), if not passes would iterate throught the object and write the data to file in blocks with appropriate buffer size based on system.
+
 #### Close Download Stream
 
 Once the download streaming is complete, its important to close the download stream.
 
 ```py
-# close downloader and free downloader access
-error = storj_obj.close_download(download_result.download)
+download.close()
 ```
 
 > NOTE: Perform error handling as per your implmentation.
@@ -231,24 +223,16 @@ A shared access key with specific restrictions can be generated using the follow
 
 ```py
 # set permissions for the new access to be created
-permissions = Permission()
-permissions.allow_list = True
-permissions.allow_delete = False
+permissions = Permission(allow_list=True, allow_delete=False)
 
-# set shared prefix as list of dictionaries for the new access to be created
-shared_prefix = [{"bucket": MY_BUCKET, "prefix": ""}]
+# set shared prefix as list of SharePrefix for the new access to be created
+shared_prefix = [SharePrefix(bucket=MY_BUCKET, prefix="")]
 
 # create new access
-new_access_result, err = StorjObj.access_share(access_result.access, permissions, shared_prefix)
-if err is not None:
-    print(err)
-    sys.exit()
+new_access = access.share(permissions, shared_prefix)
 
 # generate serialized access to share
-serialized_access_result, err = StorjObj.access_serialize(new_access_result.access)
-if err is not None:
-    print(err)
-    sys.exit()
+serialized_access = access.serialize()
 ```
 
 ## Step 9: Close Project
@@ -256,10 +240,7 @@ if err is not None:
 Once you have performed all the required operations, closing the project is must to avoid memory leaks.
 
 ```py
-err = StorjObj.close_project(project_result.project)
-if err is not None:
-    print(err)
-    sys.exit()
+project.close()
 ```
 
 > NOTE: For more binding functions refer to the [uplink-python Binding Functions](/library.md) and for implemtation purpose refer *hello_storj.py* file.

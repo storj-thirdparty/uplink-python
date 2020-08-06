@@ -1,1 +1,1 @@
-""" Python Bindings for Storj (V3) """
+"""Python Bindings for Storj (V3)"""

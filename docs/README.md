@@ -1,7 +1,4 @@
 # <b>uplink-python binding</b>
-
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/aaee609406154b1794061386bb0ca60e)](https://app.codacy.com/gh/storj-thirdparty/uplink-python?utm_source=github.com&utm_medium=referral&utm_content=storj-thirdparty/uplink-python&utm_campaign=Badge_Grade_Dashboard)
-
 > Developed using v1.0.5 storj/uplink-c
 
 ## <b>Initial Set-up (Important)</b>
@@ -68,24 +65,28 @@ $ go build -o libuplinkc.so -buildmode=c-shared
 
 To include uplink in you project, import the library, by using following command:
 ```
-from uplink_python.uplink import LibUplinkPy, c
+from uplink_python.uplink import Uplink
 ```
-Create an object of ```LibUplinkPy``` class to access all the functions of library. Please refer the sample *hello_storj.py* file, for example.
+Create an object of ```Uplink``` class to access all the functions of library. Please refer the sample *hello_storj.py* file, for example.
 ```
-variable_name = LibUplinkPy()
+variable_name = Uplink()
 ```
 
-To use various structures such as ListBucketsOptions, ListObjectsOptions, Permissions, etc you would require to import them first from their respective classes i.e. uplink and exchange.
+To use various parameters such as ListBucketsOptions, ListObjectsOptions, Permissions, etc you would require to import them first from module_classes i.e. uplink_python.module_classes.
 ```
-from uplink_python.exchange import DownloadOptions
-from uplink_python.uplink import ListObjectsOptions, Permission
+from uplink_python.module_classes import DownloadOptions, Permission
+```
+
+To use various user-defined Storj Exceptions such as InternalError, BucketNotFoundError etc you would require to import them first from errors i.e. uplink_python.errors.
+```
+from uplink_python.errors import InternalError, BucketNotFoundError
 ```
 
 ## <b>Sample Hello Storj</b>
 
 File *hello_storj.py* can be found in folder where Python package was installed.
 
-The sample *hello_storj.py* code calls the *uplink.py* file and imports the *LibUplinkPy* binding class to do the following:
+The sample *hello_storj.py* code calls the *uplink.py* file and imports the *Uplink* binding class to do the following:
 * list all buckets in a Storj project
 * create a new bucket (if it does not exist) within desired Storj project
 * write a file from local computer to the a Storj bucket

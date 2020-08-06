@@ -39,6 +39,7 @@ Install [uplink-python](https://pypi.org/project/uplink-python/) python package 
 ```
 $ pip install --no-cache-dir uplink-python
 ```
+>Note: If ```Administrator``` privilage is not granted to the terminal/cmd, libuplinkc.so build process may fail.
 
 ### Option 2
 
@@ -61,31 +62,35 @@ $ go get storj.io/uplink-c
 $ go build -o libuplinkc.so -buildmode=c-shared
 ```
 
-* Copy created *libuplinkc.so* file into the folder, where Python package was installed (python3.X ```->``` site-packages ```->``` uplink_python)
+* Copy created *libuplinkc.so* file into the folder, where Python package was installed (by default it is python3.X ```->``` site-packages ```->``` uplink_python)
 
 
 ## <b>Project Set-up</b>
 
 To include uplink in you project, import the library, by using following command:
 ```
-from uplink_python.uplink import LibUplinkPy, c
+from uplink_python.uplink import Uplink
 ```
-Create an object of ```LibUplinkPy``` class to access all the functions of library. Please refer the sample *hello_storj.py* file, for example.
+Create an object of ```Uplink``` class to access all the functions of library. Please refer the sample *hello_storj.py* file, for example.
 ```
-variable_name = LibUplinkPy()
+variable_name = Uplink()
 ```
 
-To use various structures such as ListBucketsOptions, ListObjectsOptions, Permissions, etc you would require to import them first from their respective classes i.e. uplink and exchange.
+To use various parameters such as ListBucketsOptions, ListObjectsOptions, Permissions, etc you would require to import them first from module_classes i.e. uplink_python.module_classes.
 ```
-from uplink_python.exchange import DownloadOptions
-from uplink_python.uplink import ListObjectsOptions, Permission
+from uplink_python.module_classes import DownloadOptions, Permission
+```
+
+To use various user-defined Storj Exceptions such as InternalError, BucketNotFoundError etc you would require to import them first from errors i.e. uplink_python.errors.
+```
+from uplink_python.errors import InternalError, BucketNotFoundError
 ```
 
 ## <b>Sample Hello Storj!</b>
 
 File *hello_storj.py* can be found in folder where Python package was installed.
 
-The sample *hello_storj.py* code calls the *uplink.py* file and imports the *LibUplinkPy* binding class to do the following:
+The sample *hello_storj.py* code calls the *uplink.py* file and imports the *Uplink* binding class to do the following:
 * list all buckets in a Storj project
 * create a new bucket (if it does not exist) within desired Storj project
 * write a file from local computer to the a Storj bucket
@@ -95,9 +100,36 @@ The sample *hello_storj.py* code calls the *uplink.py* file and imports the *Lib
 * create shareable Access with permissions and shared prefix.
 * list all buckets and objects with permission to shareable access.
 
+## <b>Run Unit Test Cases on Local</b>
+
+Directory with unit test cases *test* can be found in the uplink-python repository.
+
+To run the test cases on local system, you need to perform the following steps:
+* clone the repo so that you have the test folder on your local system.
+
+        directory_on_local
+        └── test
+            └── __init__.py
+            └── test_data
+            └── test_cases.py
+
+* Add a test file parallel to the test folder, add ```API Key``` in file and name it as ```secret.txt```. Directory structure would be something like this now:
+
+        directory_on_local
+        └── secret.txt
+        └── test
+            └── __init__.py
+            └── test_data
+            └── test_cases.py
+
+* Navigate to the folder, here ```directory_on_local``` and use the following command to run through all the tests.
+
+
+        $ python3 -m unittest test/test_cases.py -v
+
 
 ## <b>Documentation</b>
-For more information on function definations and diagrams, check out the [Detail](//github.com/storj-thirdparty/uplink-python/wiki/Detail) or jump to:
+For more information on function definations and diagrams, check out the [Detail](//github.com/storj-thirdparty/uplink-python/wiki/) or jump to:
 * [Uplink-Python Binding Functions](//github.com/storj-thirdparty/uplink-python/wiki/#binding-functions)
 * [Flow Diagram](//github.com/storj-thirdparty/uplink-python/wiki/#flow-diagram)
 * [libuplink Documentation](https://godoc.org/storj.io/uplink)

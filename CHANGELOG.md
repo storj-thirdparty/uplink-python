@@ -1,6 +1,13 @@
 # uplink-python binding changelog
 
-## [1.0.5] - 19-07-2020
+## [1.0.4] - 06-08-2020
+### Changelog:
+* Changed overall structure of uplink-python.
+* Added error classes for error handling.
+* Added instruction to run unit test on local in Readme.
+* Changed documentation.
+
+## [1.0.3] - 19-07-2020
 ### Changelog:
 * Update module to latest storj/uplink-c v1.0.5
 * Added unittest
