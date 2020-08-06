@@ -1,5 +1,4 @@
 # pylint: disable=missing-docstring
-import ctypes as c
 import unittest
 
 from uplink_python.module_classes import ListObjectsOptions

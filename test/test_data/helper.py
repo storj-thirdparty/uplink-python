@@ -1,5 +1,4 @@
 # pylint: disable=missing-docstring
-import os
 import unittest
 
 from uplink_python.uplink import Uplink

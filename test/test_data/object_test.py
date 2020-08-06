@@ -1,5 +1,4 @@
 # pylint: disable=missing-docstring
-import ctypes as c
 import random
 import string
 import unittest
