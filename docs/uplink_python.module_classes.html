@@ -1,0 +1,554 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module uplink_python.module_classes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="uplink_python.html"><font color="#ffffff">uplink_python</font></a>.module_classes</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"></font></td></tr></table>
+    <p><tt>Classes&nbsp;for&nbsp;input&nbsp;and&nbsp;output&nbsp;interface&nbsp;of&nbsp;parameters&nbsp;and&nbsp;returns&nbsp;from&nbsp;uplink.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="ctypes.html">ctypes</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="uplink_python.module_classes.html#Bucket">Bucket</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.module_classes.html#Config">Config</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.module_classes.html#CustomMetadata">CustomMetadata</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.module_classes.html#CustomMetadataEntry">CustomMetadataEntry</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.module_classes.html#DownloadOptions">DownloadOptions</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.module_classes.html#ListBucketsOptions">ListBucketsOptions</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.module_classes.html#ListObjectsOptions">ListObjectsOptions</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.module_classes.html#Object">Object</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.module_classes.html#Permission">Permission</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.module_classes.html#SharePrefix">SharePrefix</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.module_classes.html#SystemMetadata">SystemMetadata</a>
+</font></dt><dt><font face="helvetica, arial"><a href="uplink_python.module_classes.html#UploadOptions">UploadOptions</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Bucket">class <strong>Bucket</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Bucket">Bucket</a>(name:&nbsp;str&nbsp;=&nbsp;'',&nbsp;created:&nbsp;int&nbsp;=&nbsp;0)<br>
+&nbsp;<br>
+<a href="#Bucket">Bucket</a>&nbsp;contains&nbsp;information&nbsp;about&nbsp;the&nbsp;bucket.<br>
+&nbsp;<br>
+...<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+name&nbsp;:&nbsp;str<br>
+created&nbsp;:&nbsp;int<br>
+&nbsp;<br>
+Methods<br>
+-------<br>
+<a href="#Bucket-get_structure">get_structure</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_BucketStruct<br>
+<a href="#Bucket-get_dict">get_dict</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;python&nbsp;dictionary<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Bucket-__init__"><strong>__init__</strong></a>(self, name: str = '', created: int = 0)</dt><dd><tt>Constructs&nbsp;all&nbsp;the&nbsp;necessary&nbsp;attributes&nbsp;for&nbsp;the&nbsp;<a href="#Bucket">Bucket</a>&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="Bucket-get_dict"><strong>get_dict</strong></a>(self)</dt><dd><tt>Converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;python&nbsp;dictionary</tt></dd></dl>
+
+<dl><dt><a name="Bucket-get_structure"><strong>get_structure</strong></a>(self)</dt><dd><tt>Converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;ctypes&nbsp;structure&nbsp;_BucketStruct</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Config">class <strong>Config</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Config">Config</a>(user_agent:&nbsp;str&nbsp;=&nbsp;'',&nbsp;dial_timeout_milliseconds:&nbsp;int&nbsp;=&nbsp;0,&nbsp;temp_directory:&nbsp;str&nbsp;=&nbsp;'')<br>
+&nbsp;<br>
+<a href="#Config">Config</a>&nbsp;defines&nbsp;configuration&nbsp;for&nbsp;using&nbsp;uplink&nbsp;library.<br>
+&nbsp;<br>
+...<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+user_agent&nbsp;:&nbsp;str<br>
+dial_timeout_milliseconds&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;DialTimeout&nbsp;defines&nbsp;how&nbsp;long&nbsp;client&nbsp;should&nbsp;wait&nbsp;for&nbsp;establishing&nbsp;a&nbsp;connection&nbsp;to&nbsp;peers.<br>
+temp_directory&nbsp;:&nbsp;str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;temp_directory&nbsp;specifies&nbsp;where&nbsp;to&nbsp;save&nbsp;data&nbsp;during&nbsp;downloads&nbsp;to&nbsp;use&nbsp;less&nbsp;memory.<br>
+&nbsp;<br>
+Methods<br>
+-------<br>
+<a href="#Config-get_structure">get_structure</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_ConfigStruct<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Config-__init__"><strong>__init__</strong></a>(self, user_agent: str = '', dial_timeout_milliseconds: int = 0, temp_directory: str = '')</dt><dd><tt>Constructs&nbsp;all&nbsp;the&nbsp;necessary&nbsp;attributes&nbsp;for&nbsp;the&nbsp;<a href="#Config">Config</a>&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="Config-get_structure"><strong>get_structure</strong></a>(self)</dt><dd><tt>Converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;ctypes&nbsp;structure&nbsp;_ConfigStruct</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="CustomMetadata">class <strong>CustomMetadata</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#CustomMetadata">CustomMetadata</a>(entries:&nbsp;[&amp;lt;class&nbsp;'uplink_python.module_classes.<a href="#CustomMetadataEntry">CustomMetadataEntry</a>'&amp;gt;]&nbsp;=&nbsp;None,&nbsp;count:&nbsp;int&nbsp;=&nbsp;0)<br>
+&nbsp;<br>
+<a href="#CustomMetadata">CustomMetadata</a>&nbsp;contains&nbsp;a&nbsp;list&nbsp;of&nbsp;<a href="#CustomMetadataEntry">CustomMetadataEntry</a>&nbsp;about&nbsp;the&nbsp;<a href="builtins.html#object">object</a>.<br>
+&nbsp;<br>
+...<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+entries&nbsp;:&nbsp;list&nbsp;of&nbsp;<a href="#CustomMetadataEntry">CustomMetadataEntry</a><br>
+count&nbsp;:&nbsp;int<br>
+&nbsp;<br>
+Methods<br>
+-------<br>
+<a href="#CustomMetadata-get_structure">get_structure</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_CustomMetadataStruct<br>
+<a href="#CustomMetadata-get_dict">get_dict</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;python&nbsp;dictionary<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="CustomMetadata-__init__"><strong>__init__</strong></a>(self, entries: [&lt;class 'uplink_python.module_classes.CustomMetadataEntry'&gt;] = None, count: int = 0)</dt><dd><tt>Constructs&nbsp;all&nbsp;the&nbsp;necessary&nbsp;attributes&nbsp;for&nbsp;the&nbsp;<a href="#CustomMetadata">CustomMetadata</a>&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="CustomMetadata-get_dict"><strong>get_dict</strong></a>(self)</dt><dd><tt>Converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;python&nbsp;dictionary</tt></dd></dl>
+
+<dl><dt><a name="CustomMetadata-get_structure"><strong>get_structure</strong></a>(self)</dt><dd><tt>Converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;ctypes&nbsp;structure&nbsp;_CustomMetadataStruct</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="CustomMetadataEntry">class <strong>CustomMetadataEntry</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#CustomMetadataEntry">CustomMetadataEntry</a>(key:&nbsp;str&nbsp;=&nbsp;'',&nbsp;key_length:&nbsp;int&nbsp;=&nbsp;0,&nbsp;value:&nbsp;str&nbsp;=&nbsp;'',&nbsp;value_length:&nbsp;int&nbsp;=&nbsp;0)<br>
+&nbsp;<br>
+<a href="#CustomMetadata">CustomMetadata</a>&nbsp;contains&nbsp;custom&nbsp;user&nbsp;metadata&nbsp;about&nbsp;the&nbsp;<a href="builtins.html#object">object</a>.<br>
+&nbsp;<br>
+When&nbsp;choosing&nbsp;a&nbsp;custom&nbsp;key&nbsp;for&nbsp;your&nbsp;application&nbsp;start&nbsp;it&nbsp;with&nbsp;a&nbsp;prefix&nbsp;"app:key",<br>
+as&nbsp;an&nbsp;example&nbsp;application&nbsp;named"Image&nbsp;Board"&nbsp;might&nbsp;use&nbsp;a&nbsp;key&nbsp;"image-board:title".<br>
+&nbsp;<br>
+...<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+key&nbsp;:&nbsp;str<br>
+key_length&nbsp;:&nbsp;int<br>
+value&nbsp;:&nbsp;str<br>
+value_length&nbsp;:&nbsp;int<br>
+&nbsp;<br>
+Methods<br>
+-------<br>
+<a href="#CustomMetadataEntry-get_structure">get_structure</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_CustomMetadataEntryStruct<br>
+<a href="#CustomMetadataEntry-get_dict">get_dict</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;python&nbsp;dictionary<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="CustomMetadataEntry-__init__"><strong>__init__</strong></a>(self, key: str = '', key_length: int = 0, value: str = '', value_length: int = 0)</dt><dd><tt>Constructs&nbsp;all&nbsp;the&nbsp;necessary&nbsp;attributes&nbsp;for&nbsp;the&nbsp;<a href="#CustomMetadataEntry">CustomMetadataEntry</a>&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="CustomMetadataEntry-get_dict"><strong>get_dict</strong></a>(self)</dt><dd><tt>Converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;python&nbsp;dictionary</tt></dd></dl>
+
+<dl><dt><a name="CustomMetadataEntry-get_structure"><strong>get_structure</strong></a>(self)</dt><dd><tt>Converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;ctypes&nbsp;structure&nbsp;_CustomMetadataEntryStruct</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="DownloadOptions">class <strong>DownloadOptions</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#DownloadOptions">DownloadOptions</a>(offset:&nbsp;int,&nbsp;length:&nbsp;int)<br>
+&nbsp;<br>
+<a href="#DownloadOptions">DownloadOptions</a>&nbsp;contains&nbsp;additional&nbsp;options&nbsp;for&nbsp;downloading.<br>
+&nbsp;<br>
+...<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+offset&nbsp;:&nbsp;int<br>
+length&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;When&nbsp;length&nbsp;is&nbsp;negative,&nbsp;it&nbsp;will&nbsp;read&nbsp;until&nbsp;the&nbsp;end&nbsp;of&nbsp;the&nbsp;blob.<br>
+&nbsp;<br>
+Methods<br>
+-------<br>
+<a href="#DownloadOptions-get_structure">get_structure</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_DownloadOptionsStruct<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="DownloadOptions-__init__"><strong>__init__</strong></a>(self, offset: int, length: int)</dt><dd><tt>Constructs&nbsp;all&nbsp;the&nbsp;necessary&nbsp;attributes&nbsp;for&nbsp;the&nbsp;<a href="#DownloadOptions">DownloadOptions</a>&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="DownloadOptions-get_structure"><strong>get_structure</strong></a>(self)</dt><dd><tt>Converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;ctypes&nbsp;structure&nbsp;_DownloadOptionsStruct</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ListBucketsOptions">class <strong>ListBucketsOptions</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#ListBucketsOptions">ListBucketsOptions</a>(cursor:&nbsp;str&nbsp;=&nbsp;'')<br>
+&nbsp;<br>
+<a href="#ListBucketsOptions">ListBucketsOptions</a>&nbsp;defines&nbsp;bucket&nbsp;listing&nbsp;options.<br>
+&nbsp;<br>
+...<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+cursor&nbsp;:&nbsp;str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Cursor&nbsp;sets&nbsp;the&nbsp;starting&nbsp;position&nbsp;of&nbsp;the&nbsp;iterator.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;first&nbsp;item&nbsp;listed&nbsp;will&nbsp;be&nbsp;the&nbsp;one&nbsp;after&nbsp;the&nbsp;cursor.<br>
+&nbsp;<br>
+Methods<br>
+-------<br>
+<a href="#ListBucketsOptions-get_structure">get_structure</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_ListBucketsOptionsStruct<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="ListBucketsOptions-__init__"><strong>__init__</strong></a>(self, cursor: str = '')</dt><dd><tt>Constructs&nbsp;all&nbsp;the&nbsp;necessary&nbsp;attributes&nbsp;for&nbsp;the&nbsp;<a href="#ListBucketsOptions">ListBucketsOptions</a>&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="ListBucketsOptions-get_structure"><strong>get_structure</strong></a>(self)</dt><dd><tt>Converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;ctypes&nbsp;structure&nbsp;_ListBucketsOptionsStruct</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ListObjectsOptions">class <strong>ListObjectsOptions</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#ListObjectsOptions">ListObjectsOptions</a>(prefix:&nbsp;str&nbsp;=&nbsp;'',&nbsp;cursor:&nbsp;str&nbsp;=&nbsp;'',&nbsp;recursive:&nbsp;bool&nbsp;=&nbsp;False,&nbsp;system:&nbsp;bool&nbsp;=&nbsp;False,&nbsp;custom:&nbsp;bool&nbsp;=&nbsp;False)<br>
+&nbsp;<br>
+<a href="#ListObjectsOptions">ListObjectsOptions</a>&nbsp;defines&nbsp;<a href="builtins.html#object">object</a>&nbsp;listing&nbsp;options.<br>
+&nbsp;<br>
+...<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+prefix&nbsp;:&nbsp;str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;prefix&nbsp;allows&nbsp;to&nbsp;filter&nbsp;objects&nbsp;by&nbsp;a&nbsp;key&nbsp;prefix.&nbsp;If&nbsp;not&nbsp;empty,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;it&nbsp;must&nbsp;end&nbsp;with&nbsp;slash.<br>
+cursor&nbsp;:&nbsp;str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cursor&nbsp;sets&nbsp;the&nbsp;starting&nbsp;position&nbsp;of&nbsp;the&nbsp;iterator.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;first&nbsp;item&nbsp;listed&nbsp;will&nbsp;be&nbsp;the&nbsp;one&nbsp;after&nbsp;the&nbsp;cursor.<br>
+recursive&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;recursive&nbsp;iterates&nbsp;the&nbsp;objects&nbsp;without&nbsp;collapsing&nbsp;prefixes.<br>
+system&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;system&nbsp;includes&nbsp;<a href="#SystemMetadata">SystemMetadata</a>&nbsp;in&nbsp;the&nbsp;results.<br>
+custom&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;custom&nbsp;includes&nbsp;<a href="#CustomMetadata">CustomMetadata</a>&nbsp;in&nbsp;the&nbsp;results.<br>
+&nbsp;<br>
+Methods<br>
+-------<br>
+<a href="#ListObjectsOptions-get_structure">get_structure</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_ListObjectsOptionsStruct<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="ListObjectsOptions-__init__"><strong>__init__</strong></a>(self, prefix: str = '', cursor: str = '', recursive: bool = False, system: bool = False, custom: bool = False)</dt><dd><tt>Constructs&nbsp;all&nbsp;the&nbsp;necessary&nbsp;attributes&nbsp;for&nbsp;the&nbsp;<a href="#ListObjectsOptions">ListObjectsOptions</a>&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="ListObjectsOptions-get_structure"><strong>get_structure</strong></a>(self)</dt><dd><tt>Converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;ctypes&nbsp;structure&nbsp;_ListObjectsOptionsStruct</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Object">class <strong>Object</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Object">Object</a>(key:&nbsp;str&nbsp;=&nbsp;'',&nbsp;is_prefix:&nbsp;bool&nbsp;=&nbsp;False,&nbsp;system:&nbsp;uplink_python.module_classes.<a href="#SystemMetadata">SystemMetadata</a>&nbsp;=&nbsp;None,&nbsp;custom:&nbsp;uplink_python.module_classes.<a href="#CustomMetadata">CustomMetadata</a>&nbsp;=&nbsp;None)<br>
+&nbsp;<br>
+<a href="#Object">Object</a>&nbsp;contains&nbsp;information&nbsp;about&nbsp;an&nbsp;<a href="builtins.html#object">object</a>.<br>
+&nbsp;<br>
+...<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+key&nbsp;:&nbsp;str<br>
+is_prefix&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;is_prefix&nbsp;indicates&nbsp;whether&nbsp;the&nbsp;Key&nbsp;is&nbsp;a&nbsp;prefix&nbsp;for&nbsp;other&nbsp;objects.<br>
+system&nbsp;:&nbsp;<a href="#SystemMetadata">SystemMetadata</a><br>
+system&nbsp;:&nbsp;<a href="#CustomMetadata">CustomMetadata</a><br>
+&nbsp;<br>
+Methods<br>
+-------<br>
+<a href="#Object-get_structure">get_structure</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_ObjectStruct<br>
+<a href="#Object-get_dict">get_dict</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;python&nbsp;dictionary<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Object-__init__"><strong>__init__</strong></a>(self, key: str = '', is_prefix: bool = False, system: uplink_python.module_classes.SystemMetadata = None, custom: uplink_python.module_classes.CustomMetadata = None)</dt><dd><tt>Constructs&nbsp;all&nbsp;the&nbsp;necessary&nbsp;attributes&nbsp;for&nbsp;the&nbsp;<a href="#Object">Object</a>&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="Object-get_dict"><strong>get_dict</strong></a>(self)</dt><dd><tt>Converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;python&nbsp;dictionary</tt></dd></dl>
+
+<dl><dt><a name="Object-get_structure"><strong>get_structure</strong></a>(self)</dt><dd><tt>Converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;ctypes&nbsp;structure&nbsp;_ObjectStruct</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Permission">class <strong>Permission</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Permission">Permission</a>(allow_download:&nbsp;bool&nbsp;=&nbsp;False,&nbsp;allow_upload:&nbsp;bool&nbsp;=&nbsp;False,&nbsp;allow_list:&nbsp;bool&nbsp;=&nbsp;False,&nbsp;allow_delete:&nbsp;bool&nbsp;=&nbsp;False,&nbsp;not_before:&nbsp;int&nbsp;=&nbsp;0,&nbsp;not_after:&nbsp;int&nbsp;=&nbsp;0)<br>
+&nbsp;<br>
+<a href="#Permission">Permission</a>&nbsp;defines&nbsp;what&nbsp;actions&nbsp;can&nbsp;be&nbsp;used&nbsp;to&nbsp;share.<br>
+&nbsp;<br>
+...<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+allow_download&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;allow_download&nbsp;gives&nbsp;permission&nbsp;to&nbsp;download&nbsp;the&nbsp;<a href="builtins.html#object">object</a>'s&nbsp;content.&nbsp;It<br>
+&nbsp;&nbsp;&nbsp;&nbsp;allows&nbsp;getting&nbsp;<a href="builtins.html#object">object</a>&nbsp;metadata,&nbsp;but&nbsp;it&nbsp;does&nbsp;not&nbsp;allow&nbsp;listing&nbsp;buckets.<br>
+allow_upload&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;allow_upload&nbsp;gives&nbsp;permission&nbsp;to&nbsp;create&nbsp;buckets&nbsp;and&nbsp;upload&nbsp;new&nbsp;objects.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;It&nbsp;does&nbsp;not&nbsp;allow&nbsp;overwriting&nbsp;existing&nbsp;objects&nbsp;unless&nbsp;allow_delete&nbsp;is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;granted&nbsp;too.<br>
+allow_list&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;allow_list&nbsp;gives&nbsp;permission&nbsp;to&nbsp;list&nbsp;buckets.&nbsp;It&nbsp;allows&nbsp;getting&nbsp;<a href="builtins.html#object">object</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;metadata,&nbsp;but&nbsp;it&nbsp;does&nbsp;not&nbsp;allow&nbsp;downloading&nbsp;the&nbsp;<a href="builtins.html#object">object</a>'s&nbsp;content.<br>
+allow_delete&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;allow_delete&nbsp;gives&nbsp;permission&nbsp;to&nbsp;delete&nbsp;buckets&nbsp;and&nbsp;objects.&nbsp;Unless<br>
+&nbsp;&nbsp;&nbsp;&nbsp;either&nbsp;allow_download&nbsp;or&nbsp;allow_list&nbsp;is&nbsp;granted&nbsp;too,&nbsp;no&nbsp;<a href="builtins.html#object">object</a>&nbsp;metadata&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;no&nbsp;error&nbsp;info&nbsp;will&nbsp;be&nbsp;returned&nbsp;for&nbsp;deleted&nbsp;objects.<br>
+not_before&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;NotBefore&nbsp;restricts&nbsp;when&nbsp;the&nbsp;resulting&nbsp;access&nbsp;grant&nbsp;is&nbsp;valid&nbsp;for.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;set,&nbsp;the&nbsp;resulting&nbsp;access&nbsp;grant&nbsp;will&nbsp;not&nbsp;work&nbsp;if&nbsp;the&nbsp;Satellite<br>
+&nbsp;&nbsp;&nbsp;&nbsp;believes&nbsp;the&nbsp;time&nbsp;is&nbsp;before&nbsp;NotBefore.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;set,&nbsp;this&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;before&nbsp;NotAfter.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;disabled&nbsp;when&nbsp;0.<br>
+not_after&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;NotAfter&nbsp;restricts&nbsp;when&nbsp;the&nbsp;resulting&nbsp;access&nbsp;grant&nbsp;is&nbsp;valid&nbsp;for.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;set,&nbsp;the&nbsp;resulting&nbsp;access&nbsp;grant&nbsp;will&nbsp;not&nbsp;work&nbsp;if&nbsp;the&nbsp;Satellite<br>
+&nbsp;&nbsp;&nbsp;&nbsp;believes&nbsp;the&nbsp;time&nbsp;is&nbsp;after&nbsp;NotAfter.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;set,&nbsp;this&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;after&nbsp;NotBefore.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;disabled&nbsp;when&nbsp;0.<br>
+&nbsp;<br>
+Methods<br>
+-------<br>
+<a href="#Permission-get_structure">get_structure</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_PermissionStruct<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Permission-__init__"><strong>__init__</strong></a>(self, allow_download: bool = False, allow_upload: bool = False, allow_list: bool = False, allow_delete: bool = False, not_before: int = 0, not_after: int = 0)</dt><dd><tt>Constructs&nbsp;all&nbsp;the&nbsp;necessary&nbsp;attributes&nbsp;for&nbsp;the&nbsp;<a href="#Permission">Permission</a>&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="Permission-get_structure"><strong>get_structure</strong></a>(self)</dt><dd><tt>Converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;ctypes&nbsp;structure&nbsp;_PermissionStruct</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SharePrefix">class <strong>SharePrefix</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#SharePrefix">SharePrefix</a>(bucket:&nbsp;str&nbsp;=&nbsp;'',&nbsp;prefix:&nbsp;str&nbsp;=&nbsp;'')<br>
+&nbsp;<br>
+<a href="#SharePrefix">SharePrefix</a>&nbsp;defines&nbsp;a&nbsp;prefix&nbsp;that&nbsp;will&nbsp;be&nbsp;shared.<br>
+&nbsp;<br>
+...<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+bucket&nbsp;:&nbsp;str<br>
+prefix&nbsp;:&nbsp;str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Prefix&nbsp;is&nbsp;the&nbsp;prefix&nbsp;of&nbsp;the&nbsp;shared&nbsp;<a href="builtins.html#object">object</a>&nbsp;keys.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Note:&nbsp;that&nbsp;within&nbsp;a&nbsp;bucket,&nbsp;the&nbsp;hierarchical&nbsp;key&nbsp;derivation&nbsp;scheme&nbsp;is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;delineated&nbsp;by&nbsp;forward&nbsp;slashes&nbsp;(/),&nbsp;so&nbsp;encryption&nbsp;information&nbsp;will&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;included&nbsp;in&nbsp;the&nbsp;resulting&nbsp;access&nbsp;grant&nbsp;to&nbsp;decrypt&nbsp;any&nbsp;key&nbsp;that&nbsp;shares<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;same&nbsp;prefix&nbsp;up&nbsp;until&nbsp;the&nbsp;last&nbsp;slash.<br>
+&nbsp;<br>
+Methods<br>
+-------<br>
+<a href="#SharePrefix-get_structure">get_structure</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_SharePrefixStruct<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="SharePrefix-__init__"><strong>__init__</strong></a>(self, bucket: str = '', prefix: str = '')</dt><dd><tt>Constructs&nbsp;all&nbsp;the&nbsp;necessary&nbsp;attributes&nbsp;for&nbsp;the&nbsp;<a href="#SharePrefix">SharePrefix</a>&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="SharePrefix-get_structure"><strong>get_structure</strong></a>(self)</dt><dd><tt>Converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;ctypes&nbsp;structure&nbsp;_SharePrefixStruct</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SystemMetadata">class <strong>SystemMetadata</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#SystemMetadata">SystemMetadata</a>(created:&nbsp;int&nbsp;=&nbsp;0,&nbsp;expires:&nbsp;int&nbsp;=&nbsp;0,&nbsp;content_length:&nbsp;int&nbsp;=&nbsp;0)<br>
+&nbsp;<br>
+<a href="#SystemMetadata">SystemMetadata</a>&nbsp;contains&nbsp;information&nbsp;about&nbsp;the&nbsp;<a href="builtins.html#object">object</a>&nbsp;that&nbsp;cannot&nbsp;be&nbsp;changed&nbsp;directly.<br>
+&nbsp;<br>
+...<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+created&nbsp;:&nbsp;str<br>
+expires&nbsp;:&nbsp;str<br>
+content_length&nbsp;:&nbsp;int<br>
+&nbsp;<br>
+Methods<br>
+-------<br>
+<a href="#SystemMetadata-get_structure">get_structure</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_SystemMetadataStruct<br>
+<a href="#SystemMetadata-get_dict">get_dict</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;python&nbsp;dictionary<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="SystemMetadata-__init__"><strong>__init__</strong></a>(self, created: int = 0, expires: int = 0, content_length: int = 0)</dt><dd><tt>Constructs&nbsp;all&nbsp;the&nbsp;necessary&nbsp;attributes&nbsp;for&nbsp;the&nbsp;<a href="#SystemMetadata">SystemMetadata</a>&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="SystemMetadata-get_dict"><strong>get_dict</strong></a>(self)</dt><dd><tt>Converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;python&nbsp;dictionary</tt></dd></dl>
+
+<dl><dt><a name="SystemMetadata-get_structure"><strong>get_structure</strong></a>(self)</dt><dd><tt>Converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;ctypes&nbsp;structure&nbsp;_SystemMetadataStruct</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="UploadOptions">class <strong>UploadOptions</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#UploadOptions">UploadOptions</a>(expires:&nbsp;int)<br>
+&nbsp;<br>
+<a href="#UploadOptions">UploadOptions</a>&nbsp;contains&nbsp;additional&nbsp;options&nbsp;for&nbsp;uploading.<br>
+&nbsp;<br>
+...<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+expires&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;When&nbsp;expires&nbsp;is&nbsp;0&nbsp;or&nbsp;negative,&nbsp;it&nbsp;means&nbsp;no&nbsp;expiration.<br>
+&nbsp;<br>
+Methods<br>
+-------<br>
+<a href="#UploadOptions-get_structure">get_structure</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_UploadOptionsStruct<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="UploadOptions-__init__"><strong>__init__</strong></a>(self, expires: int)</dt><dd><tt>Constructs&nbsp;all&nbsp;the&nbsp;necessary&nbsp;attributes&nbsp;for&nbsp;the&nbsp;<a href="#UploadOptions">UploadOptions</a>&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="UploadOptions-get_structure"><strong>get_structure</strong></a>(self)</dt><dd><tt>Converts&nbsp;python&nbsp;class&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;ctypes&nbsp;structure&nbsp;_UploadOptionsStruct</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table>
+</body></html>

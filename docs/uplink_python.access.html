@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module uplink_python.access</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="uplink_python.html"><font color="#ffffff">uplink_python</font></a>.access</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"></font></td></tr></table>
+    <p><tt>Module&nbsp;with&nbsp;<a href="#Access">Access</a>&nbsp;class&nbsp;and&nbsp;access&nbsp;methods&nbsp;to&nbsp;get&nbsp;access&nbsp;grant&nbsp;to&nbsp;access&nbsp;project</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="ctypes.html">ctypes</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="uplink_python.access.html#Access">Access</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Access">class <strong>Access</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Access">Access</a>(access,&nbsp;uplink)<br>
+&nbsp;<br>
+An&nbsp;<a href="#Access">Access</a>&nbsp;Grant&nbsp;contains&nbsp;everything&nbsp;to&nbsp;access&nbsp;a&nbsp;project&nbsp;and&nbsp;specific&nbsp;buckets.<br>
+It&nbsp;includes&nbsp;a&nbsp;potentially-restricted&nbsp;API&nbsp;Key,&nbsp;a&nbsp;potentially-restricted&nbsp;set&nbsp;of&nbsp;encryption<br>
+information,&nbsp;and&nbsp;information&nbsp;about&nbsp;the&nbsp;Satellite&nbsp;responsible&nbsp;for&nbsp;the&nbsp;project's&nbsp;metadata.<br>
+&nbsp;<br>
+...<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+access&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Access">Access</a>&nbsp;_handle&nbsp;returned&nbsp;from&nbsp;libuplinkc&nbsp;access_result.access<br>
+uplink&nbsp;:&nbsp;Uplink<br>
+&nbsp;&nbsp;&nbsp;&nbsp;uplink&nbsp;<a href="builtins.html#object">object</a>&nbsp;used&nbsp;to&nbsp;get&nbsp;access<br>
+&nbsp;<br>
+Methods<br>
+-------<br>
+<a href="#Access-open_project">open_project</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Project<br>
+<a href="#Access-config_open_project">config_open_project</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Project<br>
+<a href="#Access-serialize">serialize</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;String<br>
+<a href="#Access-share">share</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Access">Access</a><br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Access-__init__"><strong>__init__</strong></a>(self, access, uplink)</dt><dd><tt>Constructs&nbsp;all&nbsp;the&nbsp;necessary&nbsp;attributes&nbsp;for&nbsp;the&nbsp;<a href="#Access">Access</a>&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="Access-config_open_project"><strong>config_open_project</strong></a>(self, config: uplink_python.module_classes.Config)</dt><dd><tt>function&nbsp;opens&nbsp;Storj(V3)&nbsp;project&nbsp;using&nbsp;access&nbsp;grant&nbsp;and&nbsp;custom&nbsp;configuration.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+config&nbsp;:&nbsp;Config<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+Project</tt></dd></dl>
+
+<dl><dt><a name="Access-open_project"><strong>open_project</strong></a>(self)</dt><dd><tt>function&nbsp;opens&nbsp;Storj(V3)&nbsp;project&nbsp;using&nbsp;access&nbsp;grant.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+Project</tt></dd></dl>
+
+<dl><dt><a name="Access-serialize"><strong>serialize</strong></a>(self)</dt><dd><tt>function&nbsp;serializes&nbsp;an&nbsp;access&nbsp;grant&nbsp;such&nbsp;that&nbsp;it&nbsp;can&nbsp;be&nbsp;used&nbsp;later<br>
+with&nbsp;ParseAccess&nbsp;or&nbsp;other&nbsp;tools.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+String</tt></dd></dl>
+
+<dl><dt><a name="Access-share"><strong>share</strong></a>(self, permission: uplink_python.module_classes.Permission = None, shared_prefix: [&lt;class 'uplink_python.module_classes.SharePrefix'&gt;] = None)</dt><dd><tt>function&nbsp;Share&nbsp;creates&nbsp;a&nbsp;new&nbsp;access&nbsp;grant&nbsp;with&nbsp;specific&nbsp;permissions.<br>
+&nbsp;<br>
+<a href="#Access">Access</a>&nbsp;grants&nbsp;can&nbsp;only&nbsp;have&nbsp;their&nbsp;existing&nbsp;permissions&nbsp;restricted,&nbsp;and&nbsp;the&nbsp;resulting<br>
+access&nbsp;grant&nbsp;will&nbsp;only&nbsp;allow&nbsp;for&nbsp;the&nbsp;intersection&nbsp;of&nbsp;all&nbsp;previous&nbsp;Share&nbsp;calls&nbsp;in&nbsp;the<br>
+access&nbsp;grant&nbsp;construction&nbsp;chain.<br>
+&nbsp;<br>
+Prefixes,&nbsp;if&nbsp;provided,&nbsp;restrict&nbsp;the&nbsp;access&nbsp;grant&nbsp;(and&nbsp;internal&nbsp;encryption&nbsp;information)<br>
+to&nbsp;only&nbsp;contain&nbsp;enough&nbsp;information&nbsp;to&nbsp;allow&nbsp;access&nbsp;to&nbsp;just&nbsp;those&nbsp;prefixes.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+permission&nbsp;:&nbsp;Permission<br>
+shared_prefix&nbsp;:&nbsp;list&nbsp;of&nbsp;SharePrefix<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+<a href="#Access">Access</a></tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table>
+</body></html>

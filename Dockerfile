@@ -8,8 +8,4 @@ RUN chown -R root:root ./go
 RUN mv go /usr/local
 ENV PATH=$PATH:/usr/local/go/bin
 
-# ENV VIRTUAL_ENV=/opt/venv
-# RUN python3 -m venv $VIRTUAL_ENV
-# ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-
 RUN pip --no-cache-dir install pylint

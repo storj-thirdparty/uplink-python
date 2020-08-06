@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module uplink_python.download</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="uplink_python.html"><font color="#ffffff">uplink_python</font></a>.download</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"></font></td></tr></table>
+    <p><tt>Module&nbsp;with&nbsp;<a href="#Download">Download</a>&nbsp;class&nbsp;and&nbsp;dowload&nbsp;methods&nbsp;to&nbsp;work&nbsp;with&nbsp;<a href="builtins.html#object">object</a>&nbsp;download</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="ctypes.html">ctypes</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="uplink_python.download.html#Download">Download</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Download">class <strong>Download</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Download">Download</a>(download,&nbsp;uplink,&nbsp;project,&nbsp;bucket_name,&nbsp;storj_path)<br>
+&nbsp;<br>
+<a href="#Download">Download</a>&nbsp;is&nbsp;a&nbsp;download&nbsp;from&nbsp;Storj&nbsp;Network.<br>
+&nbsp;<br>
+...<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+download&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Download">Download</a>&nbsp;_handle&nbsp;returned&nbsp;from&nbsp;libuplinkc&nbsp;download_result.download<br>
+uplink&nbsp;:&nbsp;Uplink<br>
+&nbsp;&nbsp;&nbsp;&nbsp;uplink&nbsp;<a href="builtins.html#object">object</a>&nbsp;used&nbsp;to&nbsp;get&nbsp;access<br>
+project&nbsp;:&nbsp;Project<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project&nbsp;<a href="builtins.html#object">object</a>&nbsp;used&nbsp;to&nbsp;create&nbsp;upload<br>
+bucket_name&nbsp;:&nbsp;Str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bucket_name&nbsp;to&nbsp;which&nbsp;upload&nbsp;is&nbsp;being&nbsp;processed<br>
+storj_path&nbsp;:&nbsp;Str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;storj_path&nbsp;on&nbsp;which&nbsp;upload&nbsp;is&nbsp;to&nbsp;be&nbsp;done<br>
+&nbsp;<br>
+Methods<br>
+-------<br>
+<a href="#Download-read">read</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Int<br>
+<a href="#Download-read_file">read_file</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None<br>
+<a href="#Download-file_size">file_size</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Int<br>
+<a href="#Download-close">close</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None<br>
+<a href="#Download-info">info</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Object<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Download-__init__"><strong>__init__</strong></a>(self, download, uplink, project, bucket_name, storj_path)</dt><dd><tt>Constructs&nbsp;all&nbsp;the&nbsp;necessary&nbsp;attributes&nbsp;for&nbsp;the&nbsp;<a href="#Download">Download</a>&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="Download-close"><strong>close</strong></a>(self)</dt><dd><tt>function&nbsp;closes&nbsp;the&nbsp;download.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+None</tt></dd></dl>
+
+<dl><dt><a name="Download-file_size"><strong>file_size</strong></a>(self)</dt><dd><tt>function&nbsp;returns&nbsp;the&nbsp;size&nbsp;of&nbsp;<a href="builtins.html#object">object</a>&nbsp;on&nbsp;Storj&nbsp;network&nbsp;for&nbsp;which&nbsp;download&nbsp;has&nbsp;been&nbsp;created.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+int</tt></dd></dl>
+
+<dl><dt><a name="Download-info"><strong>info</strong></a>(self)</dt><dd><tt>function&nbsp;returns&nbsp;information&nbsp;about&nbsp;the&nbsp;downloaded&nbsp;<a href="builtins.html#object">object</a>.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+Object</tt></dd></dl>
+
+<dl><dt><a name="Download-read"><strong>read</strong></a>(self, size_to_read: int)</dt><dd><tt>function&nbsp;downloads&nbsp;up&nbsp;to&nbsp;len&nbsp;size_to_read&nbsp;bytes&nbsp;from&nbsp;the&nbsp;<a href="builtins.html#object">object</a>'s&nbsp;data&nbsp;stream.<br>
+It&nbsp;returns&nbsp;the&nbsp;data_read&nbsp;in&nbsp;bytes&nbsp;and&nbsp;number&nbsp;of&nbsp;bytes&nbsp;read<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+size_to_read&nbsp;:&nbsp;int<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+bytes,&nbsp;int</tt></dd></dl>
+
+<dl><dt><a name="Download-read_file"><strong>read_file</strong></a>(self, file_handle, buffer_size: int = 0)</dt><dd><tt>function&nbsp;downloads&nbsp;complete&nbsp;<a href="builtins.html#object">object</a>&nbsp;from&nbsp;it's&nbsp;data&nbsp;stream&nbsp;and&nbsp;writes&nbsp;it&nbsp;to&nbsp;the&nbsp;file&nbsp;whose<br>
+handle&nbsp;is&nbsp;passed&nbsp;as&nbsp;parameter.&nbsp;After&nbsp;the&nbsp;download&nbsp;is&nbsp;complete&nbsp;it&nbsp;closes&nbsp;the&nbsp;download&nbsp;stream.<br>
+&nbsp;<br>
+Note:&nbsp;File&nbsp;handle&nbsp;should&nbsp;be&nbsp;a&nbsp;BinaryIO,&nbsp;i.e.&nbsp;file&nbsp;should&nbsp;be&nbsp;opened&nbsp;using&nbsp;'w+b"&nbsp;flag.<br>
+e.g.:&nbsp;file_handle&nbsp;=&nbsp;open(DESTINATION_FULL_FILENAME,&nbsp;'w+b')<br>
+Remember&nbsp;to&nbsp;close&nbsp;the&nbsp;<a href="builtins.html#object">object</a>&nbsp;stream&nbsp;on&nbsp;storj&nbsp;and&nbsp;also&nbsp;close&nbsp;the&nbsp;local&nbsp;file&nbsp;handle<br>
+after&nbsp;this&nbsp;function&nbsp;exits.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+file_handle&nbsp;:&nbsp;BinaryIO<br>
+buffer_size&nbsp;:&nbsp;int<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+None</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>COPY_BUFSIZE</strong> = 65536</td></tr></table>
+</body></html>

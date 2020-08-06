@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module uplink_python.upload</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="uplink_python.html"><font color="#ffffff">uplink_python</font></a>.upload</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"></font></td></tr></table>
+    <p><tt>Module&nbsp;with&nbsp;<a href="#Upload">Upload</a>&nbsp;class&nbsp;and&nbsp;upload&nbsp;methods&nbsp;to&nbsp;work&nbsp;with&nbsp;<a href="builtins.html#object">object</a>&nbsp;upload</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="ctypes.html">ctypes</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="uplink_python.upload.html#Upload">Upload</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Upload">class <strong>Upload</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Upload">Upload</a>(upload,&nbsp;uplink)<br>
+&nbsp;<br>
+<a href="#Upload">Upload</a>&nbsp;is&nbsp;an&nbsp;upload&nbsp;to&nbsp;Storj&nbsp;Network.<br>
+&nbsp;<br>
+...<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+upload&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Upload">Upload</a>&nbsp;_handle&nbsp;returned&nbsp;from&nbsp;libuplinkc&nbsp;upload_result.upload<br>
+uplink&nbsp;:&nbsp;Uplink<br>
+&nbsp;&nbsp;&nbsp;&nbsp;uplink&nbsp;<a href="builtins.html#object">object</a>&nbsp;used&nbsp;to&nbsp;get&nbsp;access<br>
+&nbsp;<br>
+Methods<br>
+-------<br>
+<a href="#Upload-write">write</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Int<br>
+<a href="#Upload-write_file">write_file</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None<br>
+<a href="#Upload-commit">commit</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None<br>
+<a href="#Upload-abort">abort</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None<br>
+<a href="#Upload-set_custom_metadata">set_custom_metadata</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None<br>
+<a href="#Upload-info">info</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Object<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Upload-__init__"><strong>__init__</strong></a>(self, upload, uplink)</dt><dd><tt>Constructs&nbsp;all&nbsp;the&nbsp;necessary&nbsp;attributes&nbsp;for&nbsp;the&nbsp;<a href="#Upload">Upload</a>&nbsp;<a href="builtins.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="Upload-abort"><strong>abort</strong></a>(self)</dt><dd><tt>function&nbsp;aborts&nbsp;an&nbsp;ongoing&nbsp;upload.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+None</tt></dd></dl>
+
+<dl><dt><a name="Upload-commit"><strong>commit</strong></a>(self)</dt><dd><tt>function&nbsp;commits&nbsp;the&nbsp;uploaded&nbsp;data.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+None</tt></dd></dl>
+
+<dl><dt><a name="Upload-info"><strong>info</strong></a>(self)</dt><dd><tt>function&nbsp;returns&nbsp;the&nbsp;last&nbsp;information&nbsp;about&nbsp;the&nbsp;uploaded&nbsp;<a href="builtins.html#object">object</a>.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+Object</tt></dd></dl>
+
+<dl><dt><a name="Upload-set_custom_metadata"><strong>set_custom_metadata</strong></a>(self, custom_metadata: uplink_python.module_classes.CustomMetadata = None)</dt><dd><tt>function&nbsp;to&nbsp;set&nbsp;custom&nbsp;meta&nbsp;information&nbsp;while&nbsp;uploading&nbsp;data<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+custom_metadata&nbsp;:&nbsp;CustomMetadata<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+None</tt></dd></dl>
+
+<dl><dt><a name="Upload-write"><strong>write</strong></a>(self, data_to_write: bytes, size_to_write: int)</dt><dd><tt>function&nbsp;uploads&nbsp;bytes&nbsp;data&nbsp;passed&nbsp;as&nbsp;parameter&nbsp;to&nbsp;the&nbsp;<a href="builtins.html#object">object</a>'s&nbsp;data&nbsp;stream.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+data_to_write&nbsp;:&nbsp;bytes<br>
+size_to_write&nbsp;:&nbsp;int<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+int</tt></dd></dl>
+
+<dl><dt><a name="Upload-write_file"><strong>write_file</strong></a>(self, file_handle, buffer_size: int = 0)</dt><dd><tt>function&nbsp;uploads&nbsp;complete&nbsp;file&nbsp;whose&nbsp;handle&nbsp;is&nbsp;passed&nbsp;as&nbsp;parameter&nbsp;to&nbsp;the<br>
+<a href="builtins.html#object">object</a>'s&nbsp;data&nbsp;stream&nbsp;and&nbsp;commits&nbsp;the&nbsp;<a href="builtins.html#object">object</a>&nbsp;after&nbsp;upload&nbsp;is&nbsp;complete.<br>
+&nbsp;<br>
+Note:&nbsp;File&nbsp;handle&nbsp;should&nbsp;be&nbsp;a&nbsp;BinaryIO,&nbsp;i.e.&nbsp;file&nbsp;should&nbsp;be&nbsp;opened&nbsp;using&nbsp;'r+b"&nbsp;flag.<br>
+e.g.:&nbsp;file_handle&nbsp;=&nbsp;open(SRC_FULL_FILENAME,&nbsp;'r+b')<br>
+Remember&nbsp;to&nbsp;commit&nbsp;the&nbsp;<a href="builtins.html#object">object</a>&nbsp;on&nbsp;storj&nbsp;and&nbsp;also&nbsp;close&nbsp;the&nbsp;local&nbsp;file&nbsp;handle<br>
+after&nbsp;this&nbsp;function&nbsp;exits.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+file_handle&nbsp;:&nbsp;BinaryIO<br>
+buffer_size&nbsp;:&nbsp;int<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+None</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>COPY_BUFSIZE</strong> = 65536</td></tr></table>
+</body></html>

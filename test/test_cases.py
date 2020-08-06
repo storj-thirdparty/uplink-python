@@ -20,5 +20,5 @@ if __name__ == '__main__':
         TestList.append(testSuite)
 
     newSuite = unittest.TestSuite(TestList)
-    runner = unittest.TextTestRunner(verbosity=2)
+    runner = unittest.TextTestRunner(verbosity=4)
     runner.run(newSuite)
