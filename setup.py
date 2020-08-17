@@ -58,11 +58,11 @@ class Install(install):
 
 setuptools.setup(
     name="uplink-python",
-    version="1.0.4",
+    version="1.0.5",
     author="Utropicmedia",
     author_email="development@utropicmedia.com",
     license='Apache Software License',
-    description="Python-native language binding for storj-uplink-c to"
+    description="Python-native language binding for uplink to"
                 "communicate with the Storj network.",
     long_description=long_description,
     long_description_content_type="text/markdown",
