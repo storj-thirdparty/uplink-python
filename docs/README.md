@@ -41,24 +41,27 @@ $ pip install --no-cache-dir uplink-python
 
 Follow these steps to set-up binding manually or if ```libuplinkc.so``` fails to build using Option 1.
 
-Install [uplink-python](https://pypi.org/project/uplink-python/) python package (using Terminal/Powershell/CMD) if not already done in ```Option 1```
+* Install [uplink-python](https://pypi.org/project/uplink-python/) python package (using Terminal/Powershell/CMD) if not already done in ```Option 1```
 ```
 $ pip install uplink-python
 ```
 
-Install [storj-uplink-c](https://godoc.org/storj.io/storj/lib/uplink) go package, by running:
+* Clone [storj-uplink-c](https://godoc.org/storj.io/storj/lib/uplink) package to any location of your choice, using cmd/terminal navigate to ```PREFERED_DIR_PATH``` and run:
 ```
-$ go get storj.io/uplink-c
+$ git clone -b v1.0.5 https://github.com/storj/uplink-c
 ```
 
-* After git cloning go package, using cmd/terminal, navigate to the ```$HOME/go/src/storj.io/uplink-c``` folder.
+* After cloning the package, navigate to the ```PREFERED_DIR_PATH/uplink-c``` folder.
+```
+$ cd uplink-c
+```
 
-* Create '.so' file at  ```$HOME/go/src/storj.io/uplink-c``` folder, by using following command:
+* Create '.so' file at  ```PREFERED_DIR_PATH/uplink-c``` folder, by using following command:
 ```
 $ go build -o libuplinkc.so -buildmode=c-shared
 ```
 
-* Copy created *libuplinkc.so* file into the folder, where Python package was installed (python3.X ```->``` site-packages ```->``` uplink_python)
+* Copy created *libuplinkc.so* file into the folder, where Python package was installed (by default it is python3.X ```->``` site-packages ```->``` uplink_python)
 
 
 ## <b>Project Set-up</b>

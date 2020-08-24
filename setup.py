@@ -10,6 +10,7 @@ from setuptools.command.install import install
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+uplinkc_version = "v1.0.5"
 
 class Install(install):
 
@@ -34,7 +35,7 @@ class Install(install):
                 os.system("sudo chmod -R 777 " + install_path)
             os.system("echo Building libuplinkc.so")
             copy_command = "copy" if platform.system() == "Windows" else "cp"
-            command = "git clone https://github.com/storj/uplink-c && cd uplink-c" \
+            command = "git clone -b "+uplinkc_version+" https://github.com/storj/uplink-c && cd uplink-c" \
                       "&& go build -o libuplinkc.so " \
                       "-buildmode=c-shared && " + copy_command + " *.so " + install_path
             build_so = subprocess.Popen(command,
@@ -58,11 +59,11 @@ class Install(install):
 
 setuptools.setup(
     name="uplink-python",
-    version="1.0.5",
+    version="1.0.6",
     author="Utropicmedia",
     author_email="development@utropicmedia.com",
     license='Apache Software License',
-    description="Python-native language binding for uplink to"
+    description="Python-native language binding for uplink to "
                 "communicate with the Storj network.",
     long_description=long_description,
     long_description_content_type="text/markdown",
