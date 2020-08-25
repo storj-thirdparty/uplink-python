@@ -3,9 +3,9 @@
 import ctypes
 import os
 
-from .module_classes import CustomMetadata
-from .module_def import _UploadStruct, _WriteResult, _Error, _CustomMetadataStruct, _ObjectResult
-from .errors import _storj_exception
+from uplink_python.module_classes import CustomMetadata
+from uplink_python.module_def import _UploadStruct, _WriteResult, _Error, _CustomMetadataStruct, _ObjectResult
+from uplink_python.errors import _storj_exception
 
 _WINDOWS = os.name == 'nt'
 COPY_BUFSIZE = 1024 * 1024 if _WINDOWS else 64 * 1024

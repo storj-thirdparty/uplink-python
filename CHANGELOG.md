@@ -1,5 +1,9 @@
 # uplink-python binding changelog
 
+## [1.0.6] - 25-08-2020
+### Changelog:
+* Pinned to specific version of uplinkc - v1.0.5
+
 ## [1.0.4] - 06-08-2020
 ### Changelog:
 * Changed overall structure of uplink-python.

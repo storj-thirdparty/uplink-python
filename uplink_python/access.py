@@ -1,11 +1,11 @@
 """Module with Access class and access methods to get access grant to access project"""
 import ctypes
 
-from .module_classes import Permission, SharePrefix, Config
-from .module_def import _ConfigStruct, _PermissionStruct, _SharePrefixStruct, \
+from uplink_python.module_classes import Permission, SharePrefix, Config
+from uplink_python.module_def import _ConfigStruct, _PermissionStruct, _SharePrefixStruct, \
     _AccessStruct, _ProjectResult, _StringResult, _AccessResult
-from .project import Project
-from .errors import _storj_exception
+from uplink_python.project import Project
+from uplink_python.errors import _storj_exception
 
 
 class Access:

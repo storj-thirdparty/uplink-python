@@ -4,6 +4,8 @@
 
 ### *Developed using v1.0.5 storj/uplink-c*
 
+### [API documentation and tutorial](https://storj-thirdparty.github.io/uplink-python/#/)
+
 ## <b>Initial Set-up (Important)</b>
 
 **NOTE**: for Golang
@@ -23,7 +25,7 @@ Depending on your operating system, you will need to install:
 
 **On Windows**
 * Install Visual C++ Build Environment: [Visual Studio Build Tools](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools) (using "Visual C++ build tools" workload) or [Visual Studio 2017 Community](https://visualstudio.microsoft.com/pl/thank-you-downloading-visual-studio/?sku=Community) (using the "Desktop development with C++" workload)
-* Make sure you have access to ```site-packages``` folder inside the directory where python is installed. To do this navigate to the directory where python is installed, if you get an error "Permission Denied", follow the instruction in message box and allow access using ```security tab```.
+* Make sure you have access to ```site-packages``` folder inside the directory where Python is installed. To do this navigate to the directory where Python is installed, if you get an error "Permission Denied", follow the instruction in the message box and allow access using ```security tab```.
 
 ## <b>Binding Set-up</b>
 
@@ -35,29 +37,32 @@ $ python get-pip.py
 
 ### Option 1
 
-Install [uplink-python](https://pypi.org/project/uplink-python/) python package with ```--no-cache-dir``` tag if re-installing or upgrading from previous version, otherwise tag can be ignored (using Terminal/Powershell/CMD as ```Administrator```):
+Install [uplink-python](https://pypi.org/project/uplink-python/) python package with ```--no-cache-dir``` tag if re-installing or upgrading from the previous version, otherwise, the tag can be ignored (using Terminal/Powershell/CMD as ```Administrator```):
 ```
 $ pip install --no-cache-dir uplink-python
 ```
->Note: If ```Administrator``` privilage is not granted to the terminal/cmd, libuplinkc.so build process may fail.
+>Note: If ```Administrator``` privilege is not granted to the terminal/cmd, the libuplinkc.so build process may fail.
 
 ### Option 2
 
 Follow these steps to set-up binding manually or if ```libuplinkc.so``` fails to build using Option 1.
 
-Install [uplink-python](https://pypi.org/project/uplink-python/) python package (using Terminal/Powershell/CMD) if not already done in ```Option 1```
+* Install [uplink-python](https://pypi.org/project/uplink-python/) python package (using Terminal/Powershell/CMD) if not already done in ```Option 1```
 ```
 $ pip install uplink-python
 ```
 
-Install [storj-uplink-c](https://godoc.org/storj.io/storj/lib/uplink) go package, by running:
+* Clone [storj-uplink-c](https://godoc.org/storj.io/storj/lib/uplink) package to any location of your choice, using cmd/terminal navigate to ```PREFERED_DIR_PATH``` and run:
 ```
-$ go get storj.io/uplink-c
+$ git clone -b v1.0.5 https://github.com/storj/uplink-c
 ```
 
-* After git cloning go package, using cmd/terminal, navigate to the ```$HOME/go/src/storj.io/uplink-c``` folder.
+* After cloning the package, navigate to the ```PREFERED_DIR_PATH/uplink-c``` folder.
+```
+$ cd uplink-c
+```
 
-* Create '.so' file at  ```$HOME/go/src/storj.io/uplink-c``` folder, by using following command:
+* Create '.so' file at  ```PREFERED_DIR_PATH/uplink-c``` folder, by using following command:
 ```
 $ go build -o libuplinkc.so -buildmode=c-shared
 ```
@@ -67,11 +72,11 @@ $ go build -o libuplinkc.so -buildmode=c-shared
 
 ## <b>Project Set-up</b>
 
-To include uplink in you project, import the library, by using following command:
+To include uplink in your project, import the library, by using the following command:
 ```
 from uplink_python.uplink import Uplink
 ```
-Create an object of ```Uplink``` class to access all the functions of library. Please refer the sample *hello_storj.py* file, for example.
+Create an object of ```Uplink``` class to access all the functions of the library. Please refer to the sample *hello_storj.py* file, for example.
 ```
 variable_name = Uplink()
 ```
@@ -81,20 +86,20 @@ To use various parameters such as ListBucketsOptions, ListObjectsOptions, Permis
 from uplink_python.module_classes import DownloadOptions, Permission
 ```
 
-To use various user-defined Storj Exceptions such as InternalError, BucketNotFoundError etc you would require to import them first from errors i.e. uplink_python.errors.
+To use various user-defined Storj Exceptions such as InternalError, BucketNotFoundError, etc you would require to import them first from errors i.e. uplink_python.errors.
 ```
 from uplink_python.errors import InternalError, BucketNotFoundError
 ```
 
 ## <b>Sample Hello Storj!</b>
 
-File *hello_storj.py* can be found in folder where Python package was installed.
+File *hello_storj.py* can be found in the folder where the Python package was installed.
 
 The sample *hello_storj.py* code calls the *uplink.py* file and imports the *Uplink* binding class to do the following:
 * list all buckets in a Storj project
-* create a new bucket (if it does not exist) within desired Storj project
-* write a file from local computer to the a Storj bucket
-* read back the object from the Storj bucket to local system for verification
+* create a new bucket (if it does not exist) within the desired Storj project
+* write a file from local computer to the Storj bucket
+* read back the object from the Storj bucket to the local system for verification
 * list all objects in a bucket
 * delete bucket from a Storj project
 * create shareable Access with permissions and shared prefix.
@@ -104,7 +109,7 @@ The sample *hello_storj.py* code calls the *uplink.py* file and imports the *Upl
 
 Directory with unit test cases *test* can be found in the uplink-python repository.
 
-To run the test cases on local system, you need to perform the following steps:
+To run the test cases on a local system, you need to perform the following steps:
 * clone the repo so that you have the test folder on your local system.
 
         directory_on_local
@@ -113,7 +118,7 @@ To run the test cases on local system, you need to perform the following steps:
             └── test_data
             └── test_cases.py
 
-* Add a test file parallel to the test folder, add ```API Key``` in file and name it as ```secret.txt```. Directory structure would be something like this now:
+* Add a test file parallel to the test folder, add ```API Key``` in the file, and name it as ```secret.txt```. The directory structure would be something like this now:
 
         directory_on_local
         └── secret.txt

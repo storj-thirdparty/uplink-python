@@ -5,10 +5,10 @@ import ctypes
 import os
 import sysconfig
 
-from .access import Access
-from .errors import _storj_exception, LibUplinkSoError
-from .module_def import _AccessResult, _ConfigStruct
-from .module_classes import Config, Bucket, Object, SystemMetadata,\
+from uplink_python.access import Access
+from uplink_python.errors import _storj_exception, LibUplinkSoError
+from uplink_python.module_def import _AccessResult, _ConfigStruct
+from uplink_python.module_classes import Config, Bucket, Object, SystemMetadata,\
     CustomMetadataEntry, CustomMetadata
 
 

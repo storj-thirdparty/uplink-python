@@ -2,11 +2,11 @@
 
 ## <b>Instructions to push package on pypi</b>
 
-Follow these instructions to make changes to the project and push ```uplink-python``` package to pypi, This would make the latest package install using the ```pip install``` command.
+Follow these instructions to make changes to the project and push ```uplink-python``` package to PyPI, This would make the latest package install using the ```pip install``` command.
 
 Assuming you have git cloned the project to your local directory and have already made the required changes to the project:
 
-* In Command Prompt, navigate to the ```your-local-directory/uplink-python``` folder, here ```uplink-python``` is the root directory of cloned project.
+* In Command Prompt, navigate to the ```your-local-directory/uplink-python``` folder, here ```uplink-python``` is the root directory of the cloned project.
 
 Your directory structure would be something like this:
 
@@ -69,4 +69,4 @@ Make sure you have the latest versions of setuptools and wheel installed:
         You will be prompted for a username and password, enter username and password used on ```https://pypi.org/```
 
 
-> For more details and complete tutorial on how to publish a package on pypi, goto [Packaging Python Projects](https://packaging.python.org/tutorials/packaging-projects/)
+> For more details and complete tutorial on how to publish a package on PyPI, goto [Packaging Python Projects](https://packaging.python.org/tutorials/packaging-projects/)
