@@ -61,10 +61,10 @@ class Upload:
         """
 
         # declare types of arguments and response of the corresponding golang function
-        self.uplink.m_libuplink.upload_write.argtypes = [ctypes.POINTER(_UploadStruct),
-                                                         ctypes.POINTER(ctypes.c_uint8),
-                                                         ctypes.c_size_t]
-        self.uplink.m_libuplink.upload_write.restype = _WriteResult
+        self.uplink.m_libuplink.uplink_upload_write.argtypes = [ctypes.POINTER(_UploadStruct),
+                                                                ctypes.POINTER(ctypes.c_uint8),
+                                                                ctypes.c_size_t]
+        self.uplink.m_libuplink.uplink_upload_write.restype = _WriteResult
         #
         # prepare the inputs for the function
         # --------------------------------------------
@@ -78,8 +78,8 @@ class Upload:
         size_to_write_obj = ctypes.c_size_t(size_to_write)
 
         # upload data by calling the exported golang function
-        write_result = self.uplink.m_libuplink.upload_write(self.upload, data_to_write_ptr,
-                                                            size_to_write_obj)
+        write_result = self.uplink.m_libuplink.uplink_upload_write(self.upload, data_to_write_ptr,
+                                                                   size_to_write_obj)
         #
         # if error occurred
         if bool(write_result.error):
@@ -125,12 +125,12 @@ class Upload:
         """
 
         # declare types of arguments and response of the corresponding golang function
-        self.uplink.m_libuplink.upload_commit.argtypes = [ctypes.POINTER(_UploadStruct)]
-        self.uplink.m_libuplink.upload_commit.restype = ctypes.POINTER(_Error)
+        self.uplink.m_libuplink.uplink_upload_commit.argtypes = [ctypes.POINTER(_UploadStruct)]
+        self.uplink.m_libuplink.uplink_upload_commit.restype = ctypes.POINTER(_Error)
         #
 
         # upload commit by calling the exported golang function
-        error = self.uplink.m_libuplink.upload_commit(self.upload)
+        error = self.uplink.m_libuplink.uplink_upload_commit(self.upload)
         #
         # if error occurred
         if bool(error):
@@ -147,12 +147,12 @@ class Upload:
         """
         #
         # declare types of arguments and response of the corresponding golang function
-        self.uplink.m_libuplink.upload_abort.argtypes = [ctypes.POINTER(_UploadStruct)]
-        self.uplink.m_libuplink.upload_abort.restype = ctypes.POINTER(_Error)
+        self.uplink.m_libuplink.uplink_upload_abort.argtypes = [ctypes.POINTER(_UploadStruct)]
+        self.uplink.m_libuplink.uplink_upload_abort.restype = ctypes.POINTER(_Error)
         #
 
         # abort ongoing upload by calling the exported golang function
-        error = self.uplink.m_libuplink.upload_abort(self.upload)
+        error = self.uplink.m_libuplink.uplink_upload_abort(self.upload)
         #
         # if error occurred
         if bool(error):
@@ -173,9 +173,9 @@ class Upload:
         """
         #
         # declare types of arguments and response of the corresponding golang function
-        self.uplink.m_libuplink.upload_set_custom_metadata.argtypes = [ctypes.POINTER(_UploadStruct),
-                                                                       _CustomMetadataStruct]
-        self.uplink.m_libuplink.upload_set_custom_metadata.restype = ctypes.POINTER(_Error)
+        self.uplink.m_libuplink.uplink_upload_set_custom_metadata.argtypes = [ctypes.POINTER(_UploadStruct),
+                                                                              _CustomMetadataStruct]
+        self.uplink.m_libuplink.uplink_upload_set_custom_metadata.restype = ctypes.POINTER(_Error)
         #
         # prepare the input for the function
         if custom_metadata is None:
@@ -184,7 +184,7 @@ class Upload:
             custom_metadata_obj = custom_metadata.get_structure()
         #
         # set custom metadata to upload by calling the exported golang function
-        error = self.uplink.m_libuplink.upload_set_custom_metadata(self.upload, custom_metadata_obj)
+        error = self.uplink.m_libuplink.uplink_upload_set_custom_metadata(self.upload, custom_metadata_obj)
         #
         # if error occurred
         if bool(error):
@@ -201,11 +201,11 @@ class Upload:
         """
         #
         # declare types of arguments and response of the corresponding golang function
-        self.uplink.m_libuplink.upload_info.argtypes = [ctypes.POINTER(_UploadStruct)]
-        self.uplink.m_libuplink.upload_info.restype = _ObjectResult
+        self.uplink.m_libuplink.uplink_upload_info.argtypes = [ctypes.POINTER(_UploadStruct)]
+        self.uplink.m_libuplink.uplink_upload_info.restype = _ObjectResult
         #
         # get last upload info by calling the exported golang function
-        object_result = self.uplink.m_libuplink.upload_info(self.upload)
+        object_result = self.uplink.m_libuplink.uplink_upload_info(self.upload)
         #
         # if error occurred
         if bool(object_result.error):

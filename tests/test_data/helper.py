@@ -12,11 +12,12 @@ class TestPy:
     def __init__(self):
         super().__init__()
         # method to get satellite, api key and passphrase
+        file_handle = open("secret.txt", 'r')
+        self.api_key = file_handle.read()
+        file_handle.close()
+
         self.satellite = "us-central-1.tardigrade.io:7777"
-        # self.api_key = open("secret.txt", 'r').read()
         self.encryption_phrase = "test"
-        self.api_key = "13Yqdeo8kkCBBtkCvy8YTXi839RkgFk9qtxgo7hymbbtcNEDrG42K" \
-                       "ygaunHYXfMRB1SyaXrXyA9u5ra6yLUndycqT34oDj3fdQiQs4d"
 
         self.uplink = Uplink()
         self.access = None
@@ -41,9 +42,10 @@ class InitializationTest(unittest.TestCase):
     def test1_initialize_uplink(self):
         self.assertIsNotNone(self.test_py, "TestPy initialization failed.")
 
-    # def test2_get_credentials(self):
-    #     file_handle = open("secret.txt", 'r')
-    #     self.assertIsNotNone(file_handle, "Credentials retrieval failed.")
+    def test2_get_credentials(self):
+        file_handle = open("secret.txt", 'r')
+        self.assertIsNotNone(file_handle, "Credentials retrieval failed.")
+        file_handle.close()
 
 
 if __name__ == '__main__':

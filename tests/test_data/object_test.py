@@ -100,17 +100,11 @@ class ObjectTest(unittest.TestCase):
         object_ = self.project.delete_object("alpha", "data.txt")
         self.assertIsNotNone(object_, "delete_object failed")
 
-    def test6_delete_missing_object(self):
-        try:
-            _ = self.project.delete_object("alpha", "data.txt")
-        except StorjException as error:
-            self.assertEqual(error.code, ERROR_OBJECT_NOT_FOUND, error.details)
-
-    def test7_delete_bucket(self):
+    def test6_delete_bucket(self):
         bucket = self.project.delete_bucket("alpha")
         self.assertIsNotNone(bucket, "delete_bucket failed")
 
-    def test8_close_project(self):
+    def test7_close_project(self):
         self.project.close()
 
 

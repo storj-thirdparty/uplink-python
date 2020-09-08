@@ -10,13 +10,13 @@ steps:
     args: ["-c","gcloud secrets versions access latest --secret=StorjAPIKey >>secret.txt" ]
   - name: 'gcr.io/${PROJECT_ID}/python3'
     entrypoint: 'bash'
-    args: ["-c", "git clone -b v1.0.5 https://github.com/storj/uplink-c"]
+    args: ["-c", "git clone https://github.com/storj/uplink-c"]
   - name: 'gcr.io/${PROJECT_ID}/python3'
     entrypoint: 'bash'
     args: ["-c", "cd uplink-c && go build -o libuplinkc.so -buildmode=c-shared && cp *.so ../uplink_python/"] 
   - name: 'gcr.io/${PROJECT_ID}/python3'
     entrypoint: 'python3'
-    args: ['-m', 'unittest', 'test/test_cases.py', '-v']
+    args: ['-m', 'unittest', 'tests/test_cases.py', '-v']
 tags: ['cloud-builders-community']
 images: ['gcr.io/$PROJECT_ID/python3']
 tags: ['cloud-builders-community']

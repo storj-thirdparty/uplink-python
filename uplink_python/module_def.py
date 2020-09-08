@@ -16,6 +16,12 @@ class _AccessStruct(ctypes.Structure):
     _fields_ = [("_handle", ctypes.c_size_t)]
 
 
+class _EncryptionKeyStruct(ctypes.Structure):
+    """Project ctypes structure for internal processing."""
+
+    _fields_ = [("_handle", ctypes.c_size_t)]
+
+
 class _PermissionStruct(ctypes.Structure):
     """Permission ctypes structure for internal processing."""
 
@@ -176,3 +182,10 @@ class _ReadResult(ctypes.Structure):
     """ReadResult ctypes structure"""
 
     _fields_ = [("bytes_read", ctypes.c_size_t), ("error", ctypes.POINTER(_Error))]
+
+
+class _EncryptionKeyResult(ctypes.Structure):
+    """EncryptionKeyResult ctypes structure"""
+
+    _fields_ = [("encryption_key", ctypes.POINTER(_EncryptionKeyStruct)),
+                ("error", ctypes.POINTER(_Error))]

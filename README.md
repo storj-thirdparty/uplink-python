@@ -2,7 +2,9 @@
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/aaee609406154b1794061386bb0ca60e)](https://app.codacy.com/gh/storj-thirdparty/uplink-python?utm_source=github.com&utm_medium=referral&utm_content=storj-thirdparty/uplink-python&utm_campaign=Badge_Grade_Dashboard)
 
-### *Developed using v1.0.5 storj/uplink-c*
+### *Developed using v1.1.0 storj/uplink-c*
+
+### *Binding is not tagged to any release and will use uplink-c master branch.*
 
 ### [API documentation and tutorial](https://storj-thirdparty.github.io/uplink-python/#/)
 
@@ -54,7 +56,7 @@ $ pip install uplink-python
 
 * Clone [storj-uplink-c](https://godoc.org/storj.io/storj/lib/uplink) package to any location of your choice, using cmd/terminal navigate to ```PREFERED_DIR_PATH``` and run:
 ```
-$ git clone -b v1.0.5 https://github.com/storj/uplink-c
+$ git clone https://github.com/storj/uplink-c
 ```
 
 * After cloning the package, navigate to the ```PREFERED_DIR_PATH/uplink-c``` folder.
@@ -107,22 +109,22 @@ The sample *hello_storj.py* code calls the *uplink.py* file and imports the *Upl
 
 ## <b>Run Unit Test Cases on Local</b>
 
-Directory with unit test cases *test* can be found in the uplink-python repository.
+Directory with unit test cases *tests* can be found in the uplink-python repository.
 
 To run the test cases on a local system, you need to perform the following steps:
-* clone the repo so that you have the test folder on your local system.
+* clone the repo so that you have the tests folder on your local system.
 
         directory_on_local
-        └── test
+        └── tests
             └── __init__.py
             └── test_data
             └── test_cases.py
 
-* Add a test file parallel to the test folder, add ```API Key``` in the file, and name it as ```secret.txt```. The directory structure would be something like this now:
+* Add a test file parallel to the tests folder, add ```API Key``` in the file, and name it as ```secret.txt```. The directory structure would be something like this now:
 
         directory_on_local
         └── secret.txt
-        └── test
+        └── tests
             └── __init__.py
             └── test_data
             └── test_cases.py
