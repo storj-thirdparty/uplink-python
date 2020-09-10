@@ -1,5 +1,11 @@
 # uplink-python binding changelog
 
+## [1.0.7] - 04-09-2020
+### Changelog:
+* Added functions based on uplinkc - v1.1.0
+* Made namespace changes based on latest master branch.
+* Binding not pinned to any specific uplink-c tag, uses master branch.
+
 ## [1.0.6] - 25-08-2020
 ### Changelog:
 * Pinned to specific version of uplinkc - v1.0.5

@@ -1,5 +1,7 @@
 # <b>uplink-python binding</b>
-> Developed using v1.0.5 storj/uplink-c
+> Developed using v1.1.0 storj/uplink-c
+
+> Binding is not tagged to any release and will use uplink-c master branch.
 
 ## <b>Initial Set-up (Important)</b>
 
@@ -48,7 +50,7 @@ $ pip install uplink-python
 
 * Clone [storj-uplink-c](https://godoc.org/storj.io/storj/lib/uplink) package to any location of your choice, using cmd/terminal navigate to ```PREFERED_DIR_PATH``` and run:
 ```
-$ git clone -b v1.0.5 https://github.com/storj/uplink-c
+$ git clone https://github.com/storj/uplink-c
 ```
 
 * After cloning the package, navigate to the ```PREFERED_DIR_PATH/uplink-c``` folder.

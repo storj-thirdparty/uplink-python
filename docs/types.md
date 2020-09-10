@@ -898,14 +898,3 @@ InvalidHandleError is raised when object handle passes is either invalid or alre
 
 
 > Note: You can view the libuplink documentation [here](https://godoc.org/storj.io/uplink).
-    ERROR_BUCKET_NAME_INVALID = 0x10
-    ERROR_BUCKET_ALREADY_EXISTS = 0x11
-    ERROR_BUCKET_NOT_EMPTY = 0x12
-    ERROR_BUCKET_NOT_FOUND = 0x13
-
-    ERROR_OBJECT_KEY_INVALID = 0x20
-    ERROR_OBJECT_NOT_FOUND = 0x21
-    ERROR_UPLOAD_DONE = 0x22
-
-
-> Note: You can view the libuplink documentation [here](https://godoc.org/storj.io/uplink).

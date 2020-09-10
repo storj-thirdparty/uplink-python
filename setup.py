@@ -10,7 +10,6 @@ from setuptools.command.install import install
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-uplinkc_version = "v1.0.5"
 
 class Install(install):
 
@@ -21,7 +20,7 @@ class Install(install):
             os.makedirs(new_path, exist_ok=True)
             os.system("echo Directory uplink_python created successfully.")
         except OSError as error:
-            os.system("echo Error in creating uplink_python directory. Error: "+str(error))
+            os.system("echo Error in creating uplink_python directory. Error: " + str(error))
         return new_path
 
     def run(self):
@@ -35,9 +34,10 @@ class Install(install):
                 os.system("sudo chmod -R 777 " + install_path)
             os.system("echo Building libuplinkc.so")
             copy_command = "copy" if platform.system() == "Windows" else "cp"
-            command = "git clone -b "+uplinkc_version+" https://github.com/storj/uplink-c && cd uplink-c" \
+            command = "git clone https://github.com/storj/uplink-c && cd uplink-c" \
                       "&& go build -o libuplinkc.so " \
-                      "-buildmode=c-shared && " + copy_command + " *.so " + install_path
+                      "-buildmode=c-shared && " \
+                      + copy_command + " *.so " + install_path
             build_so = subprocess.Popen(command,
                                         stdout=subprocess.PIPE,
                                         stderr=subprocess.STDOUT, shell=True)
@@ -59,7 +59,7 @@ class Install(install):
 
 setuptools.setup(
     name="uplink-python",
-    version="1.0.6",
+    version="1.0.7",
     author="Utropicmedia",
     author_email="development@utropicmedia.com",
     license='Apache Software License',

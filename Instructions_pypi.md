@@ -21,7 +21,7 @@ Your directory structure would be something like this:
     └── README.assets
     └── README.md
     └── setup.py
-    └── test
+    └── tests
         └── test_cases.py
     └── uplink_python
         └── __init__.py

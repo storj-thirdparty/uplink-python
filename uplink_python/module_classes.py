@@ -2,9 +2,10 @@
 # pylint: disable=too-few-public-methods, too-many-arguments
 import ctypes
 
-from uplink_python.module_def import _ConfigStruct, _PermissionStruct, _SharePrefixStruct, _BucketStruct,\
-    _DownloadOptionsStruct, _SystemMetadataStruct, _CustomMetadataStruct, _UploadOptionsStruct,\
-    _ObjectStruct, _ListObjectsOptionsStruct, _ListBucketsOptionsStruct, _CustomMetadataEntryStruct
+from uplink_python.module_def import _ConfigStruct, _PermissionStruct, _SharePrefixStruct,\
+    _BucketStruct, _DownloadOptionsStruct, _SystemMetadataStruct, _CustomMetadataStruct,\
+    _UploadOptionsStruct, _ObjectStruct, _ListObjectsOptionsStruct, _ListBucketsOptionsStruct,\
+    _CustomMetadataEntryStruct
 
 
 class Config:

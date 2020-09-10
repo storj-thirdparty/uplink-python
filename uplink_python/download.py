@@ -3,7 +3,8 @@
 import ctypes
 import os
 
-from uplink_python.module_def import _DownloadStruct, _ReadResult, _ProjectStruct, _ObjectResult, _Error
+from uplink_python.module_def import _DownloadStruct, _ReadResult, _ProjectStruct,\
+    _ObjectResult, _Error
 from uplink_python.errors import _storj_exception
 
 _WINDOWS = os.name == 'nt'
@@ -67,10 +68,10 @@ class Download:
         """
         #
         # declare types of arguments and response of the corresponding golang function
-        self.uplink.m_libuplink.download_read.argtypes = [ctypes.POINTER(_DownloadStruct),
-                                                          ctypes.POINTER(ctypes.c_uint8),
-                                                          ctypes.c_size_t]
-        self.uplink.m_libuplink.download_read.restype = _ReadResult
+        self.uplink.m_libuplink.uplink_download_read.argtypes = [ctypes.POINTER(_DownloadStruct),
+                                                                 ctypes.POINTER(ctypes.c_uint8),
+                                                                 ctypes.c_size_t]
+        self.uplink.m_libuplink.uplink_download_read.restype = _ReadResult
         #
         # prepare the inputs for the function
         data_size = ctypes.c_int32(size_to_read)
@@ -80,8 +81,8 @@ class Download:
         size_to_read = ctypes.c_size_t(size_to_read)
 
         # read data from Storj by calling the exported golang function
-        read_result = self.uplink.m_libuplink.download_read(self.download, data_to_write_ptr,
-                                                            size_to_read)
+        read_result = self.uplink.m_libuplink.uplink_download_read(self.download, data_to_write_ptr,
+                                                                   size_to_read)
         #
         # if error occurred
         if bool(read_result.error):
@@ -137,13 +138,13 @@ class Download:
         """
 
         # declare types of arguments and response of the corresponding golang function
-        self.uplink.m_libuplink.stat_object.argtypes = [ctypes.POINTER(_ProjectStruct),
-                                                        ctypes.c_char_p, ctypes.c_char_p]
-        self.uplink.m_libuplink.stat_object.restype = _ObjectResult
+        self.uplink.m_libuplink.uplink_stat_object.argtypes = [ctypes.POINTER(_ProjectStruct),
+                                                               ctypes.c_char_p, ctypes.c_char_p]
+        self.uplink.m_libuplink.uplink_stat_object.restype = _ObjectResult
         #
         # get object information by calling the exported golang function
-        object_result = self.uplink.m_libuplink.stat_object(self.project, self.bucket_name,
-                                                            self.storj_path)
+        object_result = self.uplink.m_libuplink.uplink_stat_object(self.project, self.bucket_name,
+                                                                   self.storj_path)
         # if error occurred
         if bool(object_result.error):
             raise _storj_exception(object_result.error.contents.code,
@@ -161,11 +162,11 @@ class Download:
         """
         #
         # declare types of arguments and response of the corresponding golang function
-        self.uplink.m_libuplink.close_download.argtypes = [ctypes.POINTER(_DownloadStruct)]
-        self.uplink.m_libuplink.close_download.restype = ctypes.POINTER(_Error)
+        self.uplink.m_libuplink.uplink_close_download.argtypes = [ctypes.POINTER(_DownloadStruct)]
+        self.uplink.m_libuplink.uplink_close_download.restype = ctypes.POINTER(_Error)
         #
         # close downloader by calling the exported golang function
-        error = self.uplink.m_libuplink.close_download(self.download)
+        error = self.uplink.m_libuplink.uplink_close_download(self.download)
         #
         # if error occurred
         if bool(error):
@@ -182,11 +183,11 @@ class Download:
         """
         #
         # declare types of arguments and response of the corresponding golang function
-        self.uplink.m_libuplink.download_info.argtypes = [ctypes.POINTER(_DownloadStruct)]
-        self.uplink.m_libuplink.download_info.restype = _ObjectResult
+        self.uplink.m_libuplink.uplink_download_info.argtypes = [ctypes.POINTER(_DownloadStruct)]
+        self.uplink.m_libuplink.uplink_download_info.restype = _ObjectResult
         #
         # get last download info by calling the exported golang function
-        object_result = self.uplink.m_libuplink.download_info(self.download)
+        object_result = self.uplink.m_libuplink.uplink_download_info(self.download)
         #
         # if error occurred
         if bool(object_result.error):

@@ -8,7 +8,7 @@ import sysconfig
 from uplink_python.access import Access
 from uplink_python.errors import _storj_exception, LibUplinkSoError
 from uplink_python.module_def import _AccessResult, _ConfigStruct
-from uplink_python.module_classes import Config, Bucket, Object, SystemMetadata,\
+from uplink_python.module_classes import Config, Bucket, Object, SystemMetadata, \
     CustomMetadataEntry, CustomMetadata
 
 
@@ -109,10 +109,10 @@ class Uplink:
         """
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.request_access_with_passphrase.argtypes = [ctypes.c_char_p,
-                                                                    ctypes.c_char_p,
-                                                                    ctypes.c_char_p]
-        self.m_libuplink.request_access_with_passphrase.restype = _AccessResult
+        self.m_libuplink.uplink_request_access_with_passphrase.argtypes = [ctypes.c_char_p,
+                                                                           ctypes.c_char_p,
+                                                                           ctypes.c_char_p]
+        self.m_libuplink.uplink_request_access_with_passphrase.restype = _AccessResult
         #
         # prepare the input for the function
         satellite_ptr = ctypes.c_char_p(satellite.encode('utf-8'))
@@ -120,9 +120,9 @@ class Uplink:
         passphrase_ptr = ctypes.c_char_p(passphrase.encode('utf-8'))
 
         # get access to Storj by calling the exported golang function
-        access_result = self.m_libuplink.request_access_with_passphrase(satellite_ptr,
-                                                                        api_key_ptr,
-                                                                        passphrase_ptr)
+        access_result = self.m_libuplink.uplink_request_access_with_passphrase(satellite_ptr,
+                                                                               api_key_ptr,
+                                                                               passphrase_ptr)
         #
         # if error occurred
         if bool(access_result.error):
@@ -157,11 +157,11 @@ class Uplink:
 
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.config_request_access_with_passphrase.argtypes = [_ConfigStruct,
-                                                                           ctypes.c_char_p,
-                                                                           ctypes.c_char_p,
-                                                                           ctypes.c_char_p]
-        self.m_libuplink.config_request_access_with_passphrase.restype = _AccessResult
+        self.m_libuplink.uplink_config_request_access_with_passphrase.argtypes = [_ConfigStruct,
+                                                                                  ctypes.c_char_p,
+                                                                                  ctypes.c_char_p,
+                                                                                  ctypes.c_char_p]
+        self.m_libuplink.uplink_config_request_access_with_passphrase.restype = _AccessResult
         #
         # prepare the input for the function
         if config is None:
@@ -170,13 +170,13 @@ class Uplink:
             config_obj = config.get_structure()
         satellite_ptr = ctypes.c_char_p(satellite.encode('utf-8'))
         api_key_ptr = ctypes.c_char_p(api_key.encode('utf-8'))
-        passphrase_ptr = ctypes.c_char_p(passphrase.encode('utf-8'))
+        phrase_ptr = ctypes.c_char_p(passphrase.encode('utf-8'))
 
         # get access to Storj by calling the exported golang function
-        access_result = self.m_libuplink.config_request_access_with_passphrase(config_obj,
-                                                                               satellite_ptr,
-                                                                               api_key_ptr,
-                                                                               passphrase_ptr)
+        access_result = self.m_libuplink.uplink_config_request_access_with_passphrase(config_obj,
+                                                                                      satellite_ptr,
+                                                                                      api_key_ptr,
+                                                                                      phrase_ptr)
         #
         # if error occurred
         if bool(access_result.error):
@@ -205,12 +205,12 @@ class Uplink:
         serialized_access_ptr = ctypes.c_char_p(serialized_access.encode('utf-8'))
         #
         # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.parse_access.argtypes = [ctypes.c_char_p]
-        self.m_libuplink.parse_access.restype = _AccessResult
+        self.m_libuplink.uplink_parse_access.argtypes = [ctypes.c_char_p]
+        self.m_libuplink.uplink_parse_access.restype = _AccessResult
         #
 
         # get parsed access by calling the exported golang function
-        access_result = self.m_libuplink.parse_access(serialized_access_ptr)
+        access_result = self.m_libuplink.uplink_parse_access(serialized_access_ptr)
         #
         # if error occurred
         if bool(access_result.error):

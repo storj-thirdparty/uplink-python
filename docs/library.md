@@ -109,6 +109,64 @@ except StorjException as exception:
 
 ## Access Functions
 
+### derive_encryption_key(String, String)
+
+#### Description:
+
+derive encryption key function derives a salted encryption key for passphrase using the salt, This function is useful for deriving a salted encryption key for users when implementing multitenancy in a single app bucket.
+parse access function is required as a pre-requisite for this function.\
+this function accepts 2 arguments passphrase(string) and salt(string).\
+It throws an error if unsuccessful.
+
+#### Arguments:
+
+| arguments | Description |  Type |
+| --- | --- | --- |
+|<code>passphrase</code>| Any passphrase string |<code>string</code> |
+|<code>salt</code>| Any string used as salt |<code>string</code> |
+
+#### Usage Example
+
+```py
+try:
+    # create derive encryption key
+    encryption_key = access.derive_encryption_key("new_passphrase", "salt")
+    # some code
+except StorjException as exception:
+        print("Exception Caught: ", exception.details)
+```
+
+### override_encryption_key(String, String, Object)
+
+#### Description:
+
+override encryption key function overrides the root encryption key for the prefix in bucket with encryptionKey. This function is useful for overriding the encryption key in user-specific access grants when implementing multitenancy in a single app bucket.
+parse access function is required as a pre-requisite for this function.\
+this function accepts 3 arguments bucket_name(string), prefix(string) and encryption_key(object). encryption_key can be obtained by using the function derive_encryption_key.\
+It returns an access object on successful execution which can be used 
+to call other functions that are bound to it.
+
+#### Arguments:
+
+| arguments | Description |  Type |
+| --- | --- | --- |
+|<code>bucket_name</code>| Bucket name on storj V3 network  |<code>string</code> |
+|<code>prefix</code>| Path on storj V3 network |<code>string</code> |
+|<code>encryption_key</code>| Obtained using function derive_encryption_key |<code>object</code> |
+
+#### Usage Example
+
+```py
+try:
+    # create derive encryption key
+    encryption_key = access.derive_encryption_key("new_passphrase", "salt")
+    #
+    new_access = access.override_encryption_key(MY_BUCKET, MY_OBJECT, encryption_key)
+    # some code
+except StorjException as exception:
+        print("Exception Caught: ", exception.details)
+```
+
 ### serialize()
 
 #### Description:
