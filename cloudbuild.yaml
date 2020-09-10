@@ -16,7 +16,7 @@ steps:
     args: ["-c", "cd uplink-c && go build -o libuplinkc.so -buildmode=c-shared && cp *.so ../uplink_python/"] 
   - name: 'gcr.io/${PROJECT_ID}/python3'
     entrypoint: 'python3'
-    args: ['-m', 'unittest', 'tests/test_cases.py', '-v']
+    args: ['-m', 'unittest', 'test/test_cases.py', '-v']
 tags: ['cloud-builders-community']
 images: ['gcr.io/$PROJECT_ID/python3']
 tags: ['cloud-builders-community']

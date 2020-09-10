@@ -109,13 +109,13 @@ The sample *hello_storj.py* code calls the *uplink.py* file and imports the *Upl
 
 ## <b>Run Unit Test Cases on Local</b>
 
-Directory with unit test cases *tests* can be found in the uplink-python repository.
+Directory with unit test cases *test* can be found in the uplink-python repository.
 
 To run the test cases on a local system, you need to perform the following steps:
-* clone the repo so that you have the tests folder on your local system.
+* clone the repo so that you have the test folder on your local system.
 
         directory_on_local
-        └── tests
+        └── test
             └── __init__.py
             └── test_data
             └── test_cases.py
@@ -124,7 +124,7 @@ To run the test cases on a local system, you need to perform the following steps
 
         directory_on_local
         └── secret.txt
-        └── tests
+        └── test
             └── __init__.py
             └── test_data
             └── test_cases.py
