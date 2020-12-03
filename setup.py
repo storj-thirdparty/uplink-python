@@ -35,9 +35,9 @@ class Install(install):
             os.system("echo Building libuplinkc.so")
             copy_command = "copy" if platform.system() == "Windows" else "cp"
             command = "git clone https://github.com/storj/uplink-c && cd uplink-c" \
-                      "&& go build -o libuplinkc.so " \
-                      "-buildmode=c-shared && " \
-                      + copy_command + " *.so " + install_path
+                      "&& git checkout v1.1.0" \
+                      "&& go build -o libuplinkc.so -buildmode=c-shared" \
+                      "&& " + copy_command + " *.so " + install_path
             build_so = subprocess.Popen(command,
                                         stdout=subprocess.PIPE,
                                         stderr=subprocess.STDOUT, shell=True)
@@ -49,7 +49,8 @@ class Install(install):
             if errors is not None:
                 os.system("echo " + errors.decode('utf-8'))
                 os.system("echo Building libuplinkc.so failed.")
-
+            if build_so.returncode != 0:
+                os.exit(1)
         except Exception as error:
             os.system("echo " + str(error))
             os.system("echo Building libuplinkc.so failed.")
