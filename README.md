@@ -4,8 +4,6 @@
 
 ### *Developed using v1.1.0 storj/uplink-c*
 
-### *Binding is not tagged to any release and will use uplink-c master branch.*
-
 ### [API documentation and tutorial](https://storj-thirdparty.github.io/uplink-python/#/)
 
 ## <b>Initial Set-up (Important)</b>
