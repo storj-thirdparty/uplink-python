@@ -10,7 +10,7 @@ steps:
     args: ["-c","gcloud secrets versions access latest --secret=StorjAPIKey >>secret.txt" ]
   - name: 'gcr.io/${PROJECT_ID}/python3'
     entrypoint: 'bash'
-    args: ["-c", "git clone https://github.com/storj/uplink-c"]
+    args: ["-c", "git clone -b v1.2.0 https://github.com/storj/uplink-c"]
   - name: 'gcr.io/${PROJECT_ID}/python3'
     entrypoint: 'bash'
     args: ["-c", "cd uplink-c && go build -o libuplinkc.so -buildmode=c-shared && cp *.so ../uplink_python/"] 

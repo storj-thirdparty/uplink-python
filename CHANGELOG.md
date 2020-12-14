@@ -1,5 +1,10 @@
 # uplink-python binding changelog
 
+## [1.2.0.0] - 14-12-2020
+### Changelog:
+* Pinned to specific version of uplinkc - v1.2.0
+* Resolved access grant issue in test cases.
+
 ## [1.0.7] - 04-09-2020
 ### Changelog:
 * Added functions based on uplinkc - v1.1.0
