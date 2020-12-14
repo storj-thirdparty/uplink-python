@@ -10,7 +10,7 @@ class BucketListTest(unittest.TestCase):
         cls.test_py = TestPy()
         cls.access = cls.test_py.get_access()
         cls.project = cls.test_py.get_project()
-        cls.bucket_names = ["alpha", "beta", "delta", "gamma", "iota", "kappa", "lambda"]
+        cls.bucket_names = ["alpha", "delta", "gamma", "iota", "kappa", "lambda"]
 
     def test1_ensure_buckets(self):
         # print("Bucket List: ", self.bucket_names)
@@ -32,6 +32,10 @@ class BucketListTest(unittest.TestCase):
 
     def test3_delete_buckets(self):
         for name in self.bucket_names:
+            object_list = self.project.list_objects(name)
+            if object_list is not None:
+                for item in object_list:
+                    self.project.delete_object(name, item.key)
             bucket = self.project.delete_bucket(name)
             self.assertIsNotNone(bucket, "delete_bucket failed")
 
