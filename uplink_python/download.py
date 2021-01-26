@@ -124,7 +124,7 @@ class Download:
             buffer_size = file_size
         while file_size:
             buf, bytes_read = self.read(buffer_size)
-            if not buf:
+            if buf:
                 file_handle.write(buf)
             file_size -= bytes_read
 
