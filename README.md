@@ -2,7 +2,7 @@
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/aaee609406154b1794061386bb0ca60e)](https://app.codacy.com/gh/storj-thirdparty/uplink-python?utm_source=github.com&utm_medium=referral&utm_content=storj-thirdparty/uplink-python&utm_campaign=Badge_Grade_Dashboard)
 
-### *Developed using v1.2.0 storj/uplink-c*
+### *Developed using v1.2.2 storj/uplink-c*
 
 ### [API documentation and tutorial](https://storj-thirdparty.github.io/uplink-python/#/)
 
@@ -54,7 +54,7 @@ $ pip install uplink-python
 
 * Clone [storj-uplink-c](https://godoc.org/storj.io/storj/lib/uplink) package to any location of your choice, using cmd/terminal navigate to ```PREFERED_DIR_PATH``` and run:
 ```
-$ git clone -b v1.2.0 https://github.com/storj/uplink-c
+$ git clone -b v1.2.2 https://github.com/storj/uplink-c
 ```
 
 * After cloning the package, navigate to the ```PREFERED_DIR_PATH/uplink-c``` folder.

@@ -1,5 +1,10 @@
 # uplink-python binding changelog
 
+## [1.2.2.0] - 08-02-2021
+### Changelog:
+* Pinned to specific version of uplinkc - v1.2.2
+* Resolved satellite address issue in test cases.
+
 ## [1.2.0.0] - 14-12-2020
 ### Changelog:
 * Pinned to specific version of uplinkc - v1.2.0

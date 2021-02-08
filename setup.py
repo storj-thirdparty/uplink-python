@@ -10,7 +10,7 @@ from setuptools.command.install import install
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-uplinkc_version = "v1.2.0"
+uplinkc_version = "v1.2.2"
 
 class Install(install):
 
@@ -60,7 +60,7 @@ class Install(install):
 
 setuptools.setup(
     name="uplink-python",
-    version="1.2.0.0",
+    version="1.2.2.0",
     author="Utropicmedia",
     author_email="development@utropicmedia.com",
     license='Apache Software License',
