@@ -26,7 +26,7 @@ An access grant is always associated with exactly one Project on one Satellite.
 
 ```py
 MY_API_KEY = "change-me-to-the-api-key-created-in-satellite-gui"
-MY_SATELLITE = "us-central-1.tardigrade.io:7777"
+MY_SATELLITE = "12EayRS2V1kEsWESU9QMRseFhdxYxKicsiFmxrsLZHeLUtdps3S@us-central-1.tardigrade.io:7777"
 MY_ENCRYPTION_PASSPHRASE = "you'll never guess this"
 
 try:
@@ -65,7 +65,7 @@ This function accepts 4 arguments Satellite URL, API Key, encryption passphrase,
 from uplink_python.module_classes import Config
 
 MY_API_KEY = "change-me-to-the-api-key-created-in-satellite-gui"
-MY_SATELLITE = "us-central-1.tardigrade.io:7777"
+MY_SATELLITE = "12EayRS2V1kEsWESU9QMRseFhdxYxKicsiFmxrsLZHeLUtdps3S@us-central-1.tardigrade.io:7777"
 MY_ENCRYPTION_PASSPHRASE = "you'll never guess this"
 config = Config()
 

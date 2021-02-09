@@ -9,7 +9,7 @@ First and foremost, you need to have all the keys and configuration to connect t
 ```py
 # Storj configuration information
 MY_API_KEY = "change-me-to-the-api-key-created-in-satellite-gui"
-MY_SATELLITE = "us-central-1.tardigrade.io:7777"
+MY_SATELLITE = "12EayRS2V1kEsWESU9QMRseFhdxYxKicsiFmxrsLZHeLUtdps3S@us-central-1.tardigrade.io:7777"
 MY_BUCKET = "my-first-bucket"
 MY_STORJ_UPLOAD_PATH = "(optional): path / (required): filename"
 
