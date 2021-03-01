@@ -2,7 +2,7 @@
 
 ## Types
 
-### Config(String, Int, String)
+### Config(user_agent, dial_timeout_milliseconds, temp_directory)
 
 #### Description:
 
@@ -30,7 +30,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### Permission(String, String, String, String, Int, Int)
+### Permission(allow_download, allow_upload, allow_list, allow_delete, not_before, not_after)
 
 #### Description:
 
@@ -61,7 +61,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### SharePrefix(String, String)
+### SharePrefix(bucket, prefix)
 
 #### Description:
 
@@ -90,7 +90,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### Bucket(String, Int)
+### Bucket(name, created)
 
 #### Description:
 
@@ -120,7 +120,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### CustomMetadata(List, Int)
+### CustomMetadata(entries, count)
 
 #### Description:
 
@@ -149,7 +149,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### CustomMetadataEntry(String, Int, String, Int)
+### CustomMetadataEntry(key, key_length, value, value_length)
 
 #### Description:
 
@@ -184,7 +184,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### SystemMetadata(Int, Int, Int)
+### SystemMetadata(created, expires, content_length)
 
 #### Description:
 
@@ -215,7 +215,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### Object(String, Bool, Object, Object)
+### Object(key, is_prefix, system, custom)
 
 #### Description:
 
@@ -247,7 +247,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### ListObjectsOptions(String, String, Bool, Bool, Bool)
+### ListObjectsOptions(prefix, cursor, recursive, system, custom)
 
 #### Description:
 
@@ -276,7 +276,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### ListBucketsOptions(String)
+### ListBucketsOptions(cursor)
 
 #### Description:
 
@@ -300,7 +300,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### UploadOptions(Int)
+### UploadOptions(expires)
 
 #### Description:
 
@@ -324,7 +324,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### DownloadOptions(Int, Int)
+### DownloadOptions(offset, length)
 
 #### Description:
 
@@ -446,7 +446,7 @@ InvalidHandleError is raised when object handle passes is either invalid or alre
 
 ## Types
 
-### Config(String, Int, String)
+### Config(user_agent, dial_timeout_milliseconds, temp_directory)
 
 #### Description:
 
@@ -474,7 +474,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### Permission(String, String, String, String, Int, Int)
+### Permission(allow_download, allow_upload, allow_list, allow_delete, not_before, not_after)
 
 #### Description:
 
@@ -505,7 +505,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### SharePrefix(String, String)
+### SharePrefix(bucket, prefix)
 
 #### Description:
 
@@ -534,7 +534,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### Bucket(String, Int)
+### Bucket(name, created)
 
 #### Description:
 
@@ -564,7 +564,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### CustomMetadata(List, Int)
+### CustomMetadata(entries, count)
 
 #### Description:
 
@@ -593,7 +593,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### CustomMetadataEntry(String, Int, String, Int)
+### CustomMetadataEntry(key, key_length, value, value_length)
 
 #### Description:
 
@@ -628,7 +628,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### SystemMetadata(Int, Int, Int)
+### SystemMetadata(created, expires, content_length)
 
 #### Description:
 
@@ -659,7 +659,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### Object(String, Bool, Object, Object)
+### Object(key, is_prefix, system, custom)
 
 #### Description:
 
@@ -691,7 +691,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### ListObjectsOptions(String, String, Bool, Bool, Bool)
+### ListObjectsOptions(prefix, cursor, recursive, system, custom)
 
 #### Description:
 
@@ -720,7 +720,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### ListBucketsOptions(String)
+### ListBucketsOptions(cursor)
 
 #### Description:
 
@@ -744,7 +744,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### UploadOptions(Int)
+### UploadOptions(expires)
 
 #### Description:
 
@@ -768,7 +768,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### DownloadOptions(Int, Int)
+### DownloadOptions(offset, length)
 
 #### Description:
 

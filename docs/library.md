@@ -4,7 +4,7 @@
 
 ## Uplink Functions
 
-### request_access_with_passphrase(String, String, String)
+### request_access_with_passphrase(satellite, api_key, passphrase)
 
 #### Description:
 
@@ -42,7 +42,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### config_request_access_with_passphrase(Object, String, String, String)
+### config_request_access_with_passphrase(config, satellite, api_key, passphrase)
 
 #### Description:
 
@@ -82,7 +82,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### parse_access(String)
+### parse_access(serialized_access)
 
 #### Description:
 
@@ -109,7 +109,7 @@ except StorjException as exception:
 
 ## Access Functions
 
-### derive_encryption_key(String, String)
+### derive_encryption_key(passphrase, salt)
 
 #### Description:
 
@@ -136,7 +136,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### override_encryption_key(String, String, Object)
+### override_encryption_key(bucket_name, prefix, encryption_key)
 
 #### Description:
 
@@ -187,7 +187,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### share(Object, List)
+### share(permissions, shared_prefix)
 
 #### Description:
 
@@ -241,7 +241,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### config_open_project(Object)
+### config_open_project(config)
 
 #### Description:
 
@@ -289,7 +289,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### ensure_bucket(String)
+### ensure_bucket(bucket_name)
 
 #### Description:
 
@@ -315,7 +315,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### stat_bucket(String)
+### stat_bucket(bucket_name)
 
 #### Description:
 
@@ -342,7 +342,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### create_bucket(String)
+### create_bucket(bucket_name)
 
 #### Description:
 
@@ -401,7 +401,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### delete_bucket(String)
+### delete_bucket(bucket_name)
 
 #### Description:
 
@@ -450,7 +450,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### stat_object(String, String)
+### stat_object(bucket_name, storj_path)
 
 #### Description:
 
@@ -479,7 +479,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### list_objects(String, Object)
+### list_objects(bucket_name, list_object_options)
 
 #### Description:
 
@@ -514,7 +514,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### delete_object(String, String)
+### delete_object(bucket_name, storj_path)
 
 #### Description:
 
@@ -543,7 +543,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### upload_object(String, String, Object)
+### upload_object(bucket_name, storj_path, upload_options)
 
 #### Description:
 
@@ -575,7 +575,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
    
-### download_object(String, String, Object)
+### download_object(bucket_name, storj_path, download_options)
 
 #### Description:
 
@@ -607,7 +607,7 @@ except StorjException as exception:
    
 ## Upload Functions
 
-### write(Bytes, Int)
+### write(data_to_write, size_to_write)
 
 #### Description:
 
@@ -632,7 +632,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### write_file(Object)
+### write_file(file_handle)
 
 #### Description:
 
@@ -695,7 +695,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### set_custom_metadata(Object)
+### set_custom_metadata(custom_metadata)
 
 #### Description:
 
@@ -739,7 +739,7 @@ except StorjException as exception:
 
 ## Download Functions
 
-### read(Int)
+### read(size_to_read)
 
 #### Description:
 
@@ -764,7 +764,7 @@ except StorjException as exception:
         print("Exception Caught: ", exception.details)
 ```
 
-### read_file(Object)
+### read_file(file_handle)
 
 #### Description:
 
