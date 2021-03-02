@@ -26,7 +26,7 @@ Depending on your operating system, you will need to install:
 **On Windows**
 * Install Visual C++ Build Environment: [Visual Studio Build Tools](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools) (using "Visual C++ build tools" workload) or [Visual Studio 2017 Community](https://visualstudio.microsoft.com/pl/thank-you-downloading-visual-studio/?sku=Community) (using the "Desktop development with C++" workload)
 * Make sure you have access to ```site-packages``` folder inside the directory where Python is installed. To do this navigate to the directory where Python is installed, if you get an error "Permission Denied", follow the instruction in the message box and allow access using ```security tab```.
-
+* Install appropriate GCC compiler (for example [TDM-GCC](https://sourceforge.net/projects/tdm-gcc/)). Make sure g++ listed in PATH.
 ## <b>Binding Set-up</b>
 
 
@@ -69,6 +69,9 @@ $ go build -o libuplinkc.so -buildmode=c-shared
 
 * Copy created *libuplinkc.so* file into the folder, where Python package was installed (by default it is python3.X ```->``` site-packages ```->``` uplink_python)
 
+* Important notice: if you have 32-bit python on 64-bit machine *.so* file will not work correctly. There are 2 solutions:
+1. Switch to 64-bit python
+2. Set appropriate GO environment variables GOOS and GOARCH ([details](https://golang.org/doc/install/source#environment)) and compile uplink-c
 
 ## <b>Project Set-up</b>
 
