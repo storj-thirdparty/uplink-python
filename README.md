@@ -67,6 +67,7 @@ $ cd uplink-c
 $ go build -o libuplinkc.so -buildmode=c-shared
 ```
 
+
 * Copy created *libuplinkc.so* file into the folder, where Python package was installed (by default it is python3.X ```->``` site-packages ```->``` uplink_python)
 
 * Important notice: if you have 32-bit python on 64-bit machine *.so* file will not work correctly. There are 2 solutions:
