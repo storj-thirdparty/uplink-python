@@ -6,7 +6,9 @@ from uplink_python.module_classes import ListBucketsOptions, ListObjectsOptions,
 from uplink_python.module_def import _BucketStruct, _ObjectStruct, _ListObjectsOptionsStruct,\
     _ObjectResult, _ListBucketsOptionsStruct, _UploadOptionsStruct, _DownloadOptionsStruct,\
     _ProjectStruct, _BucketResult, _BucketIterator, _ObjectIterator, _DownloadResult,\
-    _UploadResult, _Error
+    _UploadResult, _Error, _BeginUploadResult, _MultipartUploadCommitOptionsStruct,\
+    _MultipartUploadCommitResult
+from uplink_python.multipart import MultipartUpload
 from uplink_python.upload import Upload
 from uplink_python.download import Download
 from uplink_python.errors import _storj_exception
@@ -476,3 +478,43 @@ class Project:
                                    download_result.error.contents.message.decode("utf-8"))
         return Download(download_result.download, self.uplink, self.project, bucket_name_ptr,
                         storj_path_ptr)
+
+
+    def begin_multipart_upload(self, bucket_name, object_key: str):
+        """
+        function uploads bytes data passed as parameter to the object's data stream.
+
+        Parameters
+        ----------
+        bucket_name : str
+        storj_path : str
+        upload_options : UploadOptions (optional)
+
+        Returns
+        -------
+        int
+        """
+
+        # declare types of arguments and response of the corresponding golang function
+        self.uplink.m_libuplink.uplink_begin_upload.argtypes = [ctypes.POINTER(_ProjectStruct),
+                                                                ctypes.POINTER(ctypes.c_char),
+                                                                ctypes.POINTER(ctypes.c_char),
+                                                                ctypes.POINTER(_UploadOptionsStruct)]
+        self.uplink.m_libuplink.uplink_begin_upload.restype = _BeginUploadResult
+
+        bucket_name_ptr = ctypes.c_char_p(bucket_name.encode('utf-8'))
+        object_key_ptr = ctypes.c_char_p(object_key.encode('utf-8'))
+
+        upload_options_obj = ctypes.POINTER(_UploadOptionsStruct)()
+
+        begin_result = self.uplink.m_libuplink.uplink_begin_upload(self.project, bucket_name_ptr,
+                                                                    object_key_ptr, upload_options_obj)
+
+        #
+        # if error occurred
+        if bool(begin_result.error):
+            _storj_exception(begin_result.error.contents.code,
+                             begin_result.error.contents.message.decode("utf-8"))
+
+        return MultipartUpload(self,bucket_name,object_key,
+                            begin_result.info.contents.upload_id.decode('utf-8'), self.uplink)

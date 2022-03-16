@@ -48,6 +48,11 @@ class _ProjectStruct(ctypes.Structure):
     _fields_ = [("_handle", ctypes.c_size_t)]
 
 
+class _PartUploadStruct(ctypes.Structure):
+    """Project ctypes structure for internal processing."""
+
+    _fields_ = [("_handle", ctypes.c_size_t)]
+
 class _SystemMetadataStruct(ctypes.Structure):
     """SystemMetadata ctypes structure for internal processing."""
 
@@ -74,6 +79,13 @@ class _ObjectStruct(ctypes.Structure):
     _fields_ = [("key", ctypes.c_char_p), ("is_prefix", ctypes.c_bool),
                 ("system", _SystemMetadataStruct), ("custom", _CustomMetadataStruct)]
 
+
+class _UploadInfoStruct(ctypes.Structure):
+    """Upload info ctypes structure for internal processing."""
+
+    _fields_ = [("upload_id", ctypes.c_char_p), ("key", ctypes.c_char_p),
+                ("is_prefix", ctypes.c_bool),
+                ("system", _SystemMetadataStruct), ("custom", _CustomMetadataStruct)]
 
 class _ListObjectsOptionsStruct(ctypes.Structure):
     """ListObjectsOptions ctypes structure for internal processing."""
@@ -111,6 +123,10 @@ class _UploadOptionsStruct(ctypes.Structure):
 
     _fields_ = [("expires", ctypes.c_int64)]
 
+class _MultipartUploadCommitOptionsStruct(ctypes.Structure):
+    """MultipartUploadCommitOptions ctypes structure for internal processing."""
+
+    _fields_ = [("custom_metadata", ctypes.POINTER(_CustomMetadataStruct))]
 
 class _DownloadStruct(ctypes.Structure):
     """Download ctypes structure for internal processing."""
@@ -189,3 +205,23 @@ class _EncryptionKeyResult(ctypes.Structure):
 
     _fields_ = [("encryption_key", ctypes.POINTER(_EncryptionKeyStruct)),
                 ("error", ctypes.POINTER(_Error))]
+
+class _BeginUploadResult(ctypes.Structure):
+    """BeginUploadResult ctypes structure"""
+
+    _fields_ = [("info", ctypes.POINTER(_UploadInfoStruct)), ("error", ctypes.POINTER(_Error))]
+
+class _MultipartUploadCommitResult(ctypes.Structure):
+    """MultipartUploadCommitResult ctypes structure"""
+
+    _fields_ = [("object", ctypes.POINTER(_ObjectStruct)), ("error", ctypes.POINTER(_Error))]
+
+class _UploadPartResult(ctypes.Structure):
+    """UploadPartResult ctypes structure"""
+
+    _fields_ = [("part_upload", ctypes.POINTER(_PartUploadStruct)), ("error", ctypes.POINTER(_Error))]
+
+# type _Ctype_struct_UplinkUploadInfoResult struct {
+# 	info	*_Ctype_struct_UplinkUploadInfo
+# 	error	*_Ctype_struct_UplinkError
+# }
