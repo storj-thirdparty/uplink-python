@@ -55,6 +55,7 @@ class MultipartUpload:
                                                                 ctypes.POINTER(_MultipartUploadCommitOptionsStruct)]
         self.uplink.m_libuplink.uplink_commit_upload.restype = _MultipartUploadCommitResult
 
+
         bucket_name_ptr = ctypes.c_char_p(self.bucket_name.encode('utf-8'))
         object_key_ptr = ctypes.c_char_p(self.object_key.encode('utf-8'))
         upload_id_ptr = ctypes.c_char_p(self.upload_id.encode('utf-8'))
@@ -63,16 +64,15 @@ class MultipartUpload:
 
         commit_result = self.uplink.m_libuplink.uplink_commit_upload(self.project.project, bucket_name_ptr, object_key_ptr,
                                                                     upload_id_ptr,upload_commit_options_obj)
+        print("commit result = ", commit_result)
 
         if bool(commit_result.error):
             raise _storj_exception(commit_result.error.contents.code,
                         commit_result.error.contents.message.decode("utf-8"))
         return self.uplink.object_from_result(commit_result.object)
 
-    def upload_part(self, file_handle, buffer_size: int = 0, part_number: int = -1):
+    def upload_part(self, part_number: int = -1):
 
-        if not buffer_size:
-            buffer_size = COPY_BUFSIZE
         self.uplink.m_libuplink.uplink_upload_part.argtypes = [ctypes.POINTER(_ProjectStruct),
                                                                 ctypes.POINTER(ctypes.c_char),
                                                                 ctypes.POINTER(ctypes.c_char),
@@ -91,37 +91,48 @@ class MultipartUpload:
             raise _storj_exception(upload_part_result.error.contents.code,
                         upload_part_result.error.contents.message.decode("utf-8"))
 
-        part_handle = upload_part_result.part_upload.contents._handle
-        print("PART RESULT HANDLE = ", part_handle)
 
-        while True:
-            print("Buffer size = ", buffer_size)
-            buf = file_handle.read(buffer_size)
-            print("size of part data = ", len(buf))
-            if not buf:
-                break
-            self.uplink.m_libuplink.uplink_part_upload_write.argtypes = [ctypes.POINTER(_PartUploadStruct),
-                                                                ctypes.POINTER(ctypes.c_uint8),
+
+        return PartUpload(upload_part_result.part_upload, self.uplink)
+
+
+class PartUpload:
+
+    def __init__(self, uploadPartResult, uplink):
+        self.uplink = uplink
+        self.partUpload = uploadPartResult
+
+    def commit(self):
+        self.uplink.m_libuplink.uplink_part_upload_commit.argtypes = [ctypes.POINTER(_PartUploadStruct)]
+        self.uplink.m_libuplink.uplink_part_upload_commit.restype =  ctypes.POINTER(_Error)
+
+        commit_part_error = self.uplink.m_libuplink.uplink_part_upload_commit(self.partUpload)
+
+        if bool(commit_part_error):
+            raise _storj_exception(commit_part_error.code,
+                    commit_part_error.message.decode("utf-8"))
+
+    def abort(self):
+        self.uplink.m_libuplink.uplink_part_upload_abort.argtypes = [ctypes.POINTER(_PartUploadStruct)]
+        self.uplink.m_libuplink.uplink_part_upload_abort.restype =  ctypes.POINTER(_Error)
+
+        abort_part_error = self.uplink.m_libuplink.uplink_part_upload_abort(self.partUpload)
+
+        if bool(abort_part_error):
+            raise _storj_exception(abort_part_error.code,
+                    abort_part_error.message.decode("utf-8"))
+
+    def write(self, bytes, length):
+        self.uplink.m_libuplink.uplink_part_upload_write.argtypes = [ctypes.POINTER(_PartUploadStruct),
+                                                                ctypes.POINTER(ctypes.c_int8),
                                                                 ctypes.c_size_t]
-            self.uplink.m_libuplink.uplink_part_upload_write.restype = _WriteResult
+        self.uplink.m_libuplink.uplink_part_upload_write.restype = _WriteResult
 
-            #
-            # prepare the inputs for the function
-            # --------------------------------------------
-            # data conversion to type required by function
-            # get size of data in c type int32 variable
-            # conversion of read bytes data to c type ubyte Array
-            # data_to_write = (ctypes.c_uint8 * ctypes.c_int32(len(buf)).value)(*buf)
-            # print("DATA to write = ", *data_to_write)
-            # conversion of c type ubyte Array to LP_c_ubyte required by upload write function
-            data_to_write_ptr = ctypes.cast(buf, ctypes.POINTER(ctypes.c_uint8))
-            # --------------------------------------------
-            size_to_write_obj = ctypes.c_size_t(len(buf))
-            upload_commit_options_obj = _PartUploadStruct()
-            upload_commit_options_obj.contents._handle = part_handle
+        data_to_write_ptr = ctypes.cast(bytes, ctypes.POINTER(ctypes.c_int8))
+        size_to_write_obj = ctypes.c_size_t(length)
 
-            part_write_result = self.uplink.m_libuplink.uplink_part_upload_write(upload_commit_options_obj,data_to_write_ptr, size_to_write_obj)
+        part_write_result = self.uplink.m_libuplink.uplink_part_upload_write(self.partUpload,data_to_write_ptr, size_to_write_obj)
 
-            if bool(part_write_result.error):
-                raise _storj_exception(part_write_result.error.contents.code,
-                        part_write_result.error.contents.message.decode("utf-8"))
+        if bool(part_write_result.error):
+            raise _storj_exception(part_write_result.error.contents.code,
+                    part_write_result.error.contents.message.decode("utf-8"))
