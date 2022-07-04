@@ -385,11 +385,17 @@ class Project:
         #
         # close Storj project by calling the exported golang function
         error = self.uplink.m_libuplink.uplink_close_project(self.project)
+        error = self.uplink.m_libuplink.uplink_close_project(self.project)
         #
         # if error occurred
         if bool(error):
-            raise _storj_exception(error.contents.code,
-                                   error.contents.message.decode("utf-8"))
+            errorCode = error.contents.code
+            errorMsg = error.contents.message.decode("utf-8")
+
+            #self.uplink.m_libuplink.uplink_free_error.argtypes = [ctypes.POINTER(_Error)]
+
+            #self.uplink.m_libuplink.uplink_free_error(error)
+            raise _storj_exception(errorCode, errorMsg)
 
     def upload_object(self, bucket_name: str, storj_path: str,
                       upload_options: UploadOptions = None):
