@@ -49,9 +49,15 @@ class _ProjectStruct(ctypes.Structure):
 
 
 class _PartUploadStruct(ctypes.Structure):
-    """Project ctypes structure for internal processing."""
+    """PartUpload ctypes structure for internal processing."""
 
     _fields_ = [("_handle", ctypes.c_size_t)]
+
+class _PartInfoStruct(ctypes.Structure):
+    """PartInfoStruct ctypes structure"""
+
+    _fields_ = [("part_number", ctypes.c_uint32), ("size", ctypes.c_size_t), ("modified", ctypes.c_int64),
+                ("etag",ctypes.c_char_p), ("etag_length", ctypes.c_size_t)]
 
 class _SystemMetadataStruct(ctypes.Structure):
     """SystemMetadata ctypes structure for internal processing."""
@@ -111,6 +117,10 @@ class _BucketIterator(ctypes.Structure):
 
     _fields_ = [("_handle", ctypes.c_size_t)]
 
+class _UploadPartIterator(ctypes.Structure):
+    """UploadPartIterator ctypes structure"""
+
+    _fields_ = [("_handle", ctypes.c_size_t)]
 
 class _UploadStruct(ctypes.Structure):
     """Upload ctypes structure for internal processing."""
@@ -221,7 +231,15 @@ class _UploadPartResult(ctypes.Structure):
 
     _fields_ = [("part_upload", ctypes.POINTER(_PartUploadStruct)), ("error", ctypes.POINTER(_Error))]
 
+class _UploadPartInfoResult(ctypes.Structure):
+    """UploadPartInfoResult ctypes structure"""
+
+    _fields_ = [("part", ctypes.POINTER(_PartInfoStruct)), ("error", ctypes.POINTER(_Error))]
+
+
 # type _Ctype_struct_UplinkUploadInfoResult struct {
 # 	info	*_Ctype_struct_UplinkUploadInfo
 # 	error	*_Ctype_struct_UplinkError
 # }
+
+

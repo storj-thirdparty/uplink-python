@@ -378,6 +378,7 @@ class Object:
                 "custom": custom.get_dict()}
 
 
+
 class ListObjectsOptions:
     """
     ListObjectsOptions defines object listing options.
