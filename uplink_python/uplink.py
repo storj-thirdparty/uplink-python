@@ -7,7 +7,7 @@ import sysconfig
 
 from uplink_python.access import Access
 from uplink_python.errors import _storj_exception, LibUplinkSoError
-from uplink_python.module_def import _AccessResult, _ConfigStruct
+from uplink_python.module_def import _AccessResult, _ConfigStruct, _Error
 from uplink_python.module_classes import Config, Bucket, Object, SystemMetadata, \
     CustomMetadataEntry, CustomMetadata
 
@@ -217,3 +217,13 @@ class Uplink:
             raise _storj_exception(access_result.error.contents.code,
                                    access_result.error.contents.message.decode("utf-8"))
         return Access(access_result.access, self)
+
+    @classmethod
+    def free_error_and_raise_exception(cls,err : _Error):
+        errorCode = err.error.contents.code
+        errorMsg = err.error.contents.message.decode("utf-8")
+
+        cls.uplink.m_libuplink.uplink_free_error.argtypes = [_Error]
+        cls.uplink.m_libuplink.uplink_free_error(err)
+
+        raise _storj_exception(errorCode,errorMsg)

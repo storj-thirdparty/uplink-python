@@ -81,7 +81,7 @@ class Access:
         # if error occurred
         if bool(encryption_key_result.error):
             raise _storj_exception(encryption_key_result.error.contents.code,
-                                   encryption_key_result.error.contents.message.decode("utf-8"))
+-                                  encryption_key_result.error.contents.message.decode("utf-8"))
         return encryption_key_result.encryption_key
 
     def override_encryption_key(self, bucket_name: str, prefix: str, encryption_key):
@@ -115,8 +115,7 @@ class Access:
         #
         # if error occurred
         if bool(error_result):
-            raise _storj_exception(error_result.contents.code,
-                                   error_result.contents.message.decode("utf-8"))
+           self.free_error_and_raise_exception(error_result)
 
     def open_project(self):
         """

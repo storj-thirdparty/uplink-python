@@ -170,8 +170,7 @@ class Download:
         #
         # if error occurred
         if bool(error):
-            raise _storj_exception(error.contents.code,
-                                   error.contents.message.decode("utf-8"))
+            self.free_error_and_raise_exception(error)
 
     def info(self):
         """
