@@ -79,10 +79,19 @@ class Access:
                                                                                      length_ptr)
         #
         # if error occurred
-        if bool(encryption_key_result.error):
-            raise _storj_exception(encryption_key_result.error.contents.code,
--                                  encryption_key_result.error.contents.message.decode("utf-8"))
-        return encryption_key_result.encryption_key
+        error = bool(encryption_key_result.error)
+        if error:
+            errorCode = encryption_key_result.error.contents.code
+            errorMsg = encryption_key_result.error.contents.message.decode("utf-8")
+        else:
+            encryption_key = encryption_key_result.encryption_key
+
+        self.uplink.m_libuplink.uplink_free_encryption_key_result.argtypes = [_EncryptionKeyResult]
+        self.uplink.m_libuplink.uplink_free_encryption_key_result(encryption_key_result)
+        if error:
+            raise _storj_exception(errorCode, errorMsg)
+
+        return encryption_key
 
     def override_encryption_key(self, bucket_name: str, prefix: str, encryption_key):
         """
@@ -135,10 +144,19 @@ class Access:
         project_result = self.uplink.m_libuplink.uplink_open_project(self.access)
         #
         # if error occurred
-        if bool(project_result.error):
-            raise _storj_exception(project_result.error.contents.code,
-                                   project_result.error.contents.message.decode("utf-8"))
-        return Project(project_result.project, self.uplink)
+        error = bool(project_result.error)
+        if error:
+            errorCode = project_result.error.contents.code
+            errorMsg = project_result.error.contents.message.decode("utf-8")
+        else:
+            project = Project(project_result.project, self.uplink)
+
+        self.m_libuplink.uplink_free_project_result.argstypes = [_ProjectResult]
+        self.m_libuplink.uplink_free_project_result(project_result)
+        if error:
+            raise _storj_exception(errorCode,errorMsg)
+
+        return project
 
     def config_open_project(self, config: Config):
         """
@@ -169,10 +187,21 @@ class Access:
         project_result = self.uplink.m_libuplink.uplink_config_open_project(config_obj, self.access)
         #
         # if error occurred
-        if bool(project_result.error):
-            raise _storj_exception(project_result.error.contents.code,
-                                   project_result.error.contents.message.decode("utf-8"))
-        return Project(project_result.project, self.uplink)
+        error = bool(project_result.error)
+        if error:
+            errorCode = project_result.error.contents.code
+            errorMsg = project_result.error.contents.message.decode("utf-8")
+        else:
+            project = Project(project_result.project, self.uplink)
+
+        self.m_libuplink.uplink_free_project_result.argstypes = [_ProjectResult]
+        self.m_libuplink.uplink_free_project_result(project_result)
+
+        if error:
+            raise _storj_exception(errorCode,errorMsg)
+
+        return project
+
 
     def serialize(self):
         """
@@ -193,10 +222,20 @@ class Access:
         string_result = self.uplink.m_libuplink.uplink_access_serialize(self.access)
         #
         # if error occurred
-        if bool(string_result.error):
-            raise _storj_exception(string_result.error.contents.code,
-                                   string_result.error.contents.message.decode("utf-8"))
-        return string_result.string.decode("utf-8")
+        error = bool(string_result.error)
+        if error:
+            errorCode = string_result.error.contents.code
+            errorMsg = string_result.error.contents.message.decode("utf-8")
+        else:
+            to_return = string_result.string.decode("utf-8")
+
+        self.m_libuplink.uplink_free_string_result.argstypes = [_StringResult]
+        self.m_libuplink.uplink_free_string_result(string_result)
+
+        if error:
+            raise _storj_exception(errorCode,errorMsg)
+
+        return to_return
 
     def share(self, permission: Permission = None, shared_prefix: [SharePrefix] = None):
         """
@@ -252,7 +291,15 @@ class Access:
                                                                     shared_prefix_obj, array_size)
         #
         # if error occurred
-        if bool(access_result.error):
-            raise _storj_exception(access_result.error.contents.code,
-                                   access_result.error.contents.message.decode("utf-8"))
-        return Access(access_result.access, self.uplink)
+        error = bool(access_result.error)
+        if error:
+            errorCode = access_result.error.contents.code
+            errorMsg = access_result.error.contents.message.decode("utf-8")
+        else:
+            access = Access(access_result.access, self.uplink)
+        self.m_libuplink.uplink_free_access_result.argstypes = [_AccessResult]
+        self.m_libuplink.uplink_free_access_result(access_result)
+        if error:
+            raise _storj_exception(errorCode,errorMsg)
+
+        return access
