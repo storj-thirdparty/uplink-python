@@ -72,6 +72,7 @@ class Download:
                                                                  ctypes.POINTER(ctypes.c_uint8),
                                                                  ctypes.c_size_t]
         self.uplink.m_libuplink.uplink_download_read.restype = _ReadResult
+        self.uplink.m_libuplink.uplink_free_read_result.argstypes = [_ReadResult]
         #
         # prepare the inputs for the function
         data_size = ctypes.c_int32(size_to_read)
@@ -85,18 +86,25 @@ class Download:
                                                                    size_to_read)
         #
         # if error occurred
-        if bool(read_result.error):
-            raise _storj_exception(read_result.error.contents.code,
-                                   read_result.error.contents.message.decode("utf-8"))
+        if read_result.error:
+            errorCode = read_result.error.contents.code
+            errorMsg = read_result.error.contents.message.decode("utf-8")
+            self.uplink.m_libuplink.uplink_free_read_result(read_result)
 
+            raise _storj_exception(errorCode,errorMsg)
+
+        bytes_read = int(read_result.bytes_read)
         data_read = bytes()
-        if int(read_result.bytes_read) != 0:
-            #
-            # --------------------------------------------
-            # data conversion to type python readable form
-            # conversion of LP_c_ubyte to python readable data variable
+        if bytes_read != 0:
+        #
+        # --------------------------------------------
+        # data conversion to type python readable form
+        # conversion of LP_c_ubyte to python readable data variable
             data_read = ctypes.string_at(data_to_write_ptr, int(read_result.bytes_read))
-        return data_read, int(read_result.bytes_read)
+
+        self.uplink.m_libuplink.uplink_free_read_result(read_result)
+
+        return data_read, bytes_read
 
     def read_file(self, file_handle, buffer_size: int = 0):
         """
@@ -141,14 +149,19 @@ class Download:
         self.uplink.m_libuplink.uplink_stat_object.argtypes = [ctypes.POINTER(_ProjectStruct),
                                                                ctypes.c_char_p, ctypes.c_char_p]
         self.uplink.m_libuplink.uplink_stat_object.restype = _ObjectResult
+        self.uplink.m_libuplink.uplink_free_object_result.argtypes = [_ObjectResult]
         #
         # get object information by calling the exported golang function
         object_result = self.uplink.m_libuplink.uplink_stat_object(self.project, self.bucket_name,
                                                                    self.storj_path)
         # if error occurred
         if bool(object_result.error):
-            raise _storj_exception(object_result.error.contents.code,
-                                   object_result.error.contents.message.decode("utf-8"))
+            errorCode = object_result.error.contents.code
+            errorMsg = object_result.error.contents.message.decode("utf-8")
+
+            self.uplink.m_libuplink.uplink_free_object_result(object_result)
+
+            raise _storj_exception(errorCode, errorMsg)
         # find object size
         return int(object_result.object.contents.system.content_length)
 
@@ -190,6 +203,14 @@ class Download:
         #
         # if error occurred
         if bool(object_result.error):
-            raise _storj_exception(object_result.error.contents.code,
-                                   object_result.error.contents.message.decode("utf-8"))
-        return self.uplink.object_from_result(object_result.object)
+            errorCode = object_result.error.contents.code
+            errorMsg = object_result.error.contents.message.decode("utf-8")
+
+            self.uplink.m_libuplink.uplink_free_object_result(object_result)
+
+            raise _storj_exception(errorCode, errorMsg)
+
+        object = self.uplink.object_from_result(object_result.object)
+        self.uplink.m_libuplink.uplink_free_object_result(object_result)
+
+        return object

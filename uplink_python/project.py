@@ -118,8 +118,13 @@ class Project:
         #
         # if error occurred
         if bool(bucket_result.error):
-            raise _storj_exception(bucket_result.error.contents.code,
-                                   bucket_result.error.contents.message.decode("utf-8"))
+            errorCode = bucket_result.error.contents.code
+            errorMsg = bucket_result.error.contents.message.decode("utf-8")
+
+            self.uplink.m_libuplink.uplink_free_bucket_result.argtypes = [_BucketResult]
+            self.uplink.m_libuplink.uplink_free_bucket_result(bucket_result)
+
+            raise _storj_exception(errorCode, errorMsg)
         return self.uplink.bucket_from_result(bucket_result.bucket)
 
     def stat_bucket(self, bucket_name: str):
@@ -149,8 +154,14 @@ class Project:
         #
         # if error occurred
         if bool(bucket_result.error):
-            raise _storj_exception(bucket_result.error.contents.code,
-                                   bucket_result.error.contents.message.decode("utf-8"))
+            errorCode = bucket_result.error.contents.code
+            errorMsg = bucket_result.error.contents.message.decode("utf-8")
+
+            self.uplink.m_libuplink.uplink_free_bucket_result.argtypes = [_BucketResult]
+            self.uplink.m_libuplink.uplink_free_bucket_result(bucket_result)
+
+            raise _storj_exception(errorCode, errorMsg)
+
         return self.uplink.bucket_from_result(bucket_result.bucket)
 
     def list_buckets(self, list_bucket_options: ListBucketsOptions = None):
@@ -172,11 +183,15 @@ class Project:
             [ctypes.POINTER(_ProjectStruct), ctypes.POINTER(_ListBucketsOptionsStruct)]
         self.uplink.m_libuplink.uplink_list_buckets.restype =\
             ctypes.POINTER(_BucketIterator)
+        self.uplink.m_libuplink.uplink_free_bucket_iterator.argtypes=\
+            [ctypes.POINTER(_BucketIterator)]
         #
         self.uplink.m_libuplink.uplink_bucket_iterator_item.argtypes =\
             [ctypes.POINTER(_BucketIterator)]
         self.uplink.m_libuplink.uplink_bucket_iterator_item.restype =\
             ctypes.POINTER(_BucketStruct)
+        self.uplink.m_libuplink.uplink_free_bucket.argtypes =\
+            [ctypes.POINTER(_BucketStruct)]
         #
         self.uplink.m_libuplink.uplink_bucket_iterator_err.argtypes =\
             [ctypes.POINTER(_BucketIterator)]
@@ -200,13 +215,14 @@ class Project:
 
         bucket_iterator_err = self.uplink.m_libuplink.uplink_bucket_iterator_err(bucket_iterator)
         if bool(bucket_iterator_err):
-            raise _storj_exception(bucket_iterator_err.contents.code,
-                                   bucket_iterator_err.contents.message.decode("utf-8"))
-
+            self.free_and_raise_error(bucket_iterator_err)
         bucket_list = list()
         while self.uplink.m_libuplink.uplink_bucket_iterator_next(bucket_iterator):
             bucket = self.uplink.m_libuplink.uplink_bucket_iterator_item(bucket_iterator)
             bucket_list.append(self.uplink.bucket_from_result(bucket))
+            self.uplink.m_libuplink.uplink_free_bucket(bucket)
+
+        self.uplink.m_libuplink.uplink_free_bucket_iterator(bucket_iterator)
 
         return bucket_list
 
@@ -230,6 +246,7 @@ class Project:
         self.uplink.m_libuplink.uplink_delete_bucket.argtypes = [ctypes.POINTER(_ProjectStruct),
                                                                  ctypes.c_char_p]
         self.uplink.m_libuplink.uplink_delete_bucket.restype = _BucketResult
+        self.uplink.m_libuplink.uplink_free_bucket_result.argtypes = [_BucketResult]
         #
         # prepare the input for the function
         bucket_name_ptr = ctypes.c_char_p(bucket_name.encode('utf-8'))
@@ -239,9 +256,17 @@ class Project:
         #
         # if error occurred
         if bool(bucket_result.error):
-            raise _storj_exception(bucket_result.error.contents.code,
-                                   bucket_result.error.contents.message.decode("utf-8"))
-        return self.uplink.bucket_from_result(bucket_result.bucket)
+            errorCode = bucket_result.error.contents.code
+            errorMsg = bucket_result.error.contents.message.decode("utf-8")
+
+            self.uplink.m_libuplink.uplink_free_bucket_result(bucket_result)
+
+            raise _storj_exception(errorCode, errorMsg)
+
+        bucket = self.uplink.bucket_from_result(bucket_result.bucket)
+        self.uplink.m_libuplink.uplink_free_bucket_result(bucket_result)
+
+        return bucket
 
     def stat_object(self, bucket_name: str, storj_path: str):
         """
@@ -262,6 +287,7 @@ class Project:
         self.uplink.m_libuplink.uplink_stat_object.argtypes = [ctypes.POINTER(_ProjectStruct),
                                                                ctypes.c_char_p, ctypes.c_char_p]
         self.uplink.m_libuplink.uplink_stat_object.restype = _ObjectResult
+        self.uplink.m_libuplink.uplink_free_object_result.argtypes = [_ObjectResult]
         #
         # prepare the input for the function
         bucket_name_ptr = ctypes.c_char_p(bucket_name.encode('utf-8'))
@@ -273,9 +299,18 @@ class Project:
         #
         # if error occurred
         if bool(object_result.error):
-            raise _storj_exception(object_result.error.contents.code,
-                                   object_result.error.contents.message.decode("utf-8"))
-        return self.uplink.object_from_result(object_result.object)
+            errorCode = object_result.error.contents.code
+            errorMsg = object_result.error.contents.message.decode("utf-8")
+
+            self.uplink.m_libuplink.uplink_free_object_result(object_result)
+
+            raise _storj_exception(errorCode, errorMsg)
+
+        object = self.uplink.object_from_result(object_result.object)
+
+        self.uplink.m_libuplink.uplink_free_object_result(object_result)
+
+        return object
 
     def list_objects(self, bucket_name: str, list_object_options: ListObjectsOptions = None):
         """
@@ -298,11 +333,15 @@ class Project:
              ctypes.POINTER(_ListObjectsOptionsStruct)]
         self.uplink.m_libuplink.uplink_list_objects.restype =\
             ctypes.POINTER(_ObjectIterator)
+        self.uplink.m_libuplink.uplink_free_object_iterator.argtypes =\
+            [ctypes.POINTER(_ObjectIterator)]
         #
         self.uplink.m_libuplink.uplink_object_iterator_item.argtypes =\
             [ctypes.POINTER(_ObjectIterator)]
         self.uplink.m_libuplink.uplink_object_iterator_item.restype =\
             ctypes.POINTER(_ObjectStruct)
+        self.uplink.m_libuplink.uplink_free_object.argtypes =\
+            [ctypes.POINTER(_ObjectStruct)]
         #
         self.uplink.m_libuplink.uplink_object_iterator_err.argtypes =\
             [ctypes.POINTER(_ObjectIterator)]
@@ -334,6 +373,9 @@ class Project:
         while self.uplink.m_libuplink.uplink_object_iterator_next(object_iterator):
             object_ = self.uplink.m_libuplink.uplink_object_iterator_item(object_iterator)
             object_list.append(self.uplink.object_from_result(object_))
+            self.uplink.m_libuplink.uplink_free_object(object_)
+
+        self.uplink.m_libuplink.uplink_free_object_iterator(object_iterator)
         return object_list
 
     def delete_object(self, bucket_name: str, storj_path: str):
@@ -355,6 +397,7 @@ class Project:
         self.uplink.m_libuplink.uplink_delete_object.argtypes = [ctypes.POINTER(_ProjectStruct),
                                                                  ctypes.c_char_p, ctypes.c_char_p]
         self.uplink.m_libuplink.uplink_delete_object.restype = _ObjectResult
+        self.uplink.m_libuplink.uplink_free_object_result.argtypes = [_ObjectResult]
         #
         # prepare the input for the function
         bucket_name_ptr = ctypes.c_char_p(bucket_name.encode('utf-8'))
@@ -366,9 +409,17 @@ class Project:
         #
         # if error occurred
         if bool(object_result.error):
-            raise _storj_exception(object_result.error.contents.code,
-                                   object_result.error.contents.message.decode("utf-8"))
-        return self.uplink.object_from_result(object_result.object)
+            errorCode = object_result.error.contents.code
+            errorMsg = object_result.error.contents.message.decode("utf-8")
+
+            self.uplink.m_libuplink.uplink_free_object_result(object_result)
+
+            raise _storj_exception(errorCode, errorMsg)
+
+        object = self.uplink.object_from_result(object_result.object)
+        self.uplink.m_libuplink.uplink_free_object_result(object_result)
+
+        return object
 
     def close(self):
         """
@@ -385,17 +436,10 @@ class Project:
         #
         # close Storj project by calling the exported golang function
         error = self.uplink.m_libuplink.uplink_close_project(self.project)
-        error = self.uplink.m_libuplink.uplink_close_project(self.project)
         #
         # if error occurred
         if bool(error):
-            errorCode = error.contents.code
-            errorMsg = error.contents.message.decode("utf-8")
-
-            #self.uplink.m_libuplink.uplink_free_error.argtypes = [ctypes.POINTER(_Error)]
-
-            #self.uplink.m_libuplink.uplink_free_error(error)
-            raise _storj_exception(errorCode, errorMsg)
+            self.free_error_and_raise_exception(error)
 
     def upload_object(self, bucket_name: str, storj_path: str,
                       upload_options: UploadOptions = None):
@@ -418,6 +462,7 @@ class Project:
             [ctypes.POINTER(_ProjectStruct), ctypes.c_char_p, ctypes.c_char_p,
              ctypes.POINTER(_UploadOptionsStruct)]
         self.uplink.m_libuplink.uplink_upload_object.restype = _UploadResult
+        self.uplink.m_libuplink.uplink_free_upload_result.argtypes = [_UploadResult]
         #
         # prepare the input for the function
         if upload_options is None:
@@ -435,8 +480,12 @@ class Project:
         #
         # if error occurred
         if bool(upload_result.error):
-            raise _storj_exception(upload_result.error.contents.code,
-                                   upload_result.error.contents.message.decode("utf-8"))
+            errorCode = upload_result.error.contents.code
+            errorMsg = upload_result.error.contents.message.decode("utf-8")
+
+            self.uplink.m_libuplink.uplink_free_upload_result(upload_result)
+
+            raise _storj_exception(errorCode,errorMsg)
         return Upload(upload_result.upload, self.uplink)
 
     def download_object(self, bucket_name: str, storj_path: str,
@@ -460,6 +509,7 @@ class Project:
             [ctypes.POINTER(_ProjectStruct), ctypes.c_char_p, ctypes.c_char_p,
              ctypes.POINTER(_DownloadOptionsStruct)]
         self.uplink.m_libuplink.uplink_download_object.restype = _DownloadResult
+        self.uplink.m_libuplink.uplink_free_download_result.argtypes = [_DownloadResult]
         #
         # prepare the input for the function
         if download_options is None:
@@ -478,7 +528,12 @@ class Project:
         #
         # if error occurred
         if bool(download_result.error):
-            raise _storj_exception(download_result.error.contents.code,
-                                   download_result.error.contents.message.decode("utf-8"))
+            errorCode = download_result.error.contents.code
+            errorMsg = download_result.error.contents.message.decode("utf-8")
+
+            self.uplink.m_libuplink.uplink_free_download_result(download_result)
+
+            raise _storj_exception(errorCode, errorMsg)
+
         return Download(download_result.download, self.uplink, self.project, bucket_name_ptr,
                         storj_path_ptr)

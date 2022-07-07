@@ -126,8 +126,14 @@ class Uplink:
         #
         # if error occurred
         if bool(access_result.error):
-            raise _storj_exception(access_result.error.contents.code,
-                                   access_result.error.contents.message.decode("utf-8"))
+            errorCode = access_result.error.contents.code
+            errorMsg = access_result.error.contents.message.decode("utf-8")
+
+            self.m_libuplink.uplink_free_access_result.argtypes = [_AccessResult]
+            self.m_libuplink.uplink_free_access_result(access_result)
+
+            raise _storj_exception(errorCode, errorMsg)
+
         return Access(access_result.access, self)
 
     def config_request_access_with_passphrase(self, config: Config, satellite: str, api_key: str,
@@ -180,8 +186,14 @@ class Uplink:
         #
         # if error occurred
         if bool(access_result.error):
-            raise _storj_exception(access_result.error.contents.code,
-                                   access_result.error.contents.message.decode("utf-8"))
+            errorCode = access_result.error.contents.code
+            errorMsg = access_result.error.contents.message.decode("utf-8")
+
+            self.m_libuplink.uplink_free_access_result.argtypes = [_AccessResult]
+            self.m_libuplink.uplink_free_access_result(access_result)
+
+            raise _storj_exception(errorCode, errorMsg)
+
         return Access(access_result.access, self)
 
     def parse_access(self, serialized_access: str):
@@ -214,8 +226,14 @@ class Uplink:
         #
         # if error occurred
         if bool(access_result.error):
-            raise _storj_exception(access_result.error.contents.code,
-                                   access_result.error.contents.message.decode("utf-8"))
+            errorCode = access_result.error.contents.code
+            errorMsg = access_result.error.contents.message.decode("utf-8")
+
+            self.m_libuplink.uplink_free_access_result.argtypes = [_AccessResult]
+            self.m_libuplink.uplink_free_access_result(access_result)
+
+            raise _storj_exception(errorCode, errorMsg)
+
         return Access(access_result.access, self)
 
     @classmethod

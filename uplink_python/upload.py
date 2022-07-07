@@ -65,6 +65,7 @@ class Upload:
                                                                 ctypes.POINTER(ctypes.c_uint8),
                                                                 ctypes.c_size_t]
         self.uplink.m_libuplink.uplink_upload_write.restype = _WriteResult
+        self.uplink.m_libuplink.uplink_free_write_result.argtypes = [_WriteResult]
         #
         # prepare the inputs for the function
         # --------------------------------------------
@@ -83,9 +84,18 @@ class Upload:
         #
         # if error occurred
         if bool(write_result.error):
-            _storj_exception(write_result.error.contents.code,
-                             write_result.error.contents.message.decode("utf-8"))
-        return int(write_result.bytes_written)
+            errorCode = write_result.error.contents.code
+            errorMsg = write_result.error.contents.message.decode("utf-8")
+
+            self.uplink.m_libuplink.uplink_free_write_result(write_result)
+
+            _storj_exception(errorCode, errorMsg)
+
+        bytes_written = int(write_result.bytes_written)
+
+        self.uplink.m_libuplink.uplink_free_write_result(write_result)
+
+        return bytes_written
 
     def write_file(self, file_handle, buffer_size: int = 0):
         """
@@ -134,8 +144,7 @@ class Upload:
         #
         # if error occurred
         if bool(error):
-            raise _storj_exception(error.contents.code,
-                                   error.contents.message.decode("utf-8"))
+            self.free_and_raise_error(error)
 
     def abort(self):
         """
@@ -156,8 +165,7 @@ class Upload:
         #
         # if error occurred
         if bool(error):
-            raise _storj_exception(error.contents.code,
-                                   error.contents.message.decode("utf-8"))
+            self.free_and_raise_error(error)
 
     def set_custom_metadata(self, custom_metadata: CustomMetadata = None):
         """
@@ -188,8 +196,7 @@ class Upload:
         #
         # if error occurred
         if bool(error):
-            raise _storj_exception(error.contents.code,
-                                   error.contents.message.decode("utf-8"))
+            self.free_and_raise_error(error)
 
     def info(self):
         """
@@ -203,12 +210,19 @@ class Upload:
         # declare types of arguments and response of the corresponding golang function
         self.uplink.m_libuplink.uplink_upload_info.argtypes = [ctypes.POINTER(_UploadStruct)]
         self.uplink.m_libuplink.uplink_upload_info.restype = _ObjectResult
+        self.uplink.m_libuplink.uplink_free_object_result.argtypes = [_ObjectResult]
         #
         # get last upload info by calling the exported golang function
         object_result = self.uplink.m_libuplink.uplink_upload_info(self.upload)
         #
         # if error occurred
         if bool(object_result.error):
-            raise _storj_exception(object_result.error.contents.code,
-                                   object_result.error.contents.message.decode("utf-8"))
-        return self.uplink.object_from_result(object_result.object)
+            errorCode = object_result.error.contents.code
+            errorMsg = object_result.error.contents.message.decode("utf-8")
+
+            self.uplink.m_libuplink.uplink_free_object_result(object_result)
+
+            raise _storj_exception(errorCode, errorMsg)
+
+        info = self.uplink.object_from_result(object_result.object)
+        return info

@@ -65,6 +65,7 @@ class Access:
                                                                          ctypes.c_void_p,
                                                                          ctypes.c_size_t]
         self.uplink.m_libuplink.uplink_derive_encryption_key.restype = _EncryptionKeyResult
+        self.uplink.m_libuplink.uplink_free_encryption_key_result.argtypes = [_EncryptionKeyResult]
         #
         # prepare the input for the function
         passphrase_ptr = ctypes.c_char_p(passphrase.encode('utf-8'))
@@ -79,17 +80,17 @@ class Access:
                                                                                      length_ptr)
         #
         # if error occurred
-        error = bool(encryption_key_result.error)
-        if error:
+        if bool(encryption_key_result.error):
             errorCode = encryption_key_result.error.contents.code
             errorMsg = encryption_key_result.error.contents.message.decode("utf-8")
-        else:
-            encryption_key = encryption_key_result.encryption_key
 
-        self.uplink.m_libuplink.uplink_free_encryption_key_result.argtypes = [_EncryptionKeyResult]
-        self.uplink.m_libuplink.uplink_free_encryption_key_result(encryption_key_result)
-        if error:
+            self.uplink.m_libuplink.uplink_free_encryption_key_result(encryption_key_result)
+
             raise _storj_exception(errorCode, errorMsg)
+
+        encryption_key = encryption_key_result.encryption_key
+
+        self.uplink.m_libuplink.uplink_free_encryption_key_result(encryption_key_result)
 
         return encryption_key
 
@@ -144,19 +145,16 @@ class Access:
         project_result = self.uplink.m_libuplink.uplink_open_project(self.access)
         #
         # if error occurred
-        error = bool(project_result.error)
-        if error:
+        if bool(project_result.error):
             errorCode = project_result.error.contents.code
             errorMsg = project_result.error.contents.message.decode("utf-8")
-        else:
-            project = Project(project_result.project, self.uplink)
 
-        self.m_libuplink.uplink_free_project_result.argstypes = [_ProjectResult]
-        self.m_libuplink.uplink_free_project_result(project_result)
-        if error:
+            self.uplink.m_libuplink.uplink_free_project_result.argstypes = [_ProjectResult]
+            self.uplink.m_libuplink.uplink_free_project_result(project_result)
+
             raise _storj_exception(errorCode,errorMsg)
 
-        return project
+        return Project(project_result.project, self.uplink)
 
     def config_open_project(self, config: Config):
         """
@@ -176,6 +174,7 @@ class Access:
         self.uplink.m_libuplink.uplink_config_open_project.argtypes =\
             [_ConfigStruct, ctypes.POINTER(_AccessStruct)]
         self.uplink.m_libuplink.uplink_config_open_project.restype = _ProjectResult
+        self.uplink.m_libuplink.uplink_free_project_result.argstypes = [_ProjectResult]
         #
         # prepare the input for the function
         if config is None:
@@ -187,18 +186,17 @@ class Access:
         project_result = self.uplink.m_libuplink.uplink_config_open_project(config_obj, self.access)
         #
         # if error occurred
-        error = bool(project_result.error)
-        if error:
+        if bool(project_result.error):
             errorCode = project_result.error.contents.code
             errorMsg = project_result.error.contents.message.decode("utf-8")
-        else:
-            project = Project(project_result.project, self.uplink)
 
-        self.m_libuplink.uplink_free_project_result.argstypes = [_ProjectResult]
-        self.m_libuplink.uplink_free_project_result(project_result)
+            self.uplink.m_libuplink.uplink_free_project_result(project_result)
 
-        if error:
             raise _storj_exception(errorCode,errorMsg)
+
+        project = Project(project_result.project, self.uplink)
+
+        self.uplink.m_libuplink.uplink_free_project_result(project_result)
 
         return project
 
@@ -217,23 +215,22 @@ class Access:
         # declare types of arguments and response of the corresponding golang function
         self.uplink.m_libuplink.uplink_access_serialize.argtypes = [ctypes.POINTER(_AccessStruct)]
         self.uplink.m_libuplink.uplink_access_serialize.restype = _StringResult
+        self.uplink.m_libuplink.uplink_free_string_result.argstypes = [_StringResult]
         #
         # get serialized access by calling the exported golang function
         string_result = self.uplink.m_libuplink.uplink_access_serialize(self.access)
         #
         # if error occurred
-        error = bool(string_result.error)
-        if error:
+        if bool(string_result.error):
             errorCode = string_result.error.contents.code
             errorMsg = string_result.error.contents.message.decode("utf-8")
-        else:
-            to_return = string_result.string.decode("utf-8")
 
-        self.m_libuplink.uplink_free_string_result.argstypes = [_StringResult]
-        self.m_libuplink.uplink_free_string_result(string_result)
-
-        if error:
+            self.uplink.m_libuplink.uplink_free_string_result(string_result)
             raise _storj_exception(errorCode,errorMsg)
+
+        to_return = string_result.string.decode("utf-8")
+
+        self.uplink.m_libuplink.uplink_free_string_result(string_result)
 
         return to_return
 
@@ -265,6 +262,7 @@ class Access:
                                                                 ctypes.POINTER(_SharePrefixStruct),
                                                                 ctypes.c_size_t]
         self.uplink.m_libuplink.uplink_access_share.restype = _AccessResult
+        self.uplink.m_libuplink.uplink_free_access_result.argstypes = [_AccessResult]
         #
         # prepare the input for the function
         # check and create valid _PermissionStruct parameter
@@ -291,15 +289,16 @@ class Access:
                                                                     shared_prefix_obj, array_size)
         #
         # if error occurred
-        error = bool(access_result.error)
-        if error:
+        if bool(access_result.error):
             errorCode = access_result.error.contents.code
             errorMsg = access_result.error.contents.message.decode("utf-8")
-        else:
-            access = Access(access_result.access, self.uplink)
-        self.m_libuplink.uplink_free_access_result.argstypes = [_AccessResult]
-        self.m_libuplink.uplink_free_access_result(access_result)
-        if error:
+
+            self.uplink.m_libuplink.uplink_free_access_result(access_result)
+
             raise _storj_exception(errorCode,errorMsg)
+
+        access = Access(access_result.access, self.uplink)
+
+        self.uplink.m_libuplink.uplink_free_access_result(access_result)
 
         return access
