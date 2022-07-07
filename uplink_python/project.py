@@ -306,11 +306,11 @@ class Project:
 
             raise _storj_exception(errorCode, errorMsg)
 
-        object = self.uplink.object_from_result(object_result.object)
+        _object = self.uplink.object_from_result(object_result.object)
 
         self.uplink.m_libuplink.uplink_free_object_result(object_result)
 
-        return object
+        return _object
 
     def list_objects(self, bucket_name: str, list_object_options: ListObjectsOptions = None):
         """
