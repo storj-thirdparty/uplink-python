@@ -61,7 +61,7 @@ class Uplink:
                                 content_length=object_.contents.system.content_length)
 
         array_size = object_.contents.custom.count
-        entries = list()
+        entries = []
         for i in range(array_size):
             if bool(object_.contents.custom.entries[i]):
                 entries_obj = object_.contents.custom.entries[i]
@@ -126,13 +126,13 @@ class Uplink:
         #
         # if error occurred
         if bool(access_result.error):
-            errorCode = access_result.error.contents.code
-            errorMsg = access_result.error.contents.message.decode("utf-8")
+            error_code = access_result.error.contents.code
+            error_msg = access_result.error.contents.message.decode("utf-8")
 
             self.m_libuplink.uplink_free_access_result.argtypes = [_AccessResult]
             self.m_libuplink.uplink_free_access_result(access_result)
 
-            raise _storj_exception(errorCode, errorMsg)
+            raise _storj_exception(error_code, error_msg)
 
         return Access(access_result.access, self)
 
@@ -186,13 +186,13 @@ class Uplink:
         #
         # if error occurred
         if bool(access_result.error):
-            errorCode = access_result.error.contents.code
-            errorMsg = access_result.error.contents.message.decode("utf-8")
+            error_code = access_result.error.contents.code
+            error_msg = access_result.error.contents.message.decode("utf-8")
 
             self.m_libuplink.uplink_free_access_result.argtypes = [_AccessResult]
             self.m_libuplink.uplink_free_access_result(access_result)
 
-            raise _storj_exception(errorCode, errorMsg)
+            raise _storj_exception(error_code, error_msg)
 
         return Access(access_result.access, self)
 
@@ -226,22 +226,22 @@ class Uplink:
         #
         # if error occurred
         if bool(access_result.error):
-            errorCode = access_result.error.contents.code
-            errorMsg = access_result.error.contents.message.decode("utf-8")
+            error_code = access_result.error.contents.code
+            error_msg = access_result.error.contents.message.decode("utf-8")
 
             self.m_libuplink.uplink_free_access_result.argtypes = [_AccessResult]
             self.m_libuplink.uplink_free_access_result(access_result)
 
-            raise _storj_exception(errorCode, errorMsg)
+            raise _storj_exception(error_code, error_msg)
 
         return Access(access_result.access, self)
 
-    @classmethod
-    def free_error_and_raise_exception(cls,err : _Error):
-        errorCode = err.error.contents.code
-        errorMsg = err.error.contents.message.decode("utf-8")
+    def free_error_and_raise_exception(self,err : _Error):
+        """ free libuplinkc error and raise corresponding _storj_exception """
+        error_code = err.error.contents.code
+        error_msg = err.error.contents.message.decode("utf-8")
 
-        cls.uplink.m_libuplink.uplink_free_error.argtypes = [_Error]
-        cls.uplink.m_libuplink.uplink_free_error(err)
+        self.m_libuplink.uplink_free_error.argtypes = [_Error]
+        self.m_libuplink.uplink.m_libuplink.uplink_free_error(err)
 
-        raise _storj_exception(errorCode,errorMsg)
+        raise _storj_exception(error_code, error_msg)

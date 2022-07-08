@@ -84,12 +84,12 @@ class Upload:
         #
         # if error occurred
         if bool(write_result.error):
-            errorCode = write_result.error.contents.code
-            errorMsg = write_result.error.contents.message.decode("utf-8")
+            error_code = write_result.error.contents.code
+            error_msg = write_result.error.contents.message.decode("utf-8")
 
             self.uplink.m_libuplink.uplink_free_write_result(write_result)
 
-            _storj_exception(errorCode, errorMsg)
+            _storj_exception(error_code, error_msg)
 
         bytes_written = int(write_result.bytes_written)
 
@@ -144,7 +144,7 @@ class Upload:
         #
         # if error occurred
         if bool(error):
-            self.free_and_raise_error(error)
+            self.uplink.free_and_raise_error(error)
 
     def abort(self):
         """
@@ -165,7 +165,7 @@ class Upload:
         #
         # if error occurred
         if bool(error):
-            self.free_and_raise_error(error)
+            self.uplink.free_and_raise_error(error)
 
     def set_custom_metadata(self, custom_metadata: CustomMetadata = None):
         """
@@ -196,7 +196,7 @@ class Upload:
         #
         # if error occurred
         if bool(error):
-            self.free_and_raise_error(error)
+            self.uplink.free_and_raise_error(error)
 
     def info(self):
         """
@@ -217,12 +217,12 @@ class Upload:
         #
         # if error occurred
         if bool(object_result.error):
-            errorCode = object_result.error.contents.code
-            errorMsg = object_result.error.contents.message.decode("utf-8")
+            error_code = object_result.error.contents.code
+            error_msg = object_result.error.contents.message.decode("utf-8")
 
             self.uplink.m_libuplink.uplink_free_object_result(object_result)
 
-            raise _storj_exception(errorCode, errorMsg)
+            raise _storj_exception(error_code, error_msg)
 
         info = self.uplink.object_from_result(object_result.object)
         return info

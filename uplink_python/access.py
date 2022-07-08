@@ -81,12 +81,12 @@ class Access:
         #
         # if error occurred
         if bool(encryption_key_result.error):
-            errorCode = encryption_key_result.error.contents.code
-            errorMsg = encryption_key_result.error.contents.message.decode("utf-8")
+            error_code = encryption_key_result.error.contents.code
+            error_msg = encryption_key_result.error.contents.message.decode("utf-8")
 
             self.uplink.m_libuplink.uplink_free_encryption_key_result(encryption_key_result)
 
-            raise _storj_exception(errorCode, errorMsg)
+            raise _storj_exception(error_code, error_msg)
 
         encryption_key = encryption_key_result.encryption_key
 
@@ -125,7 +125,7 @@ class Access:
         #
         # if error occurred
         if bool(error_result):
-           self.free_error_and_raise_exception(error_result)
+            self.uplink.free_error_and_raise_exception(error_result)
 
     def open_project(self):
         """
@@ -146,13 +146,13 @@ class Access:
         #
         # if error occurred
         if bool(project_result.error):
-            errorCode = project_result.error.contents.code
-            errorMsg = project_result.error.contents.message.decode("utf-8")
+            error_code = project_result.error.contents.code
+            error_msg = project_result.error.contents.message.decode("utf-8")
 
             self.uplink.m_libuplink.uplink_free_project_result.argstypes = [_ProjectResult]
             self.uplink.m_libuplink.uplink_free_project_result(project_result)
 
-            raise _storj_exception(errorCode,errorMsg)
+            raise _storj_exception(error_code,error_msg)
 
         return Project(project_result.project, self.uplink)
 
@@ -187,12 +187,12 @@ class Access:
         #
         # if error occurred
         if bool(project_result.error):
-            errorCode = project_result.error.contents.code
-            errorMsg = project_result.error.contents.message.decode("utf-8")
+            error_code = project_result.error.contents.code
+            error_msg = project_result.error.contents.message.decode("utf-8")
 
             self.uplink.m_libuplink.uplink_free_project_result(project_result)
 
-            raise _storj_exception(errorCode,errorMsg)
+            raise _storj_exception(error_code,error_msg)
 
         project = Project(project_result.project, self.uplink)
 
@@ -222,11 +222,11 @@ class Access:
         #
         # if error occurred
         if bool(string_result.error):
-            errorCode = string_result.error.contents.code
-            errorMsg = string_result.error.contents.message.decode("utf-8")
+            error_code = string_result.error.contents.code
+            error_msg = string_result.error.contents.message.decode("utf-8")
 
             self.uplink.m_libuplink.uplink_free_string_result(string_result)
-            raise _storj_exception(errorCode,errorMsg)
+            raise _storj_exception(error_code,error_msg)
 
         to_return = string_result.string.decode("utf-8")
 
@@ -290,12 +290,12 @@ class Access:
         #
         # if error occurred
         if bool(access_result.error):
-            errorCode = access_result.error.contents.code
-            errorMsg = access_result.error.contents.message.decode("utf-8")
+            error_code = access_result.error.contents.code
+            error_msg = access_result.error.contents.message.decode("utf-8")
 
             self.uplink.m_libuplink.uplink_free_access_result(access_result)
 
-            raise _storj_exception(errorCode,errorMsg)
+            raise _storj_exception(error_code,error_msg)
 
         access = Access(access_result.access, self.uplink)
 

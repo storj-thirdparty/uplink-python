@@ -118,13 +118,13 @@ class Project:
         #
         # if error occurred
         if bool(bucket_result.error):
-            errorCode = bucket_result.error.contents.code
-            errorMsg = bucket_result.error.contents.message.decode("utf-8")
+            error_code = bucket_result.error.contents.code
+            error_msg = bucket_result.error.contents.message.decode("utf-8")
 
             self.uplink.m_libuplink.uplink_free_bucket_result.argtypes = [_BucketResult]
             self.uplink.m_libuplink.uplink_free_bucket_result(bucket_result)
 
-            raise _storj_exception(errorCode, errorMsg)
+            raise _storj_exception(error_code, error_msg)
         return self.uplink.bucket_from_result(bucket_result.bucket)
 
     def stat_bucket(self, bucket_name: str):
@@ -154,13 +154,13 @@ class Project:
         #
         # if error occurred
         if bool(bucket_result.error):
-            errorCode = bucket_result.error.contents.code
-            errorMsg = bucket_result.error.contents.message.decode("utf-8")
+            error_code = bucket_result.error.contents.code
+            error_msg = bucket_result.error.contents.message.decode("utf-8")
 
             self.uplink.m_libuplink.uplink_free_bucket_result.argtypes = [_BucketResult]
             self.uplink.m_libuplink.uplink_free_bucket_result(bucket_result)
 
-            raise _storj_exception(errorCode, errorMsg)
+            raise _storj_exception(error_code, error_msg)
 
         return self.uplink.bucket_from_result(bucket_result.bucket)
 
@@ -215,7 +215,7 @@ class Project:
 
         bucket_iterator_err = self.uplink.m_libuplink.uplink_bucket_iterator_err(bucket_iterator)
         if bool(bucket_iterator_err):
-            self.free_and_raise_error(bucket_iterator_err)
+            self.uplink.free_and_raise_error(bucket_iterator_err)
         bucket_list = list()
         while self.uplink.m_libuplink.uplink_bucket_iterator_next(bucket_iterator):
             bucket = self.uplink.m_libuplink.uplink_bucket_iterator_item(bucket_iterator)
@@ -256,12 +256,12 @@ class Project:
         #
         # if error occurred
         if bool(bucket_result.error):
-            errorCode = bucket_result.error.contents.code
-            errorMsg = bucket_result.error.contents.message.decode("utf-8")
+            error_code = bucket_result.error.contents.code
+            error_msg = bucket_result.error.contents.message.decode("utf-8")
 
             self.uplink.m_libuplink.uplink_free_bucket_result(bucket_result)
 
-            raise _storj_exception(errorCode, errorMsg)
+            raise _storj_exception(error_code, error_msg)
 
         bucket = self.uplink.bucket_from_result(bucket_result.bucket)
         self.uplink.m_libuplink.uplink_free_bucket_result(bucket_result)
@@ -299,12 +299,12 @@ class Project:
         #
         # if error occurred
         if bool(object_result.error):
-            errorCode = object_result.error.contents.code
-            errorMsg = object_result.error.contents.message.decode("utf-8")
+            error_code = object_result.error.contents.code
+            error_msg = object_result.error.contents.message.decode("utf-8")
 
             self.uplink.m_libuplink.uplink_free_object_result(object_result)
 
-            raise _storj_exception(errorCode, errorMsg)
+            raise _storj_exception(error_code, error_msg)
 
         _object = self.uplink.object_from_result(object_result.object)
 
@@ -369,7 +369,7 @@ class Project:
             raise _storj_exception(object_iterator_err.contents.code,
                                    object_iterator_err.contents.message.decode("utf-8"))
 
-        object_list = list()
+        object_list = []
         while self.uplink.m_libuplink.uplink_object_iterator_next(object_iterator):
             object_ = self.uplink.m_libuplink.uplink_object_iterator_item(object_iterator)
             object_list.append(self.uplink.object_from_result(object_))
@@ -409,12 +409,12 @@ class Project:
         #
         # if error occurred
         if bool(object_result.error):
-            errorCode = object_result.error.contents.code
-            errorMsg = object_result.error.contents.message.decode("utf-8")
+            error_code = object_result.error.contents.code
+            error_msg = object_result.error.contents.message.decode("utf-8")
 
             self.uplink.m_libuplink.uplink_free_object_result(object_result)
 
-            raise _storj_exception(errorCode, errorMsg)
+            raise _storj_exception(error_code, error_msg)
 
         object = self.uplink.object_from_result(object_result.object)
         self.uplink.m_libuplink.uplink_free_object_result(object_result)
@@ -439,7 +439,7 @@ class Project:
         #
         # if error occurred
         if bool(error):
-            self.free_error_and_raise_exception(error)
+            self.uplink.free_error_and_raise_exception(error)
 
     def upload_object(self, bucket_name: str, storj_path: str,
                       upload_options: UploadOptions = None):
@@ -480,12 +480,12 @@ class Project:
         #
         # if error occurred
         if bool(upload_result.error):
-            errorCode = upload_result.error.contents.code
-            errorMsg = upload_result.error.contents.message.decode("utf-8")
+            error_code = upload_result.error.contents.code
+            error_msg = upload_result.error.contents.message.decode("utf-8")
 
             self.uplink.m_libuplink.uplink_free_upload_result(upload_result)
 
-            raise _storj_exception(errorCode,errorMsg)
+            raise _storj_exception(error_code,error_msg)
         return Upload(upload_result.upload, self.uplink)
 
     def download_object(self, bucket_name: str, storj_path: str,
@@ -528,12 +528,12 @@ class Project:
         #
         # if error occurred
         if bool(download_result.error):
-            errorCode = download_result.error.contents.code
-            errorMsg = download_result.error.contents.message.decode("utf-8")
+            error_code = download_result.error.contents.code
+            error_msg = download_result.error.contents.message.decode("utf-8")
 
             self.uplink.m_libuplink.uplink_free_download_result(download_result)
 
-            raise _storj_exception(errorCode, errorMsg)
+            raise _storj_exception(error_code, error_msg)
 
         return Download(download_result.download, self.uplink, self.project, bucket_name_ptr,
                         storj_path_ptr)

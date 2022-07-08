@@ -87,11 +87,11 @@ class Download:
         #
         # if error occurred
         if read_result.error:
-            errorCode = read_result.error.contents.code
-            errorMsg = read_result.error.contents.message.decode("utf-8")
+            error_code = read_result.error.contents.code
+            error_msg = read_result.error.contents.message.decode("utf-8")
             self.uplink.m_libuplink.uplink_free_read_result(read_result)
 
-            raise _storj_exception(errorCode,errorMsg)
+            raise _storj_exception(error_code,error_msg)
 
         bytes_read = int(read_result.bytes_read)
         data_read = bytes()
@@ -128,8 +128,7 @@ class Download:
         if not buffer_size:
             buffer_size = COPY_BUFSIZE
         file_size = self.file_size()
-        if buffer_size > file_size:
-            buffer_size = file_size
+        buffer_size = min(buffer_size, file_size)
         while file_size:
             buf, bytes_read = self.read(buffer_size)
             if buf:
@@ -156,12 +155,12 @@ class Download:
                                                                    self.storj_path)
         # if error occurred
         if bool(object_result.error):
-            errorCode = object_result.error.contents.code
-            errorMsg = object_result.error.contents.message.decode("utf-8")
+            error_code = object_result.error.contents.code
+            error_msg = object_result.error.contents.message.decode("utf-8")
 
             self.uplink.m_libuplink.uplink_free_object_result(object_result)
 
-            raise _storj_exception(errorCode, errorMsg)
+            raise _storj_exception(error_code, error_msg)
         # find object size
         return int(object_result.object.contents.system.content_length)
 
@@ -183,7 +182,7 @@ class Download:
         #
         # if error occurred
         if bool(error):
-            self.free_error_and_raise_exception(error)
+            self.uplink.free_error_and_raise_exception(error)
 
     def info(self):
         """
@@ -203,12 +202,12 @@ class Download:
         #
         # if error occurred
         if bool(object_result.error):
-            errorCode = object_result.error.contents.code
-            errorMsg = object_result.error.contents.message.decode("utf-8")
+            error_code = object_result.error.contents.code
+            error_msg = object_result.error.contents.message.decode("utf-8")
 
             self.uplink.m_libuplink.uplink_free_object_result(object_result)
 
-            raise _storj_exception(errorCode, errorMsg)
+            raise _storj_exception(error_code, error_msg)
 
         _object = self.uplink.object_from_result(object_result.object)
         self.uplink.m_libuplink.uplink_free_object_result(object_result)
