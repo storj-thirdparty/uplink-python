@@ -96,10 +96,10 @@ class Download:
         bytes_read = int(read_result.bytes_read)
         data_read = bytes()
         if bytes_read != 0:
-        #
-        # --------------------------------------------
-        # data conversion to type python readable form
-        # conversion of LP_c_ubyte to python readable data variable
+            #
+            # --------------------------------------------
+            # data conversion to type python readable form
+            # conversion of LP_c_ubyte to python readable data variable
             data_read = ctypes.string_at(data_to_write_ptr, int(read_result.bytes_read))
 
         self.uplink.m_libuplink.uplink_free_read_result(read_result)

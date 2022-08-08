@@ -409,10 +409,10 @@ class Project:
 
             raise _storj_exception(error_code, error_msg)
 
-        object = self.uplink.object_from_result(object_result.object)
+        _object = self.uplink.object_from_result(object_result.object)
         self.uplink.m_libuplink.uplink_free_object_result(object_result)
 
-        return object
+        return _object
 
     def close(self):
         """
