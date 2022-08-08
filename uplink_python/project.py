@@ -115,17 +115,8 @@ class Project:
 
         # open bucket if doesn't exist by calling the exported golang function
         bucket_result = self.uplink.m_libuplink.uplink_ensure_bucket(self.project, bucket_name_ptr)
-        #
-        # if error occurred
-        if bool(bucket_result.error):
-            error_code = bucket_result.error.contents.code
-            error_msg = bucket_result.error.contents.message.decode("utf-8")
 
-            self.uplink.m_libuplink.uplink_free_bucket_result.argtypes = [_BucketResult]
-            self.uplink.m_libuplink.uplink_free_bucket_result(bucket_result)
-
-            raise _storj_exception(error_code, error_msg)
-        return self.uplink.bucket_from_result(bucket_result.bucket)
+        return self.check_bucket_result(bucket_result)
 
     def stat_bucket(self, bucket_name: str):
         """
@@ -151,8 +142,10 @@ class Project:
 
         # get bucket information by calling the exported golang function
         bucket_result = self.uplink.m_libuplink.uplink_stat_bucket(self.project, bucket_name_ptr)
-        #
-        # if error occurred
+
+        return self.check_bucket_result(bucket_result)
+
+    def check_bucket_result(self, bucket_result):
         if bool(bucket_result.error):
             error_code = bucket_result.error.contents.code
             error_msg = bucket_result.error.contents.message.decode("utf-8")
