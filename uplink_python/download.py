@@ -72,7 +72,7 @@ class Download:
                                                                  ctypes.POINTER(ctypes.c_uint8),
                                                                  ctypes.c_size_t]
         self.uplink.m_libuplink.uplink_download_read.restype = _ReadResult
-        self.uplink.m_libuplink.uplink_free_read_result.argstypes = [_ReadResult]
+        self.uplink.m_libuplink.uplink_free_read_result.argtypes = [_ReadResult]
         #
         # prepare the inputs for the function
         data_size = ctypes.c_int32(size_to_read)

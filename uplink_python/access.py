@@ -149,7 +149,7 @@ class Access:
             error_code = project_result.error.contents.code
             error_msg = project_result.error.contents.message.decode("utf-8")
 
-            self.uplink.m_libuplink.uplink_free_project_result.argstypes = [_ProjectResult]
+            self.uplink.m_libuplink.uplink_free_project_result.argtypes = [_ProjectResult]
             self.uplink.m_libuplink.uplink_free_project_result(project_result)
 
             raise _storj_exception(error_code,error_msg)
@@ -174,7 +174,7 @@ class Access:
         self.uplink.m_libuplink.uplink_config_open_project.argtypes =\
             [_ConfigStruct, ctypes.POINTER(_AccessStruct)]
         self.uplink.m_libuplink.uplink_config_open_project.restype = _ProjectResult
-        self.uplink.m_libuplink.uplink_free_project_result.argstypes = [_ProjectResult]
+        self.uplink.m_libuplink.uplink_free_project_result.argtypes = [_ProjectResult]
         #
         # prepare the input for the function
         if config is None:
@@ -215,7 +215,7 @@ class Access:
         # declare types of arguments and response of the corresponding golang function
         self.uplink.m_libuplink.uplink_access_serialize.argtypes = [ctypes.POINTER(_AccessStruct)]
         self.uplink.m_libuplink.uplink_access_serialize.restype = _StringResult
-        self.uplink.m_libuplink.uplink_free_string_result.argstypes = [_StringResult]
+        self.uplink.m_libuplink.uplink_free_string_result.argtypes = [_StringResult]
         #
         # get serialized access by calling the exported golang function
         string_result = self.uplink.m_libuplink.uplink_access_serialize(self.access)
@@ -262,7 +262,7 @@ class Access:
                                                                 ctypes.POINTER(_SharePrefixStruct),
                                                                 ctypes.c_size_t]
         self.uplink.m_libuplink.uplink_access_share.restype = _AccessResult
-        self.uplink.m_libuplink.uplink_free_access_result.argstypes = [_AccessResult]
+        self.uplink.m_libuplink.uplink_free_access_result.argtypes = [_AccessResult]
         #
         # prepare the input for the function
         # check and create valid _PermissionStruct parameter
