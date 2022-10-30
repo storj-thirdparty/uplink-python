@@ -93,8 +93,6 @@ class Upload:
 
         bytes_written = int(write_result.bytes_written)
 
-        self.uplink.m_libuplink.uplink_free_write_result(write_result)
-
         return bytes_written
 
     def write_file(self, file_handle, buffer_size: int = 0):
