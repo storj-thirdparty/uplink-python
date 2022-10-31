@@ -8,6 +8,7 @@ from uplink_python.module_def import _ConfigStruct, _PermissionStruct, _SharePre
     _EncryptionKeyStruct
 from uplink_python.project import Project
 from uplink_python.errors import _storj_exception
+import uplink_python.utils as utils
 
 
 class Access:
@@ -78,21 +79,7 @@ class Access:
         encryption_key_result = self.uplink.m_libuplink.uplink_derive_encryption_key(passphrase_ptr,
                                                                                      salt_ptr,
                                                                                      length_ptr)
-        #
-        # if error occurred
-        if bool(encryption_key_result.error):
-            error_code = encryption_key_result.error.contents.code
-            error_msg = encryption_key_result.error.contents.message.decode("utf-8")
-
-            self.uplink.m_libuplink.uplink_free_encryption_key_result(encryption_key_result)
-
-            raise _storj_exception(error_code, error_msg)
-
-        encryption_key = encryption_key_result.encryption_key
-
-        self.uplink.m_libuplink.uplink_free_encryption_key_result(encryption_key_result)
-
-        return encryption_key
+        return utils.unwrap_encryption_key_result(encryption_key_result, self.uplink)
 
     def override_encryption_key(self, bucket_name: str, prefix: str, encryption_key):
         """

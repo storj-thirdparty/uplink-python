@@ -10,6 +10,7 @@ from uplink_python.module_def import _BucketStruct, _ObjectStruct, _ListObjectsO
 from uplink_python.upload import Upload
 from uplink_python.download import Download
 from uplink_python.errors import _storj_exception
+import uplink_python.utils as utils
 
 
 class Project:
@@ -215,8 +216,6 @@ class Project:
             bucket_list.append(self.uplink.bucket_from_result(bucket))
             self.uplink.m_libuplink.uplink_free_bucket(bucket)
 
-        self.uplink.m_libuplink.uplink_free_bucket_iterator(bucket_iterator)
-
         return bucket_list
 
     def delete_bucket(self, bucket_name: str):
@@ -257,7 +256,6 @@ class Project:
             raise _storj_exception(error_code, error_msg)
 
         bucket = self.uplink.bucket_from_result(bucket_result.bucket)
-        self.uplink.m_libuplink.uplink_free_bucket_result(bucket_result)
 
         return bucket
 
@@ -300,8 +298,6 @@ class Project:
             raise _storj_exception(error_code, error_msg)
 
         _object = self.uplink.object_from_result(object_result.object)
-
-        self.uplink.m_libuplink.uplink_free_object_result(object_result)
 
         return _object
 
@@ -399,20 +395,8 @@ class Project:
         # delete object by calling the exported golang function
         object_result = self.uplink.m_libuplink.uplink_delete_object(self.project, bucket_name_ptr,
                                                                      storj_path_ptr)
-        #
-        # if error occurred
-        if bool(object_result.error):
-            error_code = object_result.error.contents.code
-            error_msg = object_result.error.contents.message.decode("utf-8")
 
-            self.uplink.m_libuplink.uplink_free_object_result(object_result)
-
-            raise _storj_exception(error_code, error_msg)
-
-        _object = self.uplink.object_from_result(object_result.object)
-        self.uplink.m_libuplink.uplink_free_object_result(object_result)
-
-        return _object
+        return utils.unwrap_object_result(object_result, self.uplink)
 
     def close(self):
         """
@@ -470,16 +454,8 @@ class Project:
         upload_result = self.uplink.m_libuplink.uplink_upload_object(self.project, bucket_name_ptr,
                                                                      storj_path_ptr,
                                                                      upload_options_obj)
-        #
-        # if error occurred
-        if bool(upload_result.error):
-            error_code = upload_result.error.contents.code
-            error_msg = upload_result.error.contents.message.decode("utf-8")
 
-            self.uplink.m_libuplink.uplink_free_upload_result(upload_result)
-
-            raise _storj_exception(error_code,error_msg)
-        return Upload(upload_result.upload, self.uplink)
+        return utils.unwrap_upload_object_result(upload_result, self.uplink)
 
     def download_object(self, bucket_name: str, storj_path: str,
                         download_options: DownloadOptions = None):
