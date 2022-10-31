@@ -245,3 +245,29 @@ class Uplink:
         self.m_libuplink.uplink.m_libuplink.uplink_free_error(err)
 
         raise _storj_exception(error_code, error_msg)
+
+    def unwrap_libuplink_result(self, result_object, finalizer, attribute_name):
+        if bool(result_object.error):
+            error_code = result_object.error.contents.code
+            error_msg = result_object.error.contents.message.decode("utf-8")
+            finalizer(result_object)
+            raise _storj_exception(error_code, error_msg)
+
+        result = getattr(result_object, attribute_name)
+        # finalizer(result_object)
+        return result
+
+    def unwrap_encryption_key_result(self, result_object):
+        return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_encryption_key_result, 'encryption_key')
+
+    def unwrap_project_result(self, result_object):
+        return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_project_result, 'project')
+
+    def unwrap_download_result(self, result_object):
+        return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_download_result, 'download')
+
+    def unwrap_object_result(self, result_object):
+        return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_object_result, 'object')
+
+    def unwrap_upload_object_result(self, result_object):
+        return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_upload_result, 'upload')

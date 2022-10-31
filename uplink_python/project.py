@@ -10,7 +10,6 @@ from uplink_python.module_def import _BucketStruct, _ObjectStruct, _ListObjectsO
 from uplink_python.upload import Upload
 from uplink_python.download import Download
 from uplink_python.errors import _storj_exception
-import uplink_python.utils as utils
 
 
 class Project:
@@ -396,7 +395,7 @@ class Project:
         object_result = self.uplink.m_libuplink.uplink_delete_object(self.project, bucket_name_ptr,
                                                                      storj_path_ptr)
 
-        return utils.unwrap_object_result(object_result, self.uplink)
+        return self.uplink.unwrap_object_result(object_result)
 
     def close(self):
         """
@@ -455,7 +454,7 @@ class Project:
                                                                      storj_path_ptr,
                                                                      upload_options_obj)
 
-        return utils.unwrap_upload_object_result(upload_result, self.uplink)
+        return self.uplink.unwrap_upload_object_result(upload_result)
 
     def download_object(self, bucket_name: str, storj_path: str,
                         download_options: DownloadOptions = None):
