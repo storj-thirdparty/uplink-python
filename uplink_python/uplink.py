@@ -295,8 +295,8 @@ class Uplink:
         -------
         ctypes.POINTER(_EncryptionKeyStruct))
         """
-        return self.unwrap_libuplink_result(
-            encryption_key_result, self.m_libuplink.uplink_free_encryption_key_result, 'encryption_key')
+        return self.unwrap_libuplink_result(encryption_key_result,
+            self.m_libuplink.uplink_free_encryption_key_result, 'encryption_key')
 
     def unwrap_object_result(self, object_result):
         """
