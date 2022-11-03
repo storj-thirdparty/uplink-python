@@ -454,7 +454,10 @@ class Project:
                                                                      storj_path_ptr,
                                                                      upload_options_obj)
 
-        return self.uplink.unwrap_upload_object_result(upload_result)
+        _upload_result = self.uplink.unwrap_libuplink_result(upload_result, self.uplink.m_libuplink.uplink_free_upload_result, 'upload')
+
+        # _upload_result will be freed when committing or aborting upload.
+        return Upload(_upload_result, self.uplink)
 
     def download_object(self, bucket_name: str, storj_path: str,
                         download_options: DownloadOptions = None):

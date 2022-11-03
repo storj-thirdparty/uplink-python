@@ -7,7 +7,7 @@ import sysconfig
 
 from uplink_python.access import Access
 from uplink_python.errors import _storj_exception, LibUplinkSoError
-from uplink_python.module_def import _AccessResult, _ConfigStruct, _Error
+from uplink_python.module_def import _AccessResult, _AccessStruct, _ConfigStruct, _DownloadStruct, _EncryptionKeyResult, _EncryptionKeyStruct, _Error, _ProjectResult, _ReadResult, _UploadResult, _UploadStruct
 from uplink_python.module_classes import Config, Bucket, Object, SystemMetadata, \
     CustomMetadataEntry, CustomMetadata
 
@@ -48,6 +48,30 @@ class Uplink:
                     self.m_libuplink = ctypes.CDLL(so_path)
                 else:
                     raise LibUplinkSoError
+
+
+            self.m_libuplink.uplink_derive_encryption_key.argtypes = [ctypes.c_char_p,
+                                                                         ctypes.c_void_p,
+                                                                         ctypes.c_size_t]
+            self.m_libuplink.uplink_derive_encryption_key.restype = _EncryptionKeyResult
+            self.m_libuplink.uplink_free_encryption_key_result.argtypes = [_EncryptionKeyResult]
+
+            self.m_libuplink.uplink_download_read.argtypes = [ctypes.POINTER(_DownloadStruct),
+                                                                 ctypes.POINTER(ctypes.c_uint8),
+                                                                 ctypes.c_size_t]
+            self.m_libuplink.uplink_download_read.restype = _ReadResult
+            self.m_libuplink.uplink_free_read_result.argtypes = [_ReadResult]
+
+            self.m_libuplink.uplink_access_override_encryption_key.argtypes =\
+                [ctypes.POINTER(_AccessStruct), ctypes.c_char_p, ctypes.c_char_p,
+                ctypes.POINTER(_EncryptionKeyStruct)]
+            self.m_libuplink.uplink_access_override_encryption_key.restype =\
+            _EncryptionKeyResult
+
+            self.m_libuplink.uplink_open_project.argtypes = [ctypes.POINTER(_AccessStruct)]
+            self.m_libuplink.uplink_open_project.restype = _ProjectResult
+        #
+
             Uplink.__instance = self
         else:
             self.m_libuplink = Uplink.__instance.m_libuplink
@@ -183,18 +207,10 @@ class Uplink:
                                                                                       satellite_ptr,
                                                                                       api_key_ptr,
                                                                                       phrase_ptr)
-        #
-        # if error occurred
-        if bool(access_result.error):
-            error_code = access_result.error.contents.code
-            error_msg = access_result.error.contents.message.decode("utf-8")
 
-            self.m_libuplink.uplink_free_access_result.argtypes = [_AccessResult]
-            self.m_libuplink.uplink_free_access_result(access_result)
+        _unwrapped_access = self.m_libuplink.unwrap_access_result(access_result)
 
-            raise _storj_exception(error_code, error_msg)
-
-        return Access(access_result.access, self)
+        return Access(_unwrapped_access, self)
 
     def parse_access(self, serialized_access: str):
         """
@@ -223,26 +239,19 @@ class Uplink:
 
         # get parsed access by calling the exported golang function
         access_result = self.m_libuplink.uplink_parse_access(serialized_access_ptr)
-        #
-        # if error occurred
-        if bool(access_result.error):
-            error_code = access_result.error.contents.code
-            error_msg = access_result.error.contents.message.decode("utf-8")
 
-            self.m_libuplink.uplink_free_access_result.argtypes = [_AccessResult]
-            self.m_libuplink.uplink_free_access_result(access_result)
+        _unwrapped_access = self.unwrap_access_result(access_result)
 
-            raise _storj_exception(error_code, error_msg)
+        return Access(_unwrapped_access, self)
 
-        return Access(access_result.access, self)
 
-    def free_error_and_raise_exception(self,err : _Error):
+    def free_error_and_raise_exception(self, err ):
         """ free libuplinkc error and raise corresponding _storj_exception """
-        error_code = err.error.contents.code
-        error_msg = err.error.contents.message.decode("utf-8")
+        error_code = err.contents.code
+        error_msg = err.contents.message.decode("utf-8")
 
-        self.m_libuplink.uplink_free_error.argtypes = [_Error]
-        self.m_libuplink.uplink.m_libuplink.uplink_free_error(err)
+        self.m_libuplink.uplink_free_error.argtypes = [ctypes.POINTER(_Error)]
+        self.m_libuplink.uplink_free_error(err)
 
         raise _storj_exception(error_code, error_msg)
 
@@ -254,20 +263,33 @@ class Uplink:
             raise _storj_exception(error_code, error_msg)
 
         result = getattr(result_object, attribute_name)
-        # finalizer(result_object)
         return result
 
-    def unwrap_encryption_key_result(self, result_object):
-        return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_encryption_key_result, 'encryption_key')
-
-    def unwrap_project_result(self, result_object):
-        return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_project_result, 'project')
+    def unwrap_access_result(self, result_object):
+        return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_access_result, 'access')
 
     def unwrap_download_result(self, result_object):
         return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_download_result, 'download')
 
+    def unwrap_encryption_key_result(self, result_object):
+        return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_encryption_key_result, 'encryption_key')
+
     def unwrap_object_result(self, result_object):
         return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_object_result, 'object')
 
+    def unwrap_project_result(self, result_object):
+        return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_project_result, 'project')
+
+    def unwrap_string_result(self, result_object):
+        return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_string_result, 'string')
+
     def unwrap_upload_object_result(self, result_object):
         return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_upload_result, 'upload')
+
+    def unwrap_upload_write_result(self, result_object):
+        return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_write_result, 'bytes_written')
+
+    def free_upload_struct(self, uploadStruct):
+        _uploadResult = _UploadResult()
+        _uploadResult.upload = uploadStruct
+        self.m_libuplink.uplink_free_upload_result(_uploadResult)

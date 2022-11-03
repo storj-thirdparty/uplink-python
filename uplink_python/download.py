@@ -67,13 +67,6 @@ class Download:
         bytes, int
         """
         #
-        # declare types of arguments and response of the corresponding golang function
-        self.uplink.m_libuplink.uplink_download_read.argtypes = [ctypes.POINTER(_DownloadStruct),
-                                                                 ctypes.POINTER(ctypes.c_uint8),
-                                                                 ctypes.c_size_t]
-        self.uplink.m_libuplink.uplink_download_read.restype = _ReadResult
-        self.uplink.m_libuplink.uplink_free_read_result.argtypes = [_ReadResult]
-        #
         # prepare the inputs for the function
         data_size = ctypes.c_int32(size_to_read)
         data_to_write = [0]
@@ -199,17 +192,10 @@ class Download:
         #
         # get last download info by calling the exported golang function
         object_result = self.uplink.m_libuplink.uplink_download_info(self.download)
-        #
-        # if error occurred
-        if bool(object_result.error):
-            error_code = object_result.error.contents.code
-            error_msg = object_result.error.contents.message.decode("utf-8")
 
-            self.uplink.m_libuplink.uplink_free_object_result(object_result)
+        _unwrapped_object = self.uplink.unwrap_object_result(object_result)
+        _object = self.uplink.object_from_result(_unwrapped_object)
 
-            raise _storj_exception(error_code, error_msg)
-
-        _object = self.uplink.object_from_result(object_result.object)
         self.uplink.m_libuplink.uplink_free_object_result(object_result)
 
         return _object
