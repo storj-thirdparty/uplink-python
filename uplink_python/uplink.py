@@ -51,29 +51,6 @@ class Uplink:
                 else:
                     raise LibUplinkSoError
 
-
-            self.m_libuplink.uplink_derive_encryption_key.argtypes = [ctypes.c_char_p,
-                                                                         ctypes.c_void_p,
-                                                                         ctypes.c_size_t]
-            self.m_libuplink.uplink_derive_encryption_key.restype = _EncryptionKeyResult
-            self.m_libuplink.uplink_free_encryption_key_result.argtypes = [_EncryptionKeyResult]
-
-            self.m_libuplink.uplink_download_read.argtypes = [ctypes.POINTER(_DownloadStruct),
-                                                                 ctypes.POINTER(ctypes.c_uint8),
-                                                                 ctypes.c_size_t]
-            self.m_libuplink.uplink_download_read.restype = _ReadResult
-            self.m_libuplink.uplink_free_read_result.argtypes = [_ReadResult]
-
-            self.m_libuplink.uplink_access_override_encryption_key.argtypes =\
-                [ctypes.POINTER(_AccessStruct), ctypes.c_char_p, ctypes.c_char_p,
-                ctypes.POINTER(_EncryptionKeyStruct)]
-            self.m_libuplink.uplink_access_override_encryption_key.restype =\
-            _EncryptionKeyResult
-
-            self.m_libuplink.uplink_open_project.argtypes = [ctypes.POINTER(_AccessStruct)]
-            self.m_libuplink.uplink_open_project.restype = _ProjectResult
-        #
-
             Uplink.__instance = self
         else:
             self.m_libuplink = Uplink.__instance.m_libuplink

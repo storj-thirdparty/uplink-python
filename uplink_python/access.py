@@ -58,6 +58,15 @@ class Access:
         -------
         EncryptionKey
         """
+
+
+        #
+        # declare types of arguments and response of the corresponding golang function
+        self.uplink.m_libuplink.uplink_derive_encryption_key.argtypes = [ctypes.c_char_p,
+                                                                         ctypes.c_void_p,
+                                                                         ctypes.c_size_t]
+        self.uplink.m_libuplink.uplink_derive_encryption_key.restype = _EncryptionKeyResult
+        #
         # prepare the input for the function
         passphrase_ptr = ctypes.c_char_p(passphrase.encode('utf-8'))
         hash_value = hashlib.sha256()  # Choose SHA256 and update with bytes
@@ -84,6 +93,13 @@ class Access:
         """
 
        #
+       # declare types of arguments and response of the corresponding golang function
+        self.uplink.m_libuplink.uplink_access_override_encryption_key.argtypes =\
+            [ctypes.POINTER(_AccessStruct), ctypes.c_char_p, ctypes.c_char_p,
+             ctypes.POINTER(_EncryptionKeyStruct)]
+        self.uplink.m_libuplink.uplink_access_override_encryption_key.restype =\
+            _EncryptionKeyResult
+        #
         # prepare the input for the function
         bucket_name_ptr = ctypes.c_char_p(bucket_name.encode('utf-8'))
         prefix_ptr = ctypes.c_char_p(prefix.encode('utf-8'))
@@ -105,6 +121,13 @@ class Access:
         -------
         Project
         """
+
+        #
+        # declare types of arguments and response of the corresponding golang function
+        self.uplink.m_libuplink.uplink_open_project.argtypes = [ctypes.POINTER(_AccessStruct)]
+        self.uplink.m_libuplink.uplink_open_project.restype = _ProjectResult
+        #
+        # open project by calling the exported golang function
  # open project by calling the exported golang function
         project_result = self.uplink.m_libuplink.uplink_open_project(self.access)
 

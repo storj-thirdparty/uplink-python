@@ -53,6 +53,8 @@ class Download:
         self.storj_path = storj_path
         self.uplink = uplink
 
+
+
     def read(self, size_to_read: int):
         """
         function downloads up to len size_to_read bytes from the object's data stream.
@@ -66,6 +68,12 @@ class Download:
         -------
         bytes, int
         """
+        #
+        # declare types of arguments and response of the corresponding golang function
+        self.uplink.m_libuplink.uplink_download_read.argtypes = [ctypes.POINTER(_DownloadStruct),
+                                                                 ctypes.POINTER(ctypes.c_uint8),
+                                                                 ctypes.c_size_t]
+        self.uplink.m_libuplink.uplink_download_read.restype = _ReadResult
         #
         # prepare the inputs for the function
         data_size = ctypes.c_int32(size_to_read)
