@@ -7,7 +7,9 @@ import sysconfig
 
 from uplink_python.access import Access
 from uplink_python.errors import _storj_exception, LibUplinkSoError
-from uplink_python.module_def import _AccessResult, _AccessStruct, _ConfigStruct, _DownloadStruct, _EncryptionKeyResult, _EncryptionKeyStruct, _Error, _ProjectResult, _ReadResult, _UploadResult, _UploadStruct
+from uplink_python.module_def import _AccessResult, _AccessStruct, _ConfigStruct, \
+    _DownloadStruct, _EncryptionKeyResult, _EncryptionKeyStruct, _Error, \
+    _ProjectResult, _ReadResult, _UploadResult
 from uplink_python.module_classes import Config, Bucket, Object, SystemMetadata, \
     CustomMetadataEntry, CustomMetadata
 
@@ -255,41 +257,127 @@ class Uplink:
 
         raise _storj_exception(error_code, error_msg)
 
-    def unwrap_libuplink_result(self, result_object, finalizer, attribute_name):
-        if bool(result_object.error):
-            error_code = result_object.error.contents.code
-            error_msg = result_object.error.contents.message.decode("utf-8")
-            finalizer(result_object)
+    def unwrap_libuplink_result(self, result, finalizer, attribute_name):
+        ''' unwrap libuplink result - raise exception if error occured'''
+        if bool(result.error):
+            error_code = result.error.contents.code
+            error_msg = result.error.contents.message.decode("utf-8")
+            finalizer(result)
             raise _storj_exception(error_code, error_msg)
 
-        result = getattr(result_object, attribute_name)
+        result = getattr(result, attribute_name)
         return result
 
-    def unwrap_access_result(self, result_object):
-        return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_access_result, 'access')
+    def unwrap_access_result(self, access_result):
+        """
+        unwrap access result
 
-    def unwrap_download_result(self, result_object):
-        return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_download_result, 'download')
+        Parameters
+        ----------
+        access_result : _AccessResult
 
-    def unwrap_encryption_key_result(self, result_object):
-        return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_encryption_key_result, 'encryption_key')
+        Returns
+        -------
+        ctypes.POINTER(_AccessStruct))
+        """
+        return self.unwrap_libuplink_result(access_result, self.m_libuplink.uplink_free_access_result, 'access')
 
-    def unwrap_object_result(self, result_object):
-        return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_object_result, 'object')
+    def unwrap_encryption_key_result(self, encryption_key_result):
+        """
+        unwrap encryption key result
 
-    def unwrap_project_result(self, result_object):
-        return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_project_result, 'project')
+        Parameters
+        ----------
+        encryption_key_result : _EncryptionKeyResult
 
-    def unwrap_string_result(self, result_object):
-        return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_string_result, 'string')
+        Returns
+        -------
+        ctypes.POINTER(_EncryptionKeyStruct))
+        """
+        return self.unwrap_libuplink_result(encryption_key_result, self.m_libuplink.uplink_free_encryption_key_result, 'encryption_key')
 
-    def unwrap_upload_object_result(self, result_object):
-        return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_upload_result, 'upload')
+    def unwrap_object_result(self, object_result):
+        """
+        unwrap object result
+
+        Parameters
+        ----------
+        object_result : _ObjectResult
+
+        Returns
+        -------
+        ctypes.POINTER(_ObjectStruct))
+        """
+        return self.unwrap_libuplink_result(object_result, self.m_libuplink.uplink_free_object_result, 'object')
+
+    def unwrap_project_result(self, project_result):
+        """
+        unwrap project result
+
+        Parameters
+        ----------
+        project_result : _ProjectResult
+
+        Returns
+        -------
+        ctypes.POINTER(_ProjectStruct))
+        """
+        return self.unwrap_libuplink_result(project_result, self.m_libuplink.uplink_free_project_result, 'project')
+
+    def unwrap_string_result(self, string_result):
+        """
+        unwrap project result
+
+        Parameters
+        ----------
+        project_result : _StringResult
+
+        Returns
+        -------
+        ctypes.c_char_p
+        """
+        return self.unwrap_libuplink_result(string_result, self.m_libuplink.uplink_free_string_result, 'string')
+
+    def unwrap_upload_object_result(self, upload_object_result):
+        """
+        unwrap project result
+
+        Parameters
+        ----------
+        upload_object_result : _UploadResult
+
+        Returns
+        -------
+        ctypes.POINTER(_UploadStruct))
+        """
+        return self.unwrap_libuplink_result(upload_object_result, self.m_libuplink.uplink_free_upload_result, 'upload')
 
     def unwrap_upload_write_result(self, result_object):
+        """
+        unwrap upload write result
+
+        Parameters
+        ----------
+        upload_write_result : _WriteResult
+
+        Returns
+        -------
+        ctypes.c_size_t
+        """
         return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_write_result, 'bytes_written')
 
-    def free_upload_struct(self, uploadStruct):
+    def free_upload_struct(self, upload_struct):
+        """
+        free upload object result
+
+        Parameters
+        ----------
+        upload_struct : _UploadStruct
+
+        Returns
+        -------
+        None
+        """
         _uploadResult = _UploadResult()
-        _uploadResult.upload = uploadStruct
+        _uploadResult.upload = upload_struct
         self.m_libuplink.uplink_free_upload_result(_uploadResult)

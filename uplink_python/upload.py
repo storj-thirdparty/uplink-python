@@ -81,19 +81,8 @@ class Upload:
         # upload data by calling the exported golang function
         write_result = self.uplink.m_libuplink.uplink_upload_write(self.upload, data_to_write_ptr,
                                                                    size_to_write_obj)
-        #
-        # if error occurred
-        if bool(write_result.error):
-            error_code = write_result.error.contents.code
-            error_msg = write_result.error.contents.message.decode("utf-8")
 
-            self.uplink.m_libuplink.uplink_free_write_result(write_result)
-
-            _storj_exception(error_code, error_msg)
-
-        bytes_written = int(write_result.bytes_written)
-
-        return bytes_written
+        return self.uplink.unwrap_upload_write_result(write_result)
 
     def write_file(self, file_handle, buffer_size: int = 0):
         """
@@ -139,10 +128,12 @@ class Upload:
 
         # upload commit by calling the exported golang function
         error = self.uplink.m_libuplink.uplink_upload_commit(self.upload)
+
+        self.uplink.free_upload_struct(self.upload)
         #
         # if error occurred
         if bool(error):
-            self.uplink.free_and_raise_error(error)
+            self.uplink.free_error_and_raise_exception(error)
 
     def abort(self):
         """
@@ -162,8 +153,10 @@ class Upload:
         error = self.uplink.m_libuplink.uplink_upload_abort(self.upload)
         #
         # if error occurred
+        self.uplink.free_upload_struct(self.upload)
         if bool(error):
             self.uplink.free_and_raise_error(error)
+
 
     def set_custom_metadata(self, custom_metadata: CustomMetadata = None):
         """
@@ -191,10 +184,9 @@ class Upload:
         #
         # set custom metadata to upload by calling the exported golang function
         error = self.uplink.m_libuplink.uplink_upload_set_custom_metadata(self.upload, custom_metadata_obj)
-        #
-        # if error occurred
+
         if bool(error):
-            self.uplink.free_and_raise_error(error)
+            self.uplink.free_error_and_raise_exception(error)
 
     def info(self):
         """
@@ -212,15 +204,8 @@ class Upload:
         #
         # get last upload info by calling the exported golang function
         object_result = self.uplink.m_libuplink.uplink_upload_info(self.upload)
-        #
-        # if error occurred
-        if bool(object_result.error):
-            error_code = object_result.error.contents.code
-            error_msg = object_result.error.contents.message.decode("utf-8")
 
-            self.uplink.m_libuplink.uplink_free_object_result(object_result)
-
-            raise _storj_exception(error_code, error_msg)
-
-        info = self.uplink.object_from_result(object_result.object)
+        _unwrapped_object = self.uplink.unwrap_object_result(object_result)
+        info = self.uplink.object_from_result(_unwrapped_object)
+        self.uplink.m_libuplink.uplink_free_object(_unwrapped_object)
         return info
