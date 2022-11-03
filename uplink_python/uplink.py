@@ -280,7 +280,8 @@ class Uplink:
         -------
         ctypes.POINTER(_AccessStruct))
         """
-        return self.unwrap_libuplink_result(access_result, self.m_libuplink.uplink_free_access_result, 'access')
+        return self.unwrap_libuplink_result(
+            access_result, self.m_libuplink.uplink_free_access_result, 'access')
 
     def unwrap_encryption_key_result(self, encryption_key_result):
         """
@@ -294,7 +295,8 @@ class Uplink:
         -------
         ctypes.POINTER(_EncryptionKeyStruct))
         """
-        return self.unwrap_libuplink_result(encryption_key_result, self.m_libuplink.uplink_free_encryption_key_result, 'encryption_key')
+        return self.unwrap_libuplink_result(
+            encryption_key_result, self.m_libuplink.uplink_free_encryption_key_result, 'encryption_key')
 
     def unwrap_object_result(self, object_result):
         """
@@ -308,7 +310,8 @@ class Uplink:
         -------
         ctypes.POINTER(_ObjectStruct))
         """
-        return self.unwrap_libuplink_result(object_result, self.m_libuplink.uplink_free_object_result, 'object')
+        return self.unwrap_libuplink_result(
+            object_result, self.m_libuplink.uplink_free_object_result, 'object')
 
     def unwrap_project_result(self, project_result):
         """
@@ -322,7 +325,8 @@ class Uplink:
         -------
         ctypes.POINTER(_ProjectStruct))
         """
-        return self.unwrap_libuplink_result(project_result, self.m_libuplink.uplink_free_project_result, 'project')
+        return self.unwrap_libuplink_result(
+            project_result, self.m_libuplink.uplink_free_project_result, 'project')
 
     def unwrap_string_result(self, string_result):
         """
@@ -336,7 +340,8 @@ class Uplink:
         -------
         ctypes.c_char_p
         """
-        return self.unwrap_libuplink_result(string_result, self.m_libuplink.uplink_free_string_result, 'string')
+        return self.unwrap_libuplink_result(
+            string_result, self.m_libuplink.uplink_free_string_result, 'string')
 
     def unwrap_upload_object_result(self, upload_object_result):
         """
@@ -350,7 +355,8 @@ class Uplink:
         -------
         ctypes.POINTER(_UploadStruct))
         """
-        return self.unwrap_libuplink_result(upload_object_result, self.m_libuplink.uplink_free_upload_result, 'upload')
+        return self.unwrap_libuplink_result(
+            upload_object_result, self.m_libuplink.uplink_free_upload_result, 'upload')
 
     def unwrap_upload_write_result(self, result_object):
         """
@@ -364,7 +370,8 @@ class Uplink:
         -------
         ctypes.c_size_t
         """
-        return self.unwrap_libuplink_result(result_object, self.m_libuplink.uplink_free_write_result, 'bytes_written')
+        return self.unwrap_libuplink_result(
+            result_object, self.m_libuplink.uplink_free_write_result, 'bytes_written')
 
     def free_upload_struct(self, upload_struct):
         """
@@ -378,6 +385,6 @@ class Uplink:
         -------
         None
         """
-        _uploadResult = _UploadResult()
-        _uploadResult.upload = upload_struct
-        self.m_libuplink.uplink_free_upload_result(_uploadResult)
+        _upload_result = _UploadResult()
+        _upload_result.upload = upload_struct
+        self.m_libuplink.uplink_free_upload_result(_upload_result)
