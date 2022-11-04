@@ -59,7 +59,6 @@ class Access:
         EncryptionKey
         """
 
-
         #
         # declare types of arguments and response of the corresponding golang function
         self.uplink.m_libuplink.uplink_derive_encryption_key.argtypes = [ctypes.c_char_p,
