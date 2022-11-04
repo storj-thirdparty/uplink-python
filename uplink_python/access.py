@@ -90,8 +90,8 @@ class Access:
         None
         """
 
-       #
-       # declare types of arguments and response of the corresponding golang function
+        #
+        # declare types of arguments and response of the corresponding golang function
         self.uplink.m_libuplink.uplink_access_override_encryption_key.argtypes =\
             [ctypes.POINTER(_AccessStruct), ctypes.c_char_p, ctypes.c_char_p,
              ctypes.POINTER(_EncryptionKeyStruct)]
