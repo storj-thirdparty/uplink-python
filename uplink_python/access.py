@@ -128,7 +128,6 @@ class Access:
         self.uplink.m_libuplink.uplink_open_project.restype = _ProjectResult
         #
         # open project by calling the exported golang function
- # open project by calling the exported golang function
         project_result = self.uplink.m_libuplink.uplink_open_project(self.access)
 
         _unwrapped_project = self.uplink.unwrap_project_result(project_result)
@@ -190,7 +189,9 @@ class Access:
 
         _unwrapped_string = self.uplink.unwrap_string_result(string_result)
 
-        return _unwrapped_string.decode("utf-8")
+        serialized_access = _unwrapped_string.decode("utf-8")
+        self.uplink.m_libuplink.uplink_free_string_result(string_result)
+        return serialized_access
 
     def share(self, permission: Permission = None, shared_prefix: [SharePrefix] = None):
         """
@@ -248,3 +249,8 @@ class Access:
 
         _unwrapped_access = self.uplink.unwrap_access_result(access_result)
         return Access(_unwrapped_access, self.uplink)
+
+
+    def __del__(self):
+        """Free memory associated to this Access"""
+        self.uplink.free_access_struct(self.access)

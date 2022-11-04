@@ -7,7 +7,7 @@ import sysconfig
 
 from uplink_python.access import Access
 from uplink_python.errors import _storj_exception, LibUplinkSoError
-from uplink_python.module_def import _AccessResult, _AccessStruct, _ConfigStruct, \
+from uplink_python.module_def import _AccessResult, _AccessStruct, _ConfigStruct, _DownloadResult, \
     _DownloadStruct, _EncryptionKeyResult, _EncryptionKeyStruct, _Error, \
     _ProjectResult, _ReadResult, _UploadResult
 from uplink_python.module_classes import Config, Bucket, Object, SystemMetadata, \
@@ -260,6 +260,21 @@ class Uplink:
         return self.unwrap_libuplink_result(
             access_result, self.m_libuplink.uplink_free_access_result, 'access')
 
+    def unwrap_bucket_result(self, bucket_result):
+        """
+        unwrap bucket result
+
+        Parameters
+        ----------
+        bucket_result : _BucketResult
+
+        Returns
+        -------
+        ctypes.POINTER(_BucketStruct))
+        """
+        return self.unwrap_libuplink_result(
+            bucket_result, self.m_libuplink.uplink_free_bucket_result, 'bucket')
+
     def unwrap_encryption_key_result(self, encryption_key_result):
         """
         unwrap encryption key result
@@ -305,13 +320,28 @@ class Uplink:
         return self.unwrap_libuplink_result(
             project_result, self.m_libuplink.uplink_free_project_result, 'project')
 
+    def unwrap_read_result(self, read_result):
+        """
+        unwrap read result
+
+        Parameters
+        ----------
+        read_result : _ReadResult
+
+        Returns
+        -------
+        ctypes.c_size_t
+        """
+        return self.unwrap_libuplink_result(
+            read_result, self.m_libuplink.uplink_free_read_result, 'bytes_read')
+
     def unwrap_string_result(self, string_result):
         """
         unwrap project result
 
         Parameters
         ----------
-        project_result : _StringResult
+        string_result : _StringResult
 
         Returns
         -------
@@ -350,6 +380,22 @@ class Uplink:
         return self.unwrap_libuplink_result(
             result_object, self.m_libuplink.uplink_free_write_result, 'bytes_written')
 
+    def free_access_struct(self, access_struct):
+        """
+        free access result
+
+        Parameters
+        ----------
+        access_struct : _AccessStruct
+
+        Returns
+        -------
+        None
+        """
+        _access_result = _AccessResult()
+        _access_result.upload = access_struct
+        self.m_libuplink.uplink_free_access_result(_access_result)
+
     def free_upload_struct(self, upload_struct):
         """
         free upload object result
@@ -365,3 +411,19 @@ class Uplink:
         _upload_result = _UploadResult()
         _upload_result.upload = upload_struct
         self.m_libuplink.uplink_free_upload_result(_upload_result)
+
+    def free_download_struct(self, download_struct):
+        """
+        free download object result
+
+        Parameters
+        ----------
+        download_struct : _DownloadStruct
+
+        Returns
+        -------
+        None
+        """
+        _download_result = _DownloadResult()
+        _download_result.download = download_struct
+        self.m_libuplink.uplink_free_download_result(_download_result)

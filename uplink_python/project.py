@@ -76,18 +76,20 @@ class Project:
         self.uplink.m_libuplink.uplink_create_bucket.argtypes = [ctypes.POINTER(_ProjectStruct),
                                                                  ctypes.c_char_p]
         self.uplink.m_libuplink.uplink_create_bucket.restype = _BucketResult
+        self.uplink.m_libuplink.uplink_free_bucket.argtypes = [_BucketResult]
         #
         # prepare the input for the function
         bucket_name_ptr = ctypes.c_char_p(bucket_name.encode('utf-8'))
 
         # create bucket by calling the exported golang function
         bucket_result = self.uplink.m_libuplink.uplink_create_bucket(self.project, bucket_name_ptr)
-        #
-        # if error occurred
-        if bool(bucket_result.error):
-            raise _storj_exception(bucket_result.error.contents.code,
-                                   bucket_result.error.contents.message.decode("utf-8"))
-        return self.uplink.bucket_from_result(bucket_result.bucket)
+
+        _unwrapped_bucket = self.uplink.unwrap_bucket_result(bucket_result)
+        bucket = self.uplink.bucket_from_result(_unwrapped_bucket)
+
+        self.uplink.uplink_free_bucket_result(bucket_result)
+
+        return bucket
 
     def ensure_bucket(self, bucket_name: str):
         """

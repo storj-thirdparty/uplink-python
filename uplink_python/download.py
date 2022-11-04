@@ -74,6 +74,7 @@ class Download:
                                                                  ctypes.POINTER(ctypes.c_uint8),
                                                                  ctypes.c_size_t]
         self.uplink.m_libuplink.uplink_download_read.restype = _ReadResult
+        self.uplink.m_libuplink.uplink_free_read_result.argtypes = [_ReadResult]
         #
         # prepare the inputs for the function
         data_size = ctypes.c_int32(size_to_read)
@@ -85,16 +86,9 @@ class Download:
         # read data from Storj by calling the exported golang function
         read_result = self.uplink.m_libuplink.uplink_download_read(self.download, data_to_write_ptr,
                                                                    size_to_read)
-        #
-        # if error occurred
-        if read_result.error:
-            error_code = read_result.error.contents.code
-            error_msg = read_result.error.contents.message.decode("utf-8")
-            self.uplink.m_libuplink.uplink_free_read_result(read_result)
 
-            raise _storj_exception(error_code,error_msg)
+        bytes_read = self.uplink.unwrap_read_result(read_result)
 
-        bytes_read = int(read_result.bytes_read)
         data_read = bytes()
         if bytes_read != 0:
             #
@@ -154,16 +148,13 @@ class Download:
         # get object information by calling the exported golang function
         object_result = self.uplink.m_libuplink.uplink_stat_object(self.project, self.bucket_name,
                                                                    self.storj_path)
-        # if error occurred
-        if bool(object_result.error):
-            error_code = object_result.error.contents.code
-            error_msg = object_result.error.contents.message.decode("utf-8")
 
-            self.uplink.m_libuplink.uplink_free_object_result(object_result)
+        object = self.uplink.unwrap_object_result(object_result)
 
-            raise _storj_exception(error_code, error_msg)
-        # find object size
-        return int(object_result.object.contents.system.content_length)
+        file_size = int(object.contents.system.content_length)
+
+        self.uplink.m_libuplink.uplink_free_object_result(object_result)
+        return file_size
 
     def close(self):
         """
@@ -207,3 +198,6 @@ class Download:
         self.uplink.m_libuplink.uplink_free_object_result(object_result)
 
         return _object
+
+    def __del__(self):
+        self.uplink.free_download_struct(self.download)
