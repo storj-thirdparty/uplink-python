@@ -5,7 +5,6 @@ import os
 
 from uplink_python.module_def import _DownloadStruct, _ReadResult, _ProjectStruct,\
     _ObjectResult, _Error
-from uplink_python.errors import _storj_exception
 
 _WINDOWS = os.name == 'nt'
 COPY_BUFSIZE = 1024 * 1024 if _WINDOWS else 64 * 1024
@@ -149,9 +148,9 @@ class Download:
         object_result = self.uplink.m_libuplink.uplink_stat_object(self.project, self.bucket_name,
                                                                    self.storj_path)
 
-        object = self.uplink.unwrap_object_result(object_result)
+        _object = self.uplink.unwrap_object_result(object_result)
 
-        file_size = int(object.contents.system.content_length)
+        file_size = int(_object.contents.system.content_length)
 
         self.uplink.m_libuplink.uplink_free_object_result(object_result)
         return file_size

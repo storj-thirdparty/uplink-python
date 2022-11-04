@@ -7,7 +7,6 @@ from uplink_python.module_def import _ConfigStruct, _PermissionStruct, _SharePre
     _AccessStruct, _ProjectResult, _StringResult, _AccessResult, _EncryptionKeyResult,\
     _EncryptionKeyStruct
 from uplink_python.project import Project
-from uplink_python.errors import _storj_exception
 
 
 class Access:
