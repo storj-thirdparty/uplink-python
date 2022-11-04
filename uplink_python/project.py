@@ -87,7 +87,7 @@ class Project:
         _unwrapped_bucket = self.uplink.unwrap_bucket_result(bucket_result)
         bucket = self.uplink.bucket_from_result(_unwrapped_bucket)
 
-        self.uplink.uplink_free_bucket_result(bucket_result)
+        self.uplink.m_libuplink.uplink_free_bucket_result(bucket_result)
 
         return bucket
 
@@ -210,7 +210,7 @@ class Project:
 
         bucket_iterator_err = self.uplink.m_libuplink.uplink_bucket_iterator_err(bucket_iterator)
         if bool(bucket_iterator_err):
-            self.uplink.free_and_raise_error(bucket_iterator_err)
+            self.uplink.free_error_and_raise_exception(bucket_iterator_err)
         bucket_list = list()
         while self.uplink.m_libuplink.uplink_bucket_iterator_next(bucket_iterator):
             bucket = self.uplink.m_libuplink.uplink_bucket_iterator_item(bucket_iterator)
