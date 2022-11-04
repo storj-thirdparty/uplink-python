@@ -7,7 +7,7 @@ import sysconfig
 
 from uplink_python.access import Access
 from uplink_python.errors import _storj_exception, LibUplinkSoError
-from uplink_python.module_def import _AccessResult, _AccessStruct, _ConfigStruct, _DownloadResult, \
+from uplink_python.module_def import _AccessResult, _ConfigStruct, _DownloadResult, \
     _UploadResult, _Error
 from uplink_python.module_classes import Config, Bucket, Object, SystemMetadata, \
     CustomMetadataEntry, CustomMetadata
