@@ -61,7 +61,7 @@ class Uplink:
                                 content_length=object_.contents.system.content_length)
 
         array_size = object_.contents.custom.count
-        entries = list()
+        entries = []
         for i in range(array_size):
             if bool(object_.contents.custom.entries[i]):
                 entries_obj = object_.contents.custom.entries[i]
