@@ -10,7 +10,7 @@ from setuptools.command.install import install
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-uplinkc_version = "v1.2.2"
+uplinkc_version = "v1.7.0"
 
 class Install(install):
 
