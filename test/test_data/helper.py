@@ -16,7 +16,7 @@ class TestPy:
         self.api_key = file_handle.read()
         file_handle.close()
 
-        self.satellite = "12EayRS2V1kEsWESU9QMRseFhdxYxKicsiFmxrsLZHeLUtdps3S@us-central-1.tardigrade.io:7777"
+        self.satellite = "12EayRS2V1kEsWESU9QMRseFhdxYxKicsiFmxrsLZHeLUtdps3S@us1.storj.io:7777"
         self.encryption_phrase = "test"
 
         self.uplink = Uplink()
