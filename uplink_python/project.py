@@ -510,3 +510,6 @@ class Project:
 
         return Download(download_result.download, self.uplink, self.project, bucket_name_ptr,
                         storj_path_ptr)
+
+    def __del__(self):
+        self.uplink.free_project_struct(self.project)

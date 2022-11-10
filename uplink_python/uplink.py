@@ -7,7 +7,7 @@ import sysconfig
 
 from uplink_python.access import Access
 from uplink_python.errors import _storj_exception, LibUplinkSoError
-from uplink_python.module_def import _AccessResult, _ConfigStruct, _DownloadResult, \
+from uplink_python.module_def import _AccessResult, _ConfigStruct, _DownloadResult, _ProjectResult, _ProjectStruct, \
     _UploadResult, _Error
 from uplink_python.module_classes import Config, Bucket, Object, SystemMetadata, \
     CustomMetadataEntry, CustomMetadata
@@ -397,7 +397,7 @@ class Uplink:
 
     def free_upload_struct(self, upload_struct):
         """
-        free upload object result
+        free upload struct
 
         Parameters
         ----------
@@ -413,7 +413,7 @@ class Uplink:
 
     def free_download_struct(self, download_struct):
         """
-        free download object result
+        free download struct
 
         Parameters
         ----------
@@ -426,3 +426,22 @@ class Uplink:
         _download_result = _DownloadResult()
         _download_result.download = download_struct
         self.m_libuplink.uplink_free_download_result(_download_result)
+
+    def free_project_struct(self, project_struct):
+        """
+        free project struct
+
+        Parameters
+        ----------
+        project_struct : _ProjectStruct
+
+        Returns
+        -------
+        None
+        """
+        self.m_libuplink.uplink_free_project_result.argtypes = [_ProjectResult]
+
+        _project_result = _ProjectResult()
+        _project_result.project = project_struct
+        self.m_libuplink.uplink_free_project_result(_project_result)
+

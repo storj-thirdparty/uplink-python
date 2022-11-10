@@ -128,7 +128,6 @@ class Upload:
         # upload commit by calling the exported golang function
         error = self.uplink.m_libuplink.uplink_upload_commit(self.upload)
 
-        self.uplink.free_upload_struct(self.upload)
         #
         # if error occurred
         if bool(error):
@@ -208,3 +207,6 @@ class Upload:
         info = self.uplink.object_from_result(_unwrapped_object)
         self.uplink.m_libuplink.uplink_free_object(_unwrapped_object)
         return info
+
+    def __del__(self):
+        self.uplink.free_upload_struct(self.upload)
