@@ -254,7 +254,7 @@ class Uplink:
 
         Returns
         -------
-        ctypes.POINTER(_AccessStruct))
+        ctypes.POINTER(_AccessStruct)
         """
         return self.unwrap_libuplink_result(
             access_result, self.m_libuplink.uplink_free_access_result, 'access')
@@ -269,7 +269,7 @@ class Uplink:
 
         Returns
         -------
-        ctypes.POINTER(_BucketStruct))
+        ctypes.POINTER(_BucketStruct)
         """
         return self.unwrap_libuplink_result(
             bucket_result, self.m_libuplink.uplink_free_bucket_result, 'bucket')
@@ -284,7 +284,7 @@ class Uplink:
 
         Returns
         -------
-        ctypes.POINTER(_EncryptionKeyStruct))
+        ctypes.POINTER(_EncryptionKeyStruct)
         """
         return self.unwrap_libuplink_result(encryption_key_result,
             self.m_libuplink.uplink_free_encryption_key_result, 'encryption_key')
@@ -299,7 +299,7 @@ class Uplink:
 
         Returns
         -------
-        ctypes.POINTER(_ObjectStruct))
+        ctypes.POINTER(_ObjectStruct)
         """
         return self.unwrap_libuplink_result(
             object_result, self.m_libuplink.uplink_free_object_result, 'object')
@@ -314,7 +314,7 @@ class Uplink:
 
         Returns
         -------
-        ctypes.POINTER(_ProjectStruct))
+        ctypes.POINTER(_ProjectStruct)
         """
         return self.unwrap_libuplink_result(
             project_result, self.m_libuplink.uplink_free_project_result, 'project')
@@ -359,7 +359,7 @@ class Uplink:
 
         Returns
         -------
-        ctypes.POINTER(_UploadStruct))
+        ctypes.POINTER(_UploadStruct)
         """
         return self.unwrap_libuplink_result(
             upload_object_result, self.m_libuplink.uplink_free_upload_result, 'upload')
