@@ -4,7 +4,7 @@ import ctypes
 import os
 
 from uplink_python.module_classes import CustomMetadata
-from uplink_python.module_def import _UploadStruct, _WriteResult, _Error, _CustomMetadataStruct, _ObjectResult
+from uplink_python.module_def import _UploadStruct, _WriteResult, _CustomMetadataStruct
 
 _WINDOWS = os.name == 'nt'
 COPY_BUFSIZE = 1024 * 1024 if _WINDOWS else 64 * 1024
@@ -120,10 +120,6 @@ class Upload:
         None
         """
 
-        # declare types of arguments and response of the corresponding golang function
-        self.uplink.m_libuplink.uplink_upload_commit.argtypes = [ctypes.POINTER(_UploadStruct)]
-        self.uplink.m_libuplink.uplink_upload_commit.restype = ctypes.POINTER(_Error)
-        #
 
         # upload commit by calling the exported golang function
         error = self.uplink.m_libuplink.uplink_upload_commit(self.upload)
@@ -141,11 +137,6 @@ class Upload:
         -------
         None
         """
-        #
-        # declare types of arguments and response of the corresponding golang function
-        self.uplink.m_libuplink.uplink_upload_abort.argtypes = [ctypes.POINTER(_UploadStruct)]
-        self.uplink.m_libuplink.uplink_upload_abort.restype = ctypes.POINTER(_Error)
-        #
 
         # abort ongoing upload by calling the exported golang function
         error = self.uplink.m_libuplink.uplink_upload_abort(self.upload)
@@ -169,11 +160,6 @@ class Upload:
         None
         """
         #
-        # declare types of arguments and response of the corresponding golang function
-        self.uplink.m_libuplink.uplink_upload_set_custom_metadata.argtypes = [ctypes.POINTER(_UploadStruct),
-                                                                              _CustomMetadataStruct]
-        self.uplink.m_libuplink.uplink_upload_set_custom_metadata.restype = ctypes.POINTER(_Error)
-        #
         # prepare the input for the function
         if custom_metadata is None:
             custom_metadata_obj = _CustomMetadataStruct()
@@ -194,13 +180,6 @@ class Upload:
         -------
         Object
         """
-        #
-        # declare types of arguments and response of the corresponding golang function
-        self.uplink.m_libuplink.uplink_upload_info.argtypes = [ctypes.POINTER(_UploadStruct)]
-        self.uplink.m_libuplink.uplink_upload_info.restype = _ObjectResult
-        self.uplink.m_libuplink.uplink_free_object_result.argtypes = [_ObjectResult]
-        #
-        # get last upload info by calling the exported golang function
         object_result = self.uplink.m_libuplink.uplink_upload_info(self.upload)
 
         _unwrapped_object = self.uplink.unwrap_object_result(object_result)

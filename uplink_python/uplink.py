@@ -7,8 +7,8 @@ import sysconfig
 
 from uplink_python.access import Access
 from uplink_python.errors import _storj_exception, LibUplinkSoError
-from uplink_python.module_def import _AccessResult, _ConfigStruct, _DownloadResult, _ProjectResult, \
-    _UploadResult, _Error
+from uplink_python.module_def import _AccessResult, _AccessStruct, _BucketIterator, _BucketResult, _BucketStruct, _ConfigStruct, _CustomMetadataStruct, _DownloadOptionsStruct, _DownloadResult, _DownloadStruct, _EncryptionKeyResult, _EncryptionKeyStruct, _ListBucketsOptionsStruct, _ListObjectsOptionsStruct, _ObjectIterator, _ObjectResult, _ObjectStruct, _PermissionStruct, _ProjectResult, _ProjectStruct, _ReadResult, _SharePrefixStruct, _StringResult, _UploadOptionsStruct, \
+    _UploadResult, _Error, _UploadStruct
 from uplink_python.module_classes import Config, Bucket, Object, SystemMetadata, \
     CustomMetadataEntry, CustomMetadata
 
@@ -51,6 +51,10 @@ class Uplink:
                     raise LibUplinkSoError
 
             Uplink.__instance = self
+            self.init_access_functions()
+            self.init_project_functions()
+            self.init_download_functions()
+            self.init_upload_functions()
         else:
             self.m_libuplink = Uplink.__instance.m_libuplink
 
@@ -110,12 +114,6 @@ class Uplink:
         Access
         """
         #
-        # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.uplink_request_access_with_passphrase.argtypes = [ctypes.c_char_p,
-                                                                           ctypes.c_char_p,
-                                                                           ctypes.c_char_p]
-        self.m_libuplink.uplink_request_access_with_passphrase.restype = _AccessResult
-        #
         # prepare the input for the function
         satellite_ptr = ctypes.c_char_p(satellite.encode('utf-8'))
         api_key_ptr = ctypes.c_char_p(api_key.encode('utf-8'))
@@ -164,13 +162,6 @@ class Uplink:
         """
 
         #
-        # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.uplink_config_request_access_with_passphrase.argtypes = [_ConfigStruct,
-                                                                                  ctypes.c_char_p,
-                                                                                  ctypes.c_char_p,
-                                                                                  ctypes.c_char_p]
-        self.m_libuplink.uplink_config_request_access_with_passphrase.restype = _AccessResult
-        #
         # prepare the input for the function
         if config is None:
             config_obj = _ConfigStruct()
@@ -206,14 +197,7 @@ class Uplink:
         Access
         """
 
-        #
-        # prepare the input for the function
         serialized_access_ptr = ctypes.c_char_p(serialized_access.encode('utf-8'))
-        #
-        # declare types of arguments and response of the corresponding golang function
-        self.m_libuplink.uplink_parse_access.argtypes = [ctypes.c_char_p]
-        self.m_libuplink.uplink_parse_access.restype = _AccessResult
-        #
 
         # get parsed access by calling the exported golang function
         access_result = self.m_libuplink.uplink_parse_access(serialized_access_ptr)
@@ -445,3 +429,202 @@ class Uplink:
         _project_result.project = project_struct
         self.m_libuplink.uplink_free_project_result(_project_result)
 
+    def init_access_functions(self):
+        #
+        # declare types of arguments and response of the corresponding golang function
+        self.m_libuplink.uplink_request_access_with_passphrase.argtypes = [ctypes.c_char_p,
+                                                                           ctypes.c_char_p,
+                                                                           ctypes.c_char_p]
+        self.m_libuplink.uplink_request_access_with_passphrase.restype = _AccessResult
+
+        # parse access
+        self.m_libuplink.uplink_parse_access.argtypes = [ctypes.c_char_p]
+        self.m_libuplink.uplink_parse_access.restype = _AccessResult
+
+        # request access with passphrase
+        self.m_libuplink.uplink_config_request_access_with_passphrase.argtypes = [_ConfigStruct,
+                                                                                  ctypes.c_char_p,
+                                                                                  ctypes.c_char_p,
+                                                                                  ctypes.c_char_p]
+        self.m_libuplink.uplink_config_request_access_with_passphrase.restype = _AccessResult
+
+        # derive encryption key
+        self.m_libuplink.uplink_derive_encryption_key.argtypes = [ctypes.c_char_p,
+                                                                         ctypes.c_void_p,
+                                                                         ctypes.c_size_t]
+        self.m_libuplink.uplink_derive_encryption_key.restype = _EncryptionKeyResult
+
+
+        # override encrytion key
+        self.m_libuplink.uplink_access_override_encryption_key.argtypes =\
+            [ctypes.POINTER(_AccessStruct), ctypes.c_char_p, ctypes.c_char_p,
+             ctypes.POINTER(_EncryptionKeyStruct)]
+        self.m_libuplink.uplink_access_override_encryption_key.restype =\
+            _EncryptionKeyResult
+
+        # serialize access
+        self.m_libuplink.uplink_access_serialize.argtypes = [ctypes.POINTER(_AccessStruct)]
+        self.m_libuplink.uplink_access_serialize.restype = _StringResult
+        self.m_libuplink.uplink_free_string_result.argtypes = [_StringResult]
+
+        # share access
+        self.m_libuplink.uplink_access_share.argtypes = [ctypes.POINTER(_AccessStruct),
+                                                                _PermissionStruct,
+                                                                ctypes.POINTER(_SharePrefixStruct),
+                                                                ctypes.c_size_t]
+        self.m_libuplink.uplink_access_share.restype = _AccessResult
+        self.m_libuplink.uplink_free_access_result.argtypes = [_AccessResult]
+
+        # open project
+        self.m_libuplink.uplink_open_project.argtypes = [ctypes.POINTER(_AccessStruct)]
+        self.m_libuplink.uplink_open_project.restype = _ProjectResult
+
+        # open project with config
+        self.m_libuplink.uplink_config_open_project.argtypes =\
+            [_ConfigStruct, ctypes.POINTER(_AccessStruct)]
+        self.m_libuplink.uplink_config_open_project.restype = _ProjectResult
+        self.m_libuplink.uplink_free_project_result.argtypes = [_ProjectResult]
+
+    def init_project_functions(self):
+
+        # create bucket
+        self.m_libuplink.uplink_create_bucket.argtypes = [ctypes.POINTER(_ProjectStruct),
+                                                                 ctypes.c_char_p]
+        self.m_libuplink.uplink_create_bucket.restype = _BucketResult
+        self.m_libuplink.uplink_free_bucket.argtypes = [_BucketResult]
+
+        # ensure bucket
+        self.m_libuplink.uplink_ensure_bucket.argtypes = [ctypes.POINTER(_ProjectStruct),
+                                                                 ctypes.c_char_p]
+        self.m_libuplink.uplink_ensure_bucket.restype = _BucketResult
+
+        # stat bucket
+        self.m_libuplink.uplink_stat_bucket.argtypes = [ctypes.POINTER(_ProjectStruct),
+                                                               ctypes.c_char_p]
+        self.m_libuplink.uplink_stat_bucket.restype = _BucketResult
+
+        # list buckets
+        self.m_libuplink.uplink_list_buckets.argtypes =\
+            [ctypes.POINTER(_ProjectStruct), ctypes.POINTER(_ListBucketsOptionsStruct)]
+        self.m_libuplink.uplink_list_buckets.restype =\
+            ctypes.POINTER(_BucketIterator)
+        self.m_libuplink.uplink_free_bucket_iterator.argtypes=\
+            [ctypes.POINTER(_BucketIterator)]
+
+
+        self.m_libuplink.uplink_bucket_iterator_item.argtypes =\
+            [ctypes.POINTER(_BucketIterator)]
+        self.m_libuplink.uplink_bucket_iterator_item.restype =\
+            ctypes.POINTER(_BucketStruct)
+        self.m_libuplink.uplink_free_bucket.argtypes =\
+            [ctypes.POINTER(_BucketStruct)]
+        #
+        self.m_libuplink.uplink_bucket_iterator_err.argtypes =\
+            [ctypes.POINTER(_BucketIterator)]
+        self.m_libuplink.uplink_bucket_iterator_err.restype =\
+            ctypes.POINTER(_Error)
+        #
+        self.m_libuplink.uplink_bucket_iterator_next.argtypes =\
+            [ctypes.POINTER(_BucketIterator)]
+        self.m_libuplink.uplink_bucket_iterator_next.restype =\
+            ctypes.c_bool
+
+        # delete bucket
+        self.m_libuplink.uplink_delete_bucket.argtypes = [ctypes.POINTER(_ProjectStruct),
+                                                                 ctypes.c_char_p]
+        self.m_libuplink.uplink_delete_bucket.restype = _BucketResult
+        self.m_libuplink.uplink_free_bucket_result.argtypes = [_BucketResult]
+
+        # stat object
+        self.m_libuplink.uplink_stat_object.argtypes = [ctypes.POINTER(_ProjectStruct),
+                                                               ctypes.c_char_p, ctypes.c_char_p]
+        self.m_libuplink.uplink_stat_object.restype = _ObjectResult
+        self.m_libuplink.uplink_free_object_result.argtypes = [_ObjectResult]
+
+        # list objects
+        self.m_libuplink.uplink_list_objects.argtypes =\
+            [ctypes.POINTER(_ProjectStruct), ctypes.c_char_p,
+             ctypes.POINTER(_ListObjectsOptionsStruct)]
+        self.m_libuplink.uplink_list_objects.restype =\
+            ctypes.POINTER(_ObjectIterator)
+        self.m_libuplink.uplink_free_object_iterator.argtypes =\
+            [ctypes.POINTER(_ObjectIterator)]
+        #
+        self.m_libuplink.uplink_object_iterator_item.argtypes =\
+            [ctypes.POINTER(_ObjectIterator)]
+        self.m_libuplink.uplink_object_iterator_item.restype =\
+            ctypes.POINTER(_ObjectStruct)
+        self.m_libuplink.uplink_free_object.argtypes =\
+            [ctypes.POINTER(_ObjectStruct)]
+        #
+        self.m_libuplink.uplink_object_iterator_err.argtypes =\
+            [ctypes.POINTER(_ObjectIterator)]
+        self.m_libuplink.uplink_object_iterator_err.restype =\
+            ctypes.POINTER(_Error)
+        #
+        self.m_libuplink.uplink_object_iterator_next.argtypes =\
+            [ctypes.POINTER(_ObjectIterator)]
+        self.m_libuplink.uplink_object_iterator_next.restype =\
+            ctypes.c_bool
+
+        # delete object
+        self.m_libuplink.uplink_delete_object.argtypes = [ctypes.POINTER(_ProjectStruct),
+                                                                 ctypes.c_char_p, ctypes.c_char_p]
+        self.m_libuplink.uplink_delete_object.restype = _ObjectResult
+        self.m_libuplink.uplink_free_object_result.argtypes = [_ObjectResult]
+
+        # close project
+        self.m_libuplink.uplink_close_project.argtypes = [ctypes.POINTER(_ProjectStruct)]
+        self.m_libuplink.uplink_close_project.restype = ctypes.POINTER(_Error)
+
+        # upload object
+        self.m_libuplink.uplink_upload_object.argtypes =\
+            [ctypes.POINTER(_ProjectStruct), ctypes.c_char_p, ctypes.c_char_p,
+             ctypes.POINTER(_UploadOptionsStruct)]
+        self.m_libuplink.uplink_upload_object.restype = _UploadResult
+        self.m_libuplink.uplink_free_upload_result.argtypes = [_UploadResult]
+
+        # download object
+        self.m_libuplink.uplink_download_object.argtypes =\
+            [ctypes.POINTER(_ProjectStruct), ctypes.c_char_p, ctypes.c_char_p,
+             ctypes.POINTER(_DownloadOptionsStruct)]
+        self.m_libuplink.uplink_download_object.restype = _DownloadResult
+        self.m_libuplink.uplink_free_download_result.argtypes = [_DownloadResult]
+
+
+    def init_download_functions(self):
+        # read download
+        self.m_libuplink.uplink_download_read.argtypes = [ctypes.POINTER(_DownloadStruct),
+                                                                 ctypes.POINTER(ctypes.c_uint8),
+                                                                 ctypes.c_size_t]
+        self.m_libuplink.uplink_download_read.restype = _ReadResult
+        self.m_libuplink.uplink_free_read_result.argtypes = [_ReadResult]
+
+        self.m_libuplink.uplink_free_object_result.argtypes = [_ObjectResult]
+
+        # close download
+        self.m_libuplink.uplink_close_download.argtypes = [ctypes.POINTER(_DownloadStruct)]
+        self.m_libuplink.uplink_close_download.restype = ctypes.POINTER(_Error)
+
+        # download info
+        self.m_libuplink.uplink_download_info.argtypes = [ctypes.POINTER(_DownloadStruct)]
+        self.m_libuplink.uplink_download_info.restype = _ObjectResult
+
+    def init_upload_functions(self):
+        # commit upload
+        self.m_libuplink.uplink_upload_commit.argtypes = [ctypes.POINTER(_UploadStruct)]
+        self.m_libuplink.uplink_upload_commit.restype = ctypes.POINTER(_Error)
+
+        # abort upload
+        self.m_libuplink.uplink_upload_abort.argtypes = [ctypes.POINTER(_UploadStruct)]
+        self.m_libuplink.uplink_upload_abort.restype = ctypes.POINTER(_Error)
+
+        # set upload custom metadata
+        self.m_libuplink.uplink_upload_set_custom_metadata.argtypes = [ctypes.POINTER(_UploadStruct),
+                                                                              _CustomMetadataStruct]
+        self.m_libuplink.uplink_upload_set_custom_metadata.restype = ctypes.POINTER(_Error)
+
+        # upload info
+        self.m_libuplink.uplink_upload_info.argtypes = [ctypes.POINTER(_UploadStruct)]
+        self.m_libuplink.uplink_upload_info.restype = _ObjectResult
+        self.m_libuplink.uplink_free_object_result.argtypes = [_ObjectResult]

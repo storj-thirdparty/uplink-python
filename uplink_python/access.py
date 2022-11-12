@@ -58,12 +58,7 @@ class Access:
         EncryptionKey
         """
 
-        #
-        # declare types of arguments and response of the corresponding golang function
-        self.uplink.m_libuplink.uplink_derive_encryption_key.argtypes = [ctypes.c_char_p,
-                                                                         ctypes.c_void_p,
-                                                                         ctypes.c_size_t]
-        self.uplink.m_libuplink.uplink_derive_encryption_key.restype = _EncryptionKeyResult
+
         #
         # prepare the input for the function
         passphrase_ptr = ctypes.c_char_p(passphrase.encode('utf-8'))
@@ -91,13 +86,6 @@ class Access:
         """
 
         #
-        # declare types of arguments and response of the corresponding golang function
-        self.uplink.m_libuplink.uplink_access_override_encryption_key.argtypes =\
-            [ctypes.POINTER(_AccessStruct), ctypes.c_char_p, ctypes.c_char_p,
-             ctypes.POINTER(_EncryptionKeyStruct)]
-        self.uplink.m_libuplink.uplink_access_override_encryption_key.restype =\
-            _EncryptionKeyResult
-        #
         # prepare the input for the function
         bucket_name_ptr = ctypes.c_char_p(bucket_name.encode('utf-8'))
         prefix_ptr = ctypes.c_char_p(prefix.encode('utf-8'))
@@ -120,11 +108,6 @@ class Access:
         Project
         """
 
-        #
-        # declare types of arguments and response of the corresponding golang function
-        self.uplink.m_libuplink.uplink_open_project.argtypes = [ctypes.POINTER(_AccessStruct)]
-        self.uplink.m_libuplink.uplink_open_project.restype = _ProjectResult
-        #
         # open project by calling the exported golang function
         project_result = self.uplink.m_libuplink.uplink_open_project(self.access)
 
@@ -145,13 +128,7 @@ class Access:
         Project
         """
 
-        #
-        # declare types of arguments and response of the corresponding golang function
-        self.uplink.m_libuplink.uplink_config_open_project.argtypes =\
-            [_ConfigStruct, ctypes.POINTER(_AccessStruct)]
-        self.uplink.m_libuplink.uplink_config_open_project.restype = _ProjectResult
-        self.uplink.m_libuplink.uplink_free_project_result.argtypes = [_ProjectResult]
-        #
+       #
         # prepare the input for the function
         if config is None:
             config_obj = _ConfigStruct()
@@ -176,12 +153,7 @@ class Access:
         String
         """
 
-        #
-        # declare types of arguments and response of the corresponding golang function
-        self.uplink.m_libuplink.uplink_access_serialize.argtypes = [ctypes.POINTER(_AccessStruct)]
-        self.uplink.m_libuplink.uplink_access_serialize.restype = _StringResult
-        self.uplink.m_libuplink.uplink_free_string_result.argtypes = [_StringResult]
-        #
+       #
         # get serialized access by calling the exported golang function
         string_result = self.uplink.m_libuplink.uplink_access_serialize(self.access)
 
@@ -212,15 +184,7 @@ class Access:
         Access
         """
 
-        #
-        # declare types of arguments and response of the corresponding golang function
-        self.uplink.m_libuplink.uplink_access_share.argtypes = [ctypes.POINTER(_AccessStruct),
-                                                                _PermissionStruct,
-                                                                ctypes.POINTER(_SharePrefixStruct),
-                                                                ctypes.c_size_t]
-        self.uplink.m_libuplink.uplink_access_share.restype = _AccessResult
-        self.uplink.m_libuplink.uplink_free_access_result.argtypes = [_AccessResult]
-        #
+      #
         # prepare the input for the function
         # check and create valid _PermissionStruct parameter
         if permission is None:
