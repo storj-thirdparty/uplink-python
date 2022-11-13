@@ -2,7 +2,7 @@
 steps:
   - name: gcr.io/cloud-builders/docker
     args: ['build', '-t', 'gcr.io/$PROJECT_ID/python3', '.']
-  - name: 'gcr.io/${PROJECT_ID}/python3'
+  - name: 'python'
     entrypoint: 'python3'
     args: ["-m", "pylint", 'uplink_python/uplink.py']
   - name: gcr.io/cloud-builders/gcloud
@@ -13,7 +13,7 @@ steps:
     args: ["-c", "git clone -b v1.2.2 https://github.com/storj/uplink-c"]
   - name: 'gcr.io/${PROJECT_ID}/python3'
     entrypoint: 'bash'
-    args: ["-c", "cd uplink-c && go build -o libuplinkc.so -buildmode=c-shared && cp *.so ../uplink_python/"] 
+    args: ["-c", "cd uplink-c && go build -o libuplinkc.so -buildmode=c-shared && cp *.so ../uplink_python/"]
   - name: 'gcr.io/${PROJECT_ID}/python3'
     entrypoint: 'python3'
     args: ['-m', 'unittest', 'test/test_cases.py', '-v']
