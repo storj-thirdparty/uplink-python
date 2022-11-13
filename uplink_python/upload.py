@@ -58,8 +58,6 @@ class Upload:
         -------
         int
         """
-
-        # declare types of arguments and response of the corresponding golang function
         self.uplink.m_libuplink.uplink_upload_write.argtypes = [ctypes.POINTER(_UploadStruct),
                                                                 ctypes.POINTER(ctypes.c_uint8),
                                                                 ctypes.c_size_t]
@@ -77,7 +75,6 @@ class Upload:
         # --------------------------------------------
         size_to_write_obj = ctypes.c_size_t(size_to_write)
 
-        # upload data by calling the exported golang function
         write_result = self.uplink.m_libuplink.uplink_upload_write(self.upload, data_to_write_ptr,
                                                                    size_to_write_obj)
 
@@ -119,13 +116,8 @@ class Upload:
         -------
         None
         """
-
-
-        # upload commit by calling the exported golang function
         error = self.uplink.m_libuplink.uplink_upload_commit(self.upload)
 
-        #
-        # if error occurred
         if bool(error):
             self.uplink.free_error_and_raise_exception(error)
 
@@ -137,12 +129,7 @@ class Upload:
         -------
         None
         """
-
-        # abort ongoing upload by calling the exported golang function
         error = self.uplink.m_libuplink.uplink_upload_abort(self.upload)
-        #
-        # if error occurred
-        self.uplink.free_upload_struct(self.upload)
         if bool(error):
             self.uplink.free_error_and_raise_exception(error)
 
@@ -159,14 +146,11 @@ class Upload:
         -------
         None
         """
-        #
-        # prepare the input for the function
         if custom_metadata is None:
             custom_metadata_obj = _CustomMetadataStruct()
         else:
             custom_metadata_obj = custom_metadata.get_structure()
-        #
-        # set custom metadata to upload by calling the exported golang function
+
         error = self.uplink.m_libuplink.uplink_upload_set_custom_metadata(self.upload, custom_metadata_obj)
 
         if bool(error):

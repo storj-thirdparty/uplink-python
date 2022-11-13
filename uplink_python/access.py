@@ -152,9 +152,6 @@ class Access:
         -------
         String
         """
-
-       #
-        # get serialized access by calling the exported golang function
         string_result = self.uplink.m_libuplink.uplink_access_serialize(self.access)
 
         _unwrapped_string = self.uplink.unwrap_string_result(string_result)
@@ -183,10 +180,6 @@ class Access:
         -------
         Access
         """
-
-      #
-        # prepare the input for the function
-        # check and create valid _PermissionStruct parameter
         if permission is None:
             permission_obj = _PermissionStruct()
         else:

@@ -67,16 +67,12 @@ class Download:
         -------
         bytes, int
         """
-
-        #
-        # prepare the inputs for the function
         data_size = ctypes.c_int32(size_to_read)
         data_to_write = [0]
         data_to_write = (ctypes.c_uint8 * data_size.value)(*data_to_write)
         data_to_write_ptr = ctypes.cast(data_to_write, ctypes.POINTER(ctypes.c_uint8))
         size_to_read = ctypes.c_size_t(size_to_read)
 
-        # read data from Storj by calling the exported golang function
         read_result = self.uplink.m_libuplink.uplink_download_read(self.download, data_to_write_ptr,
                                                                    size_to_read)
 
@@ -131,8 +127,6 @@ class Download:
         -------
         int
         """
-#
-        # get object information by calling the exported golang function
         object_result = self.uplink.m_libuplink.uplink_stat_object(self.project, self.bucket_name,
                                                                    self.storj_path)
 
@@ -151,11 +145,8 @@ class Download:
         -------
         None
         """
-
-        # close downloader by calling the exported golang function
         error = self.uplink.m_libuplink.uplink_close_download(self.download)
-        #
-        # if error occurred
+
         if bool(error):
             self.uplink.free_error_and_raise_exception(error)
 
@@ -167,8 +158,6 @@ class Download:
         -------
         Object
         """
-        #
-        # get last download info by calling the exported golang function
         object_result = self.uplink.m_libuplink.uplink_download_info(self.download)
 
         _unwrapped_object = self.uplink.unwrap_object_result(object_result)
