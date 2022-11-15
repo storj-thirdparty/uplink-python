@@ -22,7 +22,7 @@ steps:
         set -o errexit
         python3 -m pip install --upgrade pip
         python3 -m pip install cibuildwheel==2.11.2
-        cibuildwheel --output-dir wheelhouse .
+        cibuildwheel --platform linux --output-dir wheelhouse .
         ls wheelhouse/
 tags: ['cloud-builders-community']
 images: ['gcr.io/$PROJECT_ID/python3']
