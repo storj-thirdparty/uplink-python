@@ -17,11 +17,13 @@ steps:
   # - name: 'gcr.io/${PROJECT_ID}/python3'
   #   entrypoint: 'python3'
   #   args: ['-m', 'unittest', 'test/test_cases.py', '-v']
-  - name: 'windows-2019'
+  - name: 'gcr.io/${PROJECT_ID}/python3'
     script: |
         set -o errexit
         python3 -m pip install --upgrade pip
         python3 -m pip install cibuildwheel==2.11.2
+        cibuildwheel --output-dir wheelhouse .
+        ls wheelhouse/
 tags: ['cloud-builders-community']
 images: ['gcr.io/$PROJECT_ID/python3']
 tags: ['cloud-builders-community']
