@@ -4,11 +4,10 @@ requires = [
     "wheel",
     "Cython",
     "wget",
-#    "oldest-supported-numpy",
 ]
 build-backend = "setuptools.build_meta"
 
 [tool.cibuildwheel]
-skip = ["cp-36*"]
+skip = ["cp-36*", "*musllinux*"]
 
 before-all = "pip install wget && python3 scripts/install-golang.py"
