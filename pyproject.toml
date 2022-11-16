@@ -1,0 +1,14 @@
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel",
+    "Cython",
+    "wget",
+#    "oldest-supported-numpy",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.cibuildwheel]
+skip = ["cp-36*"]
+
+before-all = "pip install wget && python3 scripts/install-golang.py"
