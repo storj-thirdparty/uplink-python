@@ -3,11 +3,12 @@ requires = [
     "setuptools>=42",
     "wheel",
     "Cython",
-    "wget",
 ]
 build-backend = "setuptools.build_meta"
 
 [tool.cibuildwheel]
 skip = ["cp-36*", "*musllinux*"]
 
+#test-requires = ["unittest"]
+test-command = "python3 -m unittest -s test -v"
 before-all = "pip install wget && python3 scripts/install-golang.py"

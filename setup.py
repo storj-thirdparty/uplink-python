@@ -49,27 +49,6 @@ class build_go_ext(build_ext):
 
 
 setuptools.setup(
-    name="uplink-python",
-    version="1.2.2.0",
-    author="Utropicmedia",
-    author_email="development@utropicmedia.com",
-    license='Apache Software License',
-    description="Python-native language binding for uplink to "
-                "communicate with the Storj network.",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/storj-thirdparty/uplink-python",
-    packages=['uplink_python'],
-    install_requires=['wheel'],
-    include_package_data=True,
-    classifiers=[
-        "Intended Audience :: Developers",
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: Apache Software License",
-        "Operating System :: OS Independent",
-        "Topic :: Software Development :: Build Tools",
-    ],
-    python_requires='>=3.4',
     ext_modules=[
         Extension('libuplinkc', [])
     ],
