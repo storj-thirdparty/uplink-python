@@ -7,8 +7,8 @@ import sysconfig
 
 from uplink_python.access import Access
 from uplink_python.errors import _storj_exception, LibUplinkSoError
-from uplink_python.module_def import _AccessResult, _ConfigStruct, _DownloadResult, _ProjectResult, \
-    _UploadResult, _Error
+from uplink_python.module_def import _AccessResult, _ConfigStruct, _DownloadResult, \
+     _ProjectResult, _UploadResult, _Error
 from uplink_python.module_classes import Config, Bucket, Object, SystemMetadata, \
     CustomMetadataEntry, CustomMetadata
 
@@ -444,4 +444,3 @@ class Uplink:
         _project_result = _ProjectResult()
         _project_result.project = project_struct
         self.m_libuplink.uplink_free_project_result(_project_result)
-
