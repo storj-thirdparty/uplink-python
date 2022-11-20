@@ -10,8 +10,8 @@ steps:
     args: ["-c","gcloud secrets versions access latest --secret=StorjAPIKey >>secret.txt" ]
   - name: 'gcr.io/${PROJECT_ID}/python3'
     script: |
-      git clone https://github.com/storj/storj.git storj
-      cd storj
+      git clone https://github.com/storj/storj.git /storj
+      cd /storj
       make install-sim
       storj-sim network setup
       storj-sim network run &
