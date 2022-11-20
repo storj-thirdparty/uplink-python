@@ -10,4 +10,4 @@ ENV PATH=$PATH:/usr/local/go/bin
 
 RUN pip --no-cache-dir install pylint
 
-RUN apt install build-essential
+RUN apt -y update && apt install -y build-essential
