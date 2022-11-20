@@ -20,7 +20,7 @@ steps:
   - name: 'gcr.io/${PROJECT_ID}/python3'
     script: |
         set -o errexit
-        GO111MODULE=on go install storj.io/storj-up@latest
+        GO111MODULE=on go install storj.io/storj-up
         storj-up init
         docker compose up -d
         docker compose ps
