@@ -20,6 +20,14 @@ steps:
   - name: 'gcr.io/${PROJECT_ID}/python3'
     script: |
         set -o errexit
+        go install storj.io/storj-up@latest
+        storj-up init
+        docker compose up -d
+        docker compose ps
+        storj-up credentials
+  - name: 'gcr.io/${PROJECT_ID}/python3'
+    script: |
+        set -o errexit
         python3 -m pip install --upgrade pip
         python3 -m pip install cibuildwheel==2.11.2
         cibuildwheel --platform linux --output-dir wheelhouse .
