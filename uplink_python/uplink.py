@@ -7,7 +7,8 @@ import sysconfig
 
 from uplink_python.access import Access
 from uplink_python.errors import _storj_exception, LibUplinkSoError
-from uplink_python.module_def import _AccessResult, _ConfigStruct
+from uplink_python.module_def import _AccessResult, _ConfigStruct, _DownloadResult, _ProjectResult, \
+    _UploadResult, _Error
 from uplink_python.module_classes import Config, Bucket, Object, SystemMetadata, \
     CustomMetadataEntry, CustomMetadata
 
@@ -48,6 +49,7 @@ class Uplink:
                     self.m_libuplink = ctypes.CDLL(so_path)
                 else:
                     raise LibUplinkSoError
+
             Uplink.__instance = self
         else:
             self.m_libuplink = Uplink.__instance.m_libuplink
@@ -61,7 +63,7 @@ class Uplink:
                                 content_length=object_.contents.system.content_length)
 
         array_size = object_.contents.custom.count
-        entries = list()
+        entries = []
         for i in range(array_size):
             if bool(object_.contents.custom.entries[i]):
                 entries_obj = object_.contents.custom.entries[i]
@@ -126,8 +128,14 @@ class Uplink:
         #
         # if error occurred
         if bool(access_result.error):
-            raise _storj_exception(access_result.error.contents.code,
-                                   access_result.error.contents.message.decode("utf-8"))
+            error_code = access_result.error.contents.code
+            error_msg = access_result.error.contents.message.decode("utf-8")
+
+            self.m_libuplink.uplink_free_access_result.argtypes = [_AccessResult]
+            self.m_libuplink.uplink_free_access_result(access_result)
+
+            raise _storj_exception(error_code, error_msg)
+
         return Access(access_result.access, self)
 
     def config_request_access_with_passphrase(self, config: Config, satellite: str, api_key: str,
@@ -177,12 +185,10 @@ class Uplink:
                                                                                       satellite_ptr,
                                                                                       api_key_ptr,
                                                                                       phrase_ptr)
-        #
-        # if error occurred
-        if bool(access_result.error):
-            raise _storj_exception(access_result.error.contents.code,
-                                   access_result.error.contents.message.decode("utf-8"))
-        return Access(access_result.access, self)
+
+        _unwrapped_access = self.m_libuplink.unwrap_access_result(access_result)
+
+        return Access(_unwrapped_access, self)
 
     def parse_access(self, serialized_access: str):
         """
@@ -211,9 +217,231 @@ class Uplink:
 
         # get parsed access by calling the exported golang function
         access_result = self.m_libuplink.uplink_parse_access(serialized_access_ptr)
-        #
-        # if error occurred
-        if bool(access_result.error):
-            raise _storj_exception(access_result.error.contents.code,
-                                   access_result.error.contents.message.decode("utf-8"))
-        return Access(access_result.access, self)
+
+        _unwrapped_access = self.unwrap_access_result(access_result)
+
+        return Access(_unwrapped_access, self)
+
+
+    def free_error_and_raise_exception(self, err ):
+        """ free libuplinkc error and raise corresponding _storj_exception """
+        error_code = err.contents.code
+        error_msg = err.contents.message.decode("utf-8")
+
+        self.m_libuplink.uplink_free_error.argtypes = [ctypes.POINTER(_Error)]
+        self.m_libuplink.uplink_free_error(err)
+
+        raise _storj_exception(error_code, error_msg)
+
+    def unwrap_libuplink_result(self, result, finalizer, attribute_name):
+        ''' unwrap libuplink result - raise exception if error occured'''
+        if bool(result.error):
+            error_code = result.error.contents.code
+            error_msg = result.error.contents.message.decode("utf-8")
+            finalizer(result)
+            raise _storj_exception(error_code, error_msg)
+
+        result = getattr(result, attribute_name)
+        return result
+
+    def unwrap_access_result(self, access_result):
+        """
+        unwrap access result
+
+        Parameters
+        ----------
+        access_result : _AccessResult
+
+        Returns
+        -------
+        ctypes.POINTER(_AccessStruct)
+        """
+        return self.unwrap_libuplink_result(
+            access_result, self.m_libuplink.uplink_free_access_result, 'access')
+
+    def unwrap_bucket_result(self, bucket_result):
+        """
+        unwrap bucket result
+
+        Parameters
+        ----------
+        bucket_result : _BucketResult
+
+        Returns
+        -------
+        ctypes.POINTER(_BucketStruct)
+        """
+        return self.unwrap_libuplink_result(
+            bucket_result, self.m_libuplink.uplink_free_bucket_result, 'bucket')
+
+    def unwrap_encryption_key_result(self, encryption_key_result):
+        """
+        unwrap encryption key result
+
+        Parameters
+        ----------
+        encryption_key_result : _EncryptionKeyResult
+
+        Returns
+        -------
+        ctypes.POINTER(_EncryptionKeyStruct)
+        """
+        return self.unwrap_libuplink_result(encryption_key_result,
+            self.m_libuplink.uplink_free_encryption_key_result, 'encryption_key')
+
+    def unwrap_object_result(self, object_result):
+        """
+        unwrap object result
+
+        Parameters
+        ----------
+        object_result : _ObjectResult
+
+        Returns
+        -------
+        ctypes.POINTER(_ObjectStruct)
+        """
+        return self.unwrap_libuplink_result(
+            object_result, self.m_libuplink.uplink_free_object_result, 'object')
+
+    def unwrap_project_result(self, project_result):
+        """
+        unwrap project result
+
+        Parameters
+        ----------
+        project_result : _ProjectResult
+
+        Returns
+        -------
+        ctypes.POINTER(_ProjectStruct)
+        """
+        return self.unwrap_libuplink_result(
+            project_result, self.m_libuplink.uplink_free_project_result, 'project')
+
+    def unwrap_read_result(self, read_result):
+        """
+        unwrap read result
+
+        Parameters
+        ----------
+        read_result : _ReadResult
+
+        Returns
+        -------
+        ctypes.c_size_t
+        """
+        return self.unwrap_libuplink_result(
+            read_result, self.m_libuplink.uplink_free_read_result, 'bytes_read')
+
+    def unwrap_string_result(self, string_result):
+        """
+        unwrap project result
+
+        Parameters
+        ----------
+        string_result : _StringResult
+
+        Returns
+        -------
+        ctypes.c_char_p
+        """
+        return self.unwrap_libuplink_result(
+            string_result, self.m_libuplink.uplink_free_string_result, 'string')
+
+    def unwrap_upload_object_result(self, upload_object_result):
+        """
+        unwrap project result
+
+        Parameters
+        ----------
+        upload_object_result : _UploadResult
+
+        Returns
+        -------
+        ctypes.POINTER(_UploadStruct)
+        """
+        return self.unwrap_libuplink_result(
+            upload_object_result, self.m_libuplink.uplink_free_upload_result, 'upload')
+
+    def unwrap_upload_write_result(self, result_object):
+        """
+        unwrap upload write result
+
+        Parameters
+        ----------
+        upload_write_result : _WriteResult
+
+        Returns
+        -------
+        ctypes.c_size_t
+        """
+        return self.unwrap_libuplink_result(
+            result_object, self.m_libuplink.uplink_free_write_result, 'bytes_written')
+
+    def free_access_struct(self, access_struct):
+        """
+        free access result
+
+        Parameters
+        ----------
+        access_struct : _AccessStruct
+
+        Returns
+        -------
+        None
+        """
+        _access_result = _AccessResult()
+        _access_result.upload = access_struct
+        self.m_libuplink.uplink_free_access_result(_access_result)
+
+    def free_upload_struct(self, upload_struct):
+        """
+        free upload struct
+
+        Parameters
+        ----------
+        upload_struct : _UploadStruct
+
+        Returns
+        -------
+        None
+        """
+        _upload_result = _UploadResult()
+        _upload_result.upload = upload_struct
+        self.m_libuplink.uplink_free_upload_result(_upload_result)
+
+    def free_download_struct(self, download_struct):
+        """
+        free download struct
+
+        Parameters
+        ----------
+        download_struct : _DownloadStruct
+
+        Returns
+        -------
+        None
+        """
+        _download_result = _DownloadResult()
+        _download_result.download = download_struct
+        self.m_libuplink.uplink_free_download_result(_download_result)
+
+    def free_project_struct(self, project_struct):
+        """
+        free project struct
+
+        Parameters
+        ----------
+        project_struct : _ProjectStruct
+
+        Returns
+        -------
+        None
+        """
+        self.m_libuplink.uplink_free_project_result.argtypes = [_ProjectResult]
+
+        _project_result = _ProjectResult()
+        _project_result.project = project_struct
+        self.m_libuplink.uplink_free_project_result(_project_result)
+

@@ -3,9 +3,9 @@
 
 from datetime import datetime
 
-from .errors import StorjException, BucketNotEmptyError, BucketNotFoundError
-from .module_classes import ListObjectsOptions, Permission, SharePrefix
-from .uplink import Uplink
+from uplink_python.errors import StorjException, BucketNotEmptyError, BucketNotFoundError
+from uplink_python.module_classes import ListObjectsOptions, Permission, SharePrefix
+from uplink_python.uplink import Uplink
 
 if __name__ == "__main__":
 

@@ -2,21 +2,36 @@
 steps:
   - name: gcr.io/cloud-builders/docker
     args: ['build', '-t', 'gcr.io/$PROJECT_ID/python3', '.']
+  # - name: 'gcr.io/${PROJECT_ID}/python3'
+  #   entrypoint: 'python3'
+  #   args: ["-m", "pylint", 'uplink_python/uplink.py']
+  # - name: gcr.io/cloud-builders/gcloud
+  #   entrypoint: 'bash'
+  #   args: ["-c","gcloud secrets versions access latest --secret=StorjAPIKey >>secret.txt" ]
+  # - name: 'gcr.io/${PROJECT_ID}/python3'
+  #   entrypoint: 'bash'
+  #   args: ["-c", "git clone -b v1.2.2 https://github.com/storj/uplink-c"]
+  # - name: 'gcr.io/${PROJECT_ID}/python3'
+  #   entrypoint: 'bash'
+  #   args: ["-c", "cd uplink-c && go build -o libuplinkc.so -buildmode=c-shared && cp *.so ../uplink_python/"]
+  # - name: 'gcr.io/${PROJECT_ID}/python3'
+  #   entrypoint: 'python3'
+  #   args: ['-m', 'unittest', 'test/test_cases.py', '-v']
   - name: 'gcr.io/${PROJECT_ID}/python3'
-    entrypoint: 'python3'
-    args: ["-m", "pylint", 'uplink_python/uplink.py']
-  - name: gcr.io/cloud-builders/gcloud
-    entrypoint: 'bash'
-    args: ["-c","gcloud secrets versions access latest --secret=StorjAPIKey >>secret.txt" ]
+    script: |
+        set -o errexit
+        GO111MODULE=on go install storj.io/storj-up
+        storj-up init
+        docker compose up -d
+        docker compose ps
+        storj-up credentials
   - name: 'gcr.io/${PROJECT_ID}/python3'
-    entrypoint: 'bash'
-    args: ["-c", "git clone -b v1.2.2 https://github.com/storj/uplink-c"]
-  - name: 'gcr.io/${PROJECT_ID}/python3'
-    entrypoint: 'bash'
-    args: ["-c", "cd uplink-c && go build -o libuplinkc.so -buildmode=c-shared && cp *.so ../uplink_python/"] 
-  - name: 'gcr.io/${PROJECT_ID}/python3'
-    entrypoint: 'python3'
-    args: ['-m', 'unittest', 'test/test_cases.py', '-v']
+    script: |
+        set -o errexit
+        python3 -m pip install --upgrade pip
+        python3 -m pip install cibuildwheel==2.11.2
+        cibuildwheel --platform linux --output-dir wheelhouse .
+        ls wheelhouse/
 tags: ['cloud-builders-community']
 images: ['gcr.io/$PROJECT_ID/python3']
 tags: ['cloud-builders-community']

@@ -3,85 +3,56 @@ import subprocess
 import os
 import platform
 import sysconfig
+import sys
+
+from distutils.errors import CompileError
+from subprocess import call
 
 import setuptools
-from setuptools.command.install import install
+from setuptools import Extension, setup
+from setuptools.command.build_ext import build_ext
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 uplinkc_version = "v1.2.2"
 
-class Install(install):
+class build_go_ext(build_ext):
+    """Custom command to build extension from Go source files"""
+    def build_extension(self, ext):
 
-    @staticmethod
-    def find_module_path():
-        new_path = os.path.join(sysconfig.get_paths()['purelib'], "uplink_python")
-        try:
-            os.makedirs(new_path, exist_ok=True)
-            os.system("echo Directory uplink_python created successfully.")
-        except OSError as error:
-            os.system("echo Error in creating uplink_python directory. Error: " + str(error))
-        return new_path
+        print("os.name                      ",  os.name)
+        print("sys.platform                 ",  sys.platform)
+        print("platform.system()            ",  platform.system())
+        print("sysconfig.get_platform()     ",  sysconfig.get_platform())
+        print("platform.machine()           ",  platform.machine())
+        print("platform.architecture()      ",  platform.architecture())
+        print("platform.python      ",  platform.python_version())
+        print("BUILDING EXT FOR ", platform.release(), " ---- ",platform.machine())
 
-    def run(self):
-
-        try:
-            install_path = self.find_module_path()
-            os.system("echo Package installation path: " + install_path)
-            if platform.system() == "Windows":
-                os.system("icacls " + install_path + " /grant Everyone:F /t")
-            else:
-                os.system("sudo chmod -R 777 " + install_path)
-            os.system("echo Building libuplinkc.so")
-            copy_command = "copy" if platform.system() == "Windows" else "cp"
-            command = "git clone  -b "+uplinkc_version+ "https://github.com/storj/uplink-c && cd uplink-c" \
-                      "&& go build -o libuplinkc.so -buildmode=c-shared" \
-                      "&& " + copy_command + " *.so " + install_path
-            build_so = subprocess.Popen(command,
-                                        stdout=subprocess.PIPE,
-                                        stderr=subprocess.STDOUT, shell=True)
-            output, errors = build_so.communicate()
-            build_so.wait()
-            if output is not None:
-                os.system("echo " + output.decode('utf-8'))
-                os.system("echo Building libuplinkc.so successful.")
-            if errors is not None:
-                os.system("echo " + errors.decode('utf-8'))
-                os.system("echo Building libuplinkc.so failed.")
-            if build_so.returncode != 0:
-                os.exit(1)
-        except Exception as error:
-            os.system("echo " + str(error))
-            os.system("echo Building libuplinkc.so failed.")
-
-        install.run(self)
+        ext_path = self.get_ext_fullpath(ext.name)
+        print("ext path = ", ext_path)
+        cmd = ['rm', '-rf', './uplink-c']
+        out = call(cmd)
+        if out != 0:
+            raise CompileError('Go build failed')
+        cmd = ['git', 'clone', 'https://github.com/storj/uplink-c']
+        out = call(cmd)
+        if out != 0:
+            raise CompileError('Go build failed')
+        os.chdir('./uplink-c')
+        cmd = ['/usr/bin/go/bin/go', 'build', '-buildmode=c-shared', '-o', '../'+ext_path]#, "."]
+        out = call(cmd)
+        os.chdir('..')
+        if out != 0:
+            raise CompileError('Go build failed')
 
 
 setuptools.setup(
-    name="uplink-python",
-    version="1.2.2.0",
-    author="Utropicmedia",
-    author_email="development@utropicmedia.com",
-    license='Apache Software License',
-    description="Python-native language binding for uplink to "
-                "communicate with the Storj network.",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/storj-thirdparty/uplink-python",
-
-    packages=['uplink_python'],
-    install_requires=['wheel'],
-    include_package_data=True,
-    classifiers=[
-        "Intended Audience :: Developers",
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: Apache Software License",
-        "Operating System :: OS Independent",
-        "Topic :: Software Development :: Build Tools",
+    ext_modules=[
+        Extension('libuplinkc', [])
     ],
-    python_requires='>=3.4',
     cmdclass={
-        'install': Install,
+        'build_ext': build_go_ext,
     }
 )

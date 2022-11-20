@@ -5,7 +5,6 @@ import os
 
 from uplink_python.module_def import _DownloadStruct, _ReadResult, _ProjectStruct,\
     _ObjectResult, _Error
-from uplink_python.errors import _storj_exception
 
 _WINDOWS = os.name == 'nt'
 COPY_BUFSIZE = 1024 * 1024 if _WINDOWS else 64 * 1024
@@ -53,6 +52,8 @@ class Download:
         self.storj_path = storj_path
         self.uplink = uplink
 
+
+
     def read(self, size_to_read: int):
         """
         function downloads up to len size_to_read bytes from the object's data stream.
@@ -72,6 +73,7 @@ class Download:
                                                                  ctypes.POINTER(ctypes.c_uint8),
                                                                  ctypes.c_size_t]
         self.uplink.m_libuplink.uplink_download_read.restype = _ReadResult
+        self.uplink.m_libuplink.uplink_free_read_result.argtypes = [_ReadResult]
         #
         # prepare the inputs for the function
         data_size = ctypes.c_int32(size_to_read)
@@ -83,20 +85,20 @@ class Download:
         # read data from Storj by calling the exported golang function
         read_result = self.uplink.m_libuplink.uplink_download_read(self.download, data_to_write_ptr,
                                                                    size_to_read)
-        #
-        # if error occurred
-        if bool(read_result.error):
-            raise _storj_exception(read_result.error.contents.code,
-                                   read_result.error.contents.message.decode("utf-8"))
+
+        bytes_read = self.uplink.unwrap_read_result(read_result)
 
         data_read = bytes()
-        if int(read_result.bytes_read) != 0:
+        if bytes_read != 0:
             #
             # --------------------------------------------
             # data conversion to type python readable form
             # conversion of LP_c_ubyte to python readable data variable
             data_read = ctypes.string_at(data_to_write_ptr, int(read_result.bytes_read))
-        return data_read, int(read_result.bytes_read)
+
+        self.uplink.m_libuplink.uplink_free_read_result(read_result)
+
+        return data_read, bytes_read
 
     def read_file(self, file_handle, buffer_size: int = 0):
         """
@@ -120,8 +122,7 @@ class Download:
         if not buffer_size:
             buffer_size = COPY_BUFSIZE
         file_size = self.file_size()
-        if buffer_size > file_size:
-            buffer_size = file_size
+        buffer_size = min(buffer_size, file_size)
         while file_size:
             buf, bytes_read = self.read(buffer_size)
             if buf:
@@ -141,16 +142,18 @@ class Download:
         self.uplink.m_libuplink.uplink_stat_object.argtypes = [ctypes.POINTER(_ProjectStruct),
                                                                ctypes.c_char_p, ctypes.c_char_p]
         self.uplink.m_libuplink.uplink_stat_object.restype = _ObjectResult
+        self.uplink.m_libuplink.uplink_free_object_result.argtypes = [_ObjectResult]
         #
         # get object information by calling the exported golang function
         object_result = self.uplink.m_libuplink.uplink_stat_object(self.project, self.bucket_name,
                                                                    self.storj_path)
-        # if error occurred
-        if bool(object_result.error):
-            raise _storj_exception(object_result.error.contents.code,
-                                   object_result.error.contents.message.decode("utf-8"))
-        # find object size
-        return int(object_result.object.contents.system.content_length)
+
+        _object = self.uplink.unwrap_object_result(object_result)
+
+        file_size = int(_object.contents.system.content_length)
+
+        self.uplink.m_libuplink.uplink_free_object_result(object_result)
+        return file_size
 
     def close(self):
         """
@@ -170,8 +173,7 @@ class Download:
         #
         # if error occurred
         if bool(error):
-            raise _storj_exception(error.contents.code,
-                                   error.contents.message.decode("utf-8"))
+            self.uplink.free_error_and_raise_exception(error)
 
     def info(self):
         """
@@ -188,9 +190,13 @@ class Download:
         #
         # get last download info by calling the exported golang function
         object_result = self.uplink.m_libuplink.uplink_download_info(self.download)
-        #
-        # if error occurred
-        if bool(object_result.error):
-            raise _storj_exception(object_result.error.contents.code,
-                                   object_result.error.contents.message.decode("utf-8"))
-        return self.uplink.object_from_result(object_result.object)
+
+        _unwrapped_object = self.uplink.unwrap_object_result(object_result)
+        _object = self.uplink.object_from_result(_unwrapped_object)
+
+        self.uplink.m_libuplink.uplink_free_object_result(object_result)
+
+        return _object
+
+    def __del__(self):
+        self.uplink.free_download_struct(self.download)

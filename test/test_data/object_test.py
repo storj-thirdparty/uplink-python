@@ -3,7 +3,6 @@ import random
 import string
 import unittest
 
-from uplink_python.errors import StorjException, ERROR_OBJECT_NOT_FOUND
 from .helper import TestPy
 
 
