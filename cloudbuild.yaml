@@ -10,10 +10,18 @@ steps:
     args: ["-c","gcloud secrets versions access latest --secret=StorjAPIKey >>secret.txt" ]
   - name: 'gcr.io/${PROJECT_ID}/python3'
     entrypoint: 'bash'
+    script: |
+    git clone https://github.com/storj/storj.git storj
+    cd storj
+    make install-sim
+    storj-sim network setup
+    storj-sim network run
+  - name: 'gcr.io/${PROJECT_ID}/python3'
+    entrypoint: 'bash'
     args: ["-c", "git clone -b v1.2.2 https://github.com/storj/uplink-c"]
   - name: 'gcr.io/${PROJECT_ID}/python3'
     entrypoint: 'bash'
-    args: ["-c", "cd uplink-c && go build -o libuplinkc.so -buildmode=c-shared && cp *.so ../uplink_python/"] 
+    args: ["-c", "cd uplink-c && go build -o libuplinkc.so -buildmode=c-shared && cp *.so ../uplink_python/"]
   - name: 'gcr.io/${PROJECT_ID}/python3'
     entrypoint: 'python3'
     args: ['-m', 'unittest', 'test/test_cases.py', '-v']
