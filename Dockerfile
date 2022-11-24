@@ -9,5 +9,3 @@ RUN mv go /usr/local
 ENV PATH=$PATH:/usr/local/go/bin
 
 RUN pip --no-cache-dir install pylint
-
-RUN apt -y update && apt install -y build-essential
