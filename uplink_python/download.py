@@ -52,8 +52,6 @@ class Download:
         self.storj_path = storj_path
         self.uplink = uplink
 
-
-
     def read(self, size_to_read: int):
         """
         function downloads up to len size_to_read bytes from the object's data stream.
