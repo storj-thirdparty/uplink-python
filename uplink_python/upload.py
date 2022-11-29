@@ -5,7 +5,6 @@ import os
 
 from uplink_python.module_classes import CustomMetadata
 from uplink_python.module_def import _UploadStruct, _WriteResult, _Error, _CustomMetadataStruct, _ObjectResult
-from uplink_python.errors import _storj_exception
 
 _WINDOWS = os.name == 'nt'
 COPY_BUFSIZE = 1024 * 1024 if _WINDOWS else 64 * 1024
@@ -65,6 +64,7 @@ class Upload:
                                                                 ctypes.POINTER(ctypes.c_uint8),
                                                                 ctypes.c_size_t]
         self.uplink.m_libuplink.uplink_upload_write.restype = _WriteResult
+        self.uplink.m_libuplink.uplink_free_write_result.argtypes = [_WriteResult]
         #
         # prepare the inputs for the function
         # --------------------------------------------
@@ -80,12 +80,8 @@ class Upload:
         # upload data by calling the exported golang function
         write_result = self.uplink.m_libuplink.uplink_upload_write(self.upload, data_to_write_ptr,
                                                                    size_to_write_obj)
-        #
-        # if error occurred
-        if bool(write_result.error):
-            _storj_exception(write_result.error.contents.code,
-                             write_result.error.contents.message.decode("utf-8"))
-        return int(write_result.bytes_written)
+
+        return self.uplink.unwrap_upload_write_result(write_result)
 
     def write_file(self, file_handle, buffer_size: int = 0):
         """
@@ -131,11 +127,11 @@ class Upload:
 
         # upload commit by calling the exported golang function
         error = self.uplink.m_libuplink.uplink_upload_commit(self.upload)
+
         #
         # if error occurred
         if bool(error):
-            raise _storj_exception(error.contents.code,
-                                   error.contents.message.decode("utf-8"))
+            self.uplink.free_error_and_raise_exception(error)
 
     def abort(self):
         """
@@ -155,9 +151,10 @@ class Upload:
         error = self.uplink.m_libuplink.uplink_upload_abort(self.upload)
         #
         # if error occurred
+        self.uplink.free_upload_struct(self.upload)
         if bool(error):
-            raise _storj_exception(error.contents.code,
-                                   error.contents.message.decode("utf-8"))
+            self.uplink.free_error_and_raise_exception(error)
+
 
     def set_custom_metadata(self, custom_metadata: CustomMetadata = None):
         """
@@ -185,11 +182,9 @@ class Upload:
         #
         # set custom metadata to upload by calling the exported golang function
         error = self.uplink.m_libuplink.uplink_upload_set_custom_metadata(self.upload, custom_metadata_obj)
-        #
-        # if error occurred
+
         if bool(error):
-            raise _storj_exception(error.contents.code,
-                                   error.contents.message.decode("utf-8"))
+            self.uplink.free_error_and_raise_exception(error)
 
     def info(self):
         """
@@ -203,12 +198,15 @@ class Upload:
         # declare types of arguments and response of the corresponding golang function
         self.uplink.m_libuplink.uplink_upload_info.argtypes = [ctypes.POINTER(_UploadStruct)]
         self.uplink.m_libuplink.uplink_upload_info.restype = _ObjectResult
+        self.uplink.m_libuplink.uplink_free_object_result.argtypes = [_ObjectResult]
         #
         # get last upload info by calling the exported golang function
         object_result = self.uplink.m_libuplink.uplink_upload_info(self.upload)
-        #
-        # if error occurred
-        if bool(object_result.error):
-            raise _storj_exception(object_result.error.contents.code,
-                                   object_result.error.contents.message.decode("utf-8"))
-        return self.uplink.object_from_result(object_result.object)
+
+        _unwrapped_object = self.uplink.unwrap_object_result(object_result)
+        info = self.uplink.object_from_result(_unwrapped_object)
+        self.uplink.m_libuplink.uplink_free_object(_unwrapped_object)
+        return info
+
+    def __del__(self):
+        self.uplink.free_upload_struct(self.upload)
