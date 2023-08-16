@@ -134,6 +134,7 @@ class Upload:
         #
         # if error occurred
         if bool(error):
+            print("\n\nERROR: " + str(error.contents.code) + " " + error.contents.message.decode("utf-8") + "\n\n")
             raise _storj_exception(error.contents.code,
                                    error.contents.message.decode("utf-8"))
 
