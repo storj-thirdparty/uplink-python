@@ -389,7 +389,9 @@ StorjException is further sub-categorized into various error specific classes, T
     UploadDoneError
     CancelledError
     InvalidHandleError
-    
+    StorageLimitExceededError
+    SegmentsLimitExceededError 
+    PermissionDeniedError 
 
 ### InternalError
 
@@ -435,6 +437,18 @@ UploadDoneError is raised when either Abort or Commit has already been called.
 
 InvalidHandleError is raised when object handle passes is either invalid or already freed.
 
+### StorageLimitExceededError
+
+StorageLimitExceededError is raised when allowed storage limit exceeded.
+
+### SegmentsLimitExceededError
+
+SegmentsLimitExceededError is raised when allowed segments limit exceeded.
+
+### PermissionDeniedError
+
+PermissionDeniedError is raised when permission is denied.
+
 ## Constants
 
     ERROR_INTERNAL = 0x02
@@ -442,6 +456,10 @@ InvalidHandleError is raised when object handle passes is either invalid or alre
     ERROR_INVALID_HANDLE = 0x04
     ERROR_TOO_MANY_REQUESTS = 0x05
     ERROR_BANDWIDTH_LIMIT_EXCEEDED = 0x06
+    ERROR_STORAGE_LIMIT_EXCEEDED = 0x07
+    ERROR_SEGMENTS_LIMIT_EXCEEDED = 0x08
+    ERROR_PERMISSION_DENIED = 0x09
+    
 # Types, Errors, and Constants
 
 ## Types
