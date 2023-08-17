@@ -2,3 +2,5 @@
 .vscode/settings.json
 uplink-c/
 libuplinkc.so
+secret.txt
+__pycache__/

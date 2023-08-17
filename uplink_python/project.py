@@ -6,11 +6,10 @@ from uplink_python.module_classes import ListBucketsOptions, ListObjectsOptions,
 from uplink_python.module_def import _BucketStruct, _ObjectStruct, _ListObjectsOptionsStruct,\
     _ObjectResult, _ListBucketsOptionsStruct, _UploadOptionsStruct, _DownloadOptionsStruct,\
     _ProjectStruct, _BucketResult, _BucketIterator, _ObjectIterator, _DownloadResult,\
-    _UploadResult, _Error
+    _UploadResult, _Error, _AccessStruct
 from uplink_python.upload import Upload
 from uplink_python.download import Download
 from uplink_python.errors import _storj_exception
-
 
 class Project:
     """
@@ -390,6 +389,33 @@ class Project:
         if bool(error):
             raise _storj_exception(error.contents.code,
                                    error.contents.message.decode("utf-8"))
+
+    def revoke_access(self, access):
+        """
+        revoke_access revokes the API key embedded in the provided access grant.
+
+        Returns
+        -------
+        None
+        """
+        #
+        # declare types of arguments and response of the corresponding golang function
+        self.uplink.m_libuplink.uplink_revoke_access.argtypes =\
+            [ctypes.POINTER(_ProjectStruct), ctypes.POINTER(_AccessStruct)]
+        self.uplink.m_libuplink.uplink_revoke_access.restype = ctypes.POINTER(_Error)
+
+        # get uploader by calling the exported golang function
+        error = self.uplink.m_libuplink.uplink_revoke_access(self.project, access.access)
+        has_err = bool(error)
+        if bool(error):
+            err_code = error.contents.code
+            err_msg = error.contents.message.decode("utf-8")
+        self.uplink.m_libuplink.uplink_free_error.argtypes = [ctypes.POINTER(_Error)]
+        self.uplink.m_libuplink.uplink_free_error(error)
+        if has_err:
+           raise _storj_exception(err_code, err_msg)
+
+        return None
 
     def upload_object(self, bucket_name: str, storj_path: str,
                       upload_options: UploadOptions = None):
