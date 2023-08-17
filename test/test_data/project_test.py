@@ -1,6 +1,6 @@
 # pylint: disable=missing-docstring
 import unittest
-from uplink_python.errors import BucketAlreadyExistError, PermissionDeniedError
+from uplink_python.errors import BucketAlreadyExistError
 from uplink_python.module_classes import Permission, SharePrefix
 
 from .helper import TestPy
@@ -48,9 +48,9 @@ class ProjectTest(unittest.TestCase):
         #with self.assertRaises(PermissionDeniedError) as context:
         #    test_access_availability(project2, "3")
 
-def test_access_availability(project, id: str):
+def test_access_availability(project, num: str):
         data_bytes = bytes("!" * 1024  , 'utf-8')
-        upload = project.upload_object("alpha", "test_object_" + id)
+        upload = project.upload_object("alpha", "test_object_" + num)
         _ = upload.write(data_bytes, len(data_bytes))
         upload.commit()
 
